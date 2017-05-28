@@ -1,0 +1,53 @@
+RallyApi 4.7.17
+	
+	Updates:-(3.13.17)
+		Rally report folder is generated on end of the execution.
+		first store the data's  in files on inside the project folder.
+		Then  this folder is generated on output folder.  
+	  
+	    sprint and release number is enter the output excel sheet
+	    All user stories and defects are stored on sheet2 and sheet3   
+	    cell formatting is completed 
+	    
+    Updates:-(4.7.17) 
+     	1)improve TestCase Data's   
+        2)Pie chart on inside the Excel sheet.
+           
+    Updates:-(4.10.17) 
+        1) all project is moved to src/test to src/main
+        2) remove all duplicate functions (common functions)
+        3) get rally user and pass from excel
+        
+ 		Need to improve:-       
+ 		1) separate reports on test case and defects
+ 		2) getting CR wise report.
+ 		3) create "TestCase" report and "Defect" report separately  
+ 	
+        Batch Run on Daily
+        Sent a mail through automation
+        sheet formatting
+        
+        
+      Updates:-(5.12.17)    
+      
+           Completed tasks :-
+  			1)Sprint wise and release wise report.
+  			2)Testable field count and testable stories report.
+  			3)Automatable test case details.
+  			4)Plot a chart in  inside the excel sheet.
+
+		   Looking for :-
+ 			1)Defect and test case status base on CR – wise and Application wise report.-----
+ 			2)Defect status report based on submitted time and reopen time related fields. - ------aging of defects – Work with Karthick Chandrasekar.
+			3)Test case report based on Testset.
+			4)Stored input and output data’s in database instead of Excel sheets. 
+			5)Design automated mailing system. -----
+			6)Run this tool in Jenkins -------
+			7)preparing an UI.------
+			8)Try to create the custom API in inside the Rally.
+			9)Work with Comcast to see how their report works – Color Code report – Lokesh to send  the file and contact. 
+
+          	        
+        
+        
+          	        
