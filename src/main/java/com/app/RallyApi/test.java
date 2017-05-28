@@ -33,9 +33,158 @@ public class test {
 	public static String uuid="cc844b31-bc0f-4637-a8cc-2857ed438664";
 	public static String usname="CR6176 SLSL Add address line two for qualification";
 	
+	
+	public static void userstoryreq() throws IOException, URISyntaxException
+	{
+		String iterationName	= "Sprint 219";
+		String releaseName      = "PI10 2017.04";
+	    String team_name        = "Apttus PS";
+	    
+		String host 			= "https://rally1.rallydev.com";
+        String username 		= "palanisamy.subramani@centurylink.com";
+        String password 		= "Lalith@93";        
+        String applicationName  = "Find Defects by Iterations and Team";
+       
+       
+        
+        RallyRestApi restApi = null;
+        try {
+        	restApi = new RallyRestApi(new URI(host),username,password);
+            //restApi.setApplicationName(applicationName); 
+
+           // QueryRequest userstoryRequest = new QueryRequest("HierarchicalRequirement"); 
+            QueryRequest userstoryRequest = new QueryRequest("Defects"); 
+            userstoryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=", iterationName).and(new QueryFilter("Project.Name", "=", team_name)));  //new QueryFilter("Project.Name", "=", team_name).and
+            
+            //userstoryRequest.setQueryFilter(new QueryFilter("Release.Name", "=", releaseName).and(new QueryFilter("Project.Name", "=", team_name)));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
+        
+
+            QueryResponse userstoryResponse = restApi.query(userstoryRequest);
+            System.out.println("exe Successful: " + userstoryResponse.wasSuccessful());
+            System.out.println("US Size: " + userstoryResponse.getTotalResultCount());
+           
+            for (int i=0; i<userstoryResponse.getResults().size()&&i<1;i++)
+            {
+                JsonObject userstoryJsonObject = userstoryResponse.getResults().get(i).getAsJsonObject();
+                 
+                Object fmid=userstoryJsonObject.get("FormattedID");   // "FormattedID","ScheduleState"
+                Object stat=userstoryJsonObject.get("ScheduleState");
+                Object obid=userstoryJsonObject.get("ObjectID");
+                Object tccount=userstoryJsonObject.get("TestCaseCount");
+                Object passTc=userstoryJsonObject.get("PassingTestCaseCount");
+                Object testCaseStatus=userstoryJsonObject.get("TestCaseStatus"); 
+                JsonObject testcasejson = (JsonObject) userstoryJsonObject.get("TestCases");   
+                JsonObject workspacejson = (JsonObject) userstoryJsonObject.get("Workspace");    
+                Object uuids=userstoryJsonObject.get("UUID"); 
+                Object name=userstoryJsonObject.get("Name"); 
+                String str1=userstoryJsonObject.get("Name").getAsString();
+                Object workref=workspacejson.get("_ref");
+               
+                String work_ref=workref.toString();
+                String objid=obid.toString();
+                
+                JsonObject release=(JsonObject) userstoryJsonObject.get("Release");
+                JsonObject sprint=null;//(JsonObject) userstoryJsonObject.get("Iteration");
+                Object obj=userstoryJsonObject.get("Iteration");
+                //String str1=obj.toString();
+               
+                try
+                {
+                	if(userstoryJsonObject.get("c_Testable5").toString().equals("null"))
+                	System.out.println("getscuccess");
+                }catch(Exception e){
+                	System.out.println("not able to get file");
+                }
+                
+                //if(userstoryJsonObject.get("c_Testable").toString().equals("null"))
+                {
+                	System.out.println("-c_Testable  --nulll---");
+                	//sprint=(JsonObject) userstoryJsonObject.get("Iteration");
+                }
+               // else
+                {
+                	//System.out.println("-------not null------"+userstoryJsonObject.get("c_Testable").toString());
+                }
+                
+               // usname=name.toString();
+                Object relName=release.get("_refObjectName");
+                Object sprName="";//sprint.get("_refObjectName");
+                
+                System.out.println(" US===form id : " +fmid+" state : "+ stat);
+                //System.out.println("uuid : "+uuids+" name: "+name);
+                //System.out.println(" US===form id : " +fmid+" state : "+ stat+" rele Name : "+relName+ " spr name : "+sprName+ " obj "+obj);
+                System.out.println(" obj id : "+obid+" totalcount : "+ tccount +" pass : "+passTc +" test status : "+testCaseStatus);
+                
+                //test.testcasereq(str1);
+                
+                Set<?> key=userstoryJsonObject.entrySet();
+                Iterator itr=key.iterator();
+                while(itr.hasNext())
+                {
+                	String str=itr.next().toString();	                
+                	System.out.println("str : "+str);  
+                }
+                 
+                
+                /*
+                System.out.println("work ref : "+workref);
+                // System.out.println("obid:TC:PTC"+obid+":"+tccount+":"+passTc+"\n\n"+testcasejson);
+                
+                QueryRequest testcaseRequest = new QueryRequest("TestCase");
+                testcaseRequest.setWorkspace(work_ref);
+                testcaseRequest.setQueryFilter(new QueryFilter("Project.Name", "=", team_name));// .and(new QueryFilter("ObjectID", "=" ,objid))
+                QueryResponse testcaseQueryResponse = restApi.query(testcaseRequest);
+	            System.out.println("Successful  tc:  " + testcaseQueryResponse.wasSuccessful());
+	            System.out.println("Size: " + testcaseQueryResponse.getTotalResultCount());   
+	            */
+	            /*for (int j=0; j<testcaseQueryResponse.getResults().size()&&j<10;j++)
+	            {
+	            	JsonObject testcaseJsonObject = testcaseQueryResponse.getResults().get(i).getAsJsonObject();
+	            	 Object tcobid=testcaseJsonObject.get("ObjectID");
+	            	 System.out.println(tcobid);
+	            	
+	            }
+	            */
+	          
+                
+                /*JsonObject testcase=(JsonObject) userstoryJsonObject.get("TestCases");
+               
+                
+                Object ref=userstoryJsonObject.get("ObjectID");
+                System.out.println("testcases"+ testcase);
+                String refs=ref.toString();
+                System.out.println("ObjectID "+ref+"\n\n");
+                
+                
+                QueryRequest testcaseRequest = new QueryRequest("TestCase");
+                //testcaseRequest.setQueryFilter((new QueryFilter(" ref", "=", refs)));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
+                //testSetRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=", iterationName).and(new QueryFilter("Project.Name", "=", team_name)));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
+                //testcaseRequest.setWorkspace(refs);
+              
+                testcaseRequest.setFetch(new Fetch("FormattedID"));	                
+                testcaseRequest.setQueryFilter(new QueryFilter("ObjectID", "=", "56503916587"));
+                
+                QueryResponse testcaseQueryResponse = restApi.query(testcaseRequest);
+	            System.out.println("Successful  tc:  " + testcaseQueryResponse.wasSuccessful());
+	            System.out.println("Size: " + testcaseQueryResponse.getTotalResultCount());               
+               */
+                
+            }
+
+        } finally {
+            if (restApi != null) {
+                restApi.close();
+            }
+        }
+	}
+	
+	
+	
 	public static void main(String[] args) throws IOException, URISyntaxException 
 	{
 			test tst=new test();
+			
+			System.out.println("delete this ");
 			
 			System.out.println("*************************user story*******************************");
 			test.userstoryreq();
@@ -46,10 +195,10 @@ public class test {
 			System.out.println("*************************Release*******************************");
 			//test.releasereq();
 			System.out.println("*************************test *******************************");
-			//test.testreq();			
+			//test.testreq();				
 	}    
 	
-	public static void userstoryreq() throws IOException, URISyntaxException
+	public static void delete_fun() throws IOException, URISyntaxException
 	{
 		String iterationName	= "Sprint 219";
 		String releaseName      = "PI10 2017.04";

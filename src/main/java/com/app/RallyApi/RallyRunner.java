@@ -29,7 +29,13 @@ public class RallyRunner
 		System.out.println("started\n");		
 		
 		
-		/*
+		
+	
+		int delete1=0;
+		Other_Functions delete2 =new Other_Functions();
+				
+		
+		delete2.getClass();
 		other_fun_obj.copy_output_folder();          //copy the output folder to system
 				
 		other_fun_obj.copy_template_folder();	     //copy template folder to output folder	
@@ -47,7 +53,7 @@ public class RallyRunner
 		
 		other_fun_obj.copy_output_folder();          //copy the output folder to system 
 		
-						*/
+						
 		
 		team_list=other_fun_obj.get_team_List();           //get the team list
 		
