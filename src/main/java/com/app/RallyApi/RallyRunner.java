@@ -28,6 +28,8 @@ public class RallyRunner
 	{
 				
 		System.out.println(" \n Started");
+		
+		
 		other_fun_obj.copy_output_folder();          //copy the output folder to system
 				
 		other_fun_obj.copy_template_folder();	     //copy template folder to output folder	
