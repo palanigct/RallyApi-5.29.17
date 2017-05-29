@@ -26,16 +26,8 @@ public class RallyRunner
 	
 	public static void main(String arg[]) throws Throwable
 	{
-		System.out.println("started\n");		
-		
-		
-		
-	
-		int delete1=0;
-		Other_Functions delete2 =new Other_Functions();
 				
-		
-		delete2.getClass();
+		System.out.println(" \n Started");
 		other_fun_obj.copy_output_folder();          //copy the output folder to system
 				
 		other_fun_obj.copy_template_folder();	     //copy template folder to output folder	
