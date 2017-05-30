@@ -7,6 +7,8 @@ public class TeamStatus
 	TestCases testcases=new TestCases();
 
 	UserStories_CR userstories_cr=new UserStories_CR();
+	Defects_CR defects_cr=new Defects_CR();
+	TestCases_CR testcases_cr=new TestCases_CR();
 	
 	public void setAll(UserStories userstories,Defects defects,TestCases testcases)
 	{
@@ -37,6 +39,24 @@ public class TeamStatus
 
 	public void setUserstories_cr(UserStories_CR userstories_cr) {
 		this.userstories_cr = userstories_cr;
+	}
+
+	
+	
+	public Defects_CR getDefects_cr() {
+		return defects_cr;
+	}
+
+	public void setDefects_cr(Defects_CR defects_cr) {
+		this.defects_cr = defects_cr;
+	}
+
+	public TestCases_CR getTestcases_cr() {
+		return testcases_cr;
+	}
+
+	public void setTestcases_cr(TestCases_CR testcases_cr) {
+		this.testcases_cr = testcases_cr;
 	}
 
 	public UserStories getUserStories()

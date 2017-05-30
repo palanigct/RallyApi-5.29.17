@@ -12,8 +12,10 @@ import org.apache.commons.lang.StringUtils;
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
 import com.app.pojos.Defects;
+import com.app.pojos.Defects_CR;
 import com.app.pojos.TeamStatus;
 import com.app.pojos.TestCases;
+import com.app.pojos.TestCases_CR;
 import com.app.pojos.UserStories;
 import com.app.pojos.UserStories_CR;
 import com.google.gson.JsonElement;
@@ -500,12 +502,13 @@ public class Common_Functions
 	{
 		TeamStatus team_status=new TeamStatus();
 		
-		int total_count=0;		
+		
 		int backlogs=0;
 		int defined=0;
 		int in_progress=0;
 		int completed=0;
 		int accepted=0;
+		int total_count=0;		
 		
 		int[] backlogs_cr = new int [10];
 		int[] defined_cr  = new int [10];
@@ -521,15 +524,6 @@ public class Common_Functions
 		int completed_testable=0;
 		int accepted_testable=0;
 		
-		int total_tc=0;
-		int pass_tc=0;
-		int fail_tc=0;
-		int in_progress_tc=0;
-		int blocked_tc=0;
-		int no_run_tc=0;
-		int method_count_tc=0;
-		int automated_count_tc=0;
-		
 		int submitted=0;
 		int open=0;
 		int fixed=0;
@@ -542,6 +536,30 @@ public class Common_Functions
 		int average=0;
 		int minor=0;
 		int total_state=0;
+		
+		int[] submitted_cr= new int [10];
+		int[] open_cr= new int [10];
+		int[] fixed_cr=new int [10];
+		int[] closed_cr=new int [10];
+		int[] reopen_cr=new int [10];
+		int[] ready_for_test_cr=new int [10];
+		int[] total_severity_cr=new int [10];
+		int[] critical_cr=new int [10];
+		int[] major_cr=new int [10];
+		int[] average_cr=new int [10];
+		int[] minor_cr=new int [10];
+		int[] total_state_cr=new int [10];
+		
+		int total_tc=0;
+		int pass_tc=0;
+		int fail_tc=0;
+		int in_progress_tc=0;
+		int blocked_tc=0;
+		int no_run_tc=0;
+		int method_count_tc=0;
+		int automated_count_tc=0;
+		
+		
 		
 		
 		int testable_field_count=0;		
@@ -668,8 +686,8 @@ public class Common_Functions
                  story.setCRNumber(CRNumber);
                  write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);           
                  
-                 TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
-                 //TestCases TC=new TestCases();
+                 //TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
+                 TestCases TC=new TestCases();
                  
                  pass_tc  		+= TC.getPass();
                  fail_tc  		+= TC.getFail();
@@ -708,7 +726,7 @@ public class Common_Functions
                      if(state_temp.contains("Defined")) 	defined_testable++;
                      if(state_temp.contains("In-Progress")) in_progress_testable++;
                      if(state_temp.contains("Completed")) 	completed_testable++;
-                     if(state_temp.contains("Accepted")) 	accepted_testable++;  
+                     if(state_temp.contains("Accepted")) 	accepted_testable++;                       
                      
                      total_count_testable++;
                  }
@@ -722,7 +740,19 @@ public class Common_Functions
                             if(state_temp.contains("Defined")) 	defined_cr[i]++;
                             if(state_temp.contains("In-Progress")) in_progress_cr[i]++;
                             if(state_temp.contains("Completed")) 	completed_cr[i]++;
-                            if(state_temp.contains("Accepted")) 	accepted_cr[i]++;  
+                            if(state_temp.contains("Accepted")) 	accepted_cr[i]++; 
+                            
+                            if(StringUtils.containsIgnoreCase(defectState, "Submitted"))      { submitted_cr[i]++;      total_state_cr[i]++; }
+                            if(StringUtils.containsIgnoreCase(defectState, "Open")) 	      { open_cr[i]++;           total_state_cr[i]++;    }
+                            if(StringUtils.containsIgnoreCase(defectState, "Fixed"))          { fixed_cr[i]++;          total_state_cr[i]++; }
+                            if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) { ready_for_test_cr[i]++; total_state_cr[i]++; }
+                            if(StringUtils.containsIgnoreCase(defectState, "Reopen"))         { reopen_cr[i]++;         total_state_cr[i]++; }
+                            if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	      { closed_cr[i]++;         total_state_cr[i]++;}
+                           	 
+                            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 { average_cr[i]++;  total_severity_cr[i]++; }
+                            if(StringUtils.containsIgnoreCase(severity, "Critical"))     { critical_cr[i]++; total_severity_cr[i]++; }
+                            if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_cr[i]++;    total_severity_cr[i]++; }
+                            if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_cr[i]++;    total_severity_cr[i]++; }
                             
                             total_cr[i]++;
                 	 	}
@@ -737,6 +767,8 @@ public class Common_Functions
     	 Defects defect_details=new Defects();
     	 TestCases testcase_details=new TestCases();
     	 UserStories_CR userstory_details_cr=new UserStories_CR();
+    	 Defects_CR defect_details_cr= new Defects_CR();
+    	 TestCases_CR testcase_details_cr= new TestCases_CR();
     	
     	 userstory_details.setAllTestable(backlogs_testable, defined_testable, in_progress_testable, completed_testable, accepted_testable, total_count_testable);
     	 userstory_details.setAll(backlogs, defined, in_progress, completed, accepted, total_count);
@@ -749,7 +781,11 @@ public class Common_Functions
     	 
     	 userstory_details.setTestableFieldCount(testable_field_count);
     	 userstory_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
-     		 
+    	 defect_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
+    	 defect_details_cr.setAllSeverity(critical_cr, major_cr, average_cr, minor_cr, total_severity_cr);
+    	 defect_details_cr.setAllState(submitted_cr, open_cr, fixed_cr, closed_cr, reopen_cr, ready_for_test_cr, total_state_cr);
+    	 
+    	 team_status.setDefects_cr(defect_details_cr);
     	 team_status.setUserstories_cr(userstory_details_cr);
     	 team_status.setAll(userstory_details, defect_details, testcase_details);
     	 return team_status; 
@@ -757,7 +793,7 @@ public class Common_Functions
 	
 	}
 
-	public static UserStories_CR caculateCR(UserStories_CR userstory_details_cr,UserStories_CR userstory_details_cr_total,ArrayList<String> CR_list)
+	public static UserStories_CR caculateCR_US(UserStories_CR userstory_details_cr,UserStories_CR userstory_details_cr_total,ArrayList<String> CR_list)
 	{
 		int[] backlogs_cr = userstory_details_cr.getBacklogs();
 		int[] defined_cr  = userstory_details_cr.getDefined();
@@ -788,8 +824,87 @@ public class Common_Functions
 		}
 		
 		userstory_details_cr_total.setAll(backlogs_total, defined_total, in_progress_total, completed_total, accepted_total, total_total);
-		userstory_details_cr_total.displayAll();
+		//userstory_details_cr_total.displayAll();
 		return userstory_details_cr_total;
+	}
+	
+	public static Defects_CR caculateCR_DE(Defects_CR defect_details_cr,Defects_CR defect_details_cr_total,ArrayList<String> CR_list)
+	{
+		int[] backlogs_cr = defect_details_cr.getBacklogs();
+		int[] defined_cr  = defect_details_cr.getDefined();
+		int[] in_progress_cr = defect_details_cr.getIn_progress();
+		int[] completed_cr = defect_details_cr.getCompleted();
+		int[] accepted_cr = defect_details_cr.getAccepted();
+		int[] total_cr = defect_details_cr.getTotal();
+		
+		int[] submitted_cr= defect_details_cr.getSubmitted();
+		int[] open_cr= defect_details_cr.getOpen();
+		int[] fixed_cr=defect_details_cr.getFixed();
+		int[] closed_cr=defect_details_cr.getClosed();
+		int[] reopen_cr=defect_details_cr.getReopen();
+		int[] ready_for_test_cr=defect_details_cr.getReady_for_test();
+		int[] total_severity_cr=defect_details_cr.getTotal_severity();
+		int[] critical_cr=defect_details_cr.getCritical();
+		int[] major_cr=defect_details_cr.getMajor();
+		int[] average_cr=defect_details_cr.getAverage();
+		int[] minor_cr=defect_details_cr.getMinor();
+		int[] total_state_cr=defect_details_cr.getTotal_state();
+		
+		
+		
+		int[] backlogs_total = defect_details_cr_total.getBacklogs();
+		int[] defined_total  =defect_details_cr_total.getDefined();
+		int[] in_progress_total = defect_details_cr_total.getIn_progress();
+		int[] completed_total = defect_details_cr_total.getCompleted();
+		int[] accepted_total = defect_details_cr_total.getAccepted();
+		int[] total_total = defect_details_cr_total.getTotal();
+		
+		int[] submitted_total= defect_details_cr_total.getSubmitted();
+		int[] open_total= defect_details_cr_total.getOpen();
+		int[] fixed_total=defect_details_cr_total.getFixed();
+		int[] closed_total=defect_details_cr_total.getClosed();
+		int[] reopen_total=defect_details_cr_total.getReopen();
+		int[] ready_for_test_total=defect_details_cr_total.getReady_for_test();
+		int[] total_severity_total=defect_details_cr_total.getTotal_severity();
+		int[] critical_total=defect_details_cr_total.getCritical();
+		int[] major_total=defect_details_cr_total.getMajor();
+		int[] average_total=defect_details_cr_total.getAverage();
+		int[] minor_total=defect_details_cr_total.getMinor();
+		int[] total_state_total=defect_details_cr_total.getTotal_state();
+		
+		
+		for(int i=0;i<CR_list.size();i++)
+		{   
+			backlogs_total[i]    += backlogs_cr[i];
+			defined_total[i]     += defined_cr[i];
+			in_progress_total[i] += in_progress_cr[i];
+			completed_total[i]   += completed_cr[i];
+			accepted_total[i]    += accepted_cr[i];
+			total_total[i]       += total_cr[i];
+			
+			submitted_total[i]  += submitted_cr[i];
+			open_total[i]       += open_cr[i];
+			fixed_total[i]      += fixed_cr[i];
+			closed_total[i]     += closed_cr[i];
+			reopen_total[i]     += reopen_cr[i];
+			ready_for_test_total[i]+=ready_for_test_cr[i];
+			total_severity_total[i]+=total_severity_cr[i];
+			
+			critical_total[i]   += critical_cr[i];
+			major_total[i]      += major_cr[i];
+			average_total[i]    += average_cr[i];
+			minor_total[i]      += minor_cr[i];
+			total_state_total[i]+= total_state_cr[i];
+			
+			
+		}
+		
+		defect_details_cr_total.setAll(backlogs_total, defined_total, in_progress_total, completed_total, accepted_total, total_total);
+		defect_details_cr_total.setAllSeverity(critical_total, major_total, average_total, minor_total, total_severity_total);
+		defect_details_cr_total.setAllState(submitted_total, open_total, fixed_total, closed_total, reopen_total, ready_for_test_total, total_state_total);
+		
+		//userstory_details_cr_total.displayAll();
+		return defect_details_cr_total;
 	}
 	
 	

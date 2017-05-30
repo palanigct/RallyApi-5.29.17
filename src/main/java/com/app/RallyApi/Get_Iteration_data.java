@@ -12,8 +12,10 @@ import org.apache.commons.lang.StringUtils;
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
 import com.app.pojos.Defects;
+import com.app.pojos.Defects_CR;
 import com.app.pojos.TeamStatus;
 import com.app.pojos.TestCases;
+import com.app.pojos.TestCases_CR;
 import com.app.pojos.UserStories;
 import com.app.pojos.UserStories_CR;
 import com.google.gson.JsonObject;
@@ -133,6 +135,10 @@ public class Get_Iteration_data
         String applicationName    = "Find Userstories and Defects by Iterations and Team";  		
 		String sprint_name	 	  = "Sprint "+sprint_number;
 
+		TeamStatus team_status=new TeamStatus();
+        UserStories_CR userstory_CR_details = new UserStories_CR();
+        Defects_CR defect_CR_details = new Defects_CR();
+        TestCases_CR testcase_CR_details=new TestCases_CR();
 		
 		System.out.println("\n Sprint Number : "+sprint_number);
 		write.write_sprint_number(sprint_name);
@@ -142,21 +148,24 @@ public class Get_Iteration_data
 			restApi = new RallyRestApi(new URI(host),username,password);
 	        restApi.setApplicationName(applicationName); 
 	        common_fun_obj.setRestApi(restApi);
-	        TeamStatus team_status=new TeamStatus();
-	        UserStories_CR userstory_CR_details = new UserStories_CR();
 	        
 			for(int i=0;i<team_list.size();i++)
 			{
 				System.out.println("======================="+team_list.get(i)+"========================");
 				String team_name=team_list.get(i);
 				team_status=ite_obj.get_Iteration_Status_details_for_team_and_sprint_CR(team_name, sprint_name,CR_list);
-		        UserStories_CR temp=team_status.getUserstories_cr();
-		        userstory_CR_details=common_fun_obj.caculateCR(temp, userstory_CR_details, CR_list);
-				
+		       
+		        userstory_CR_details=common_fun_obj.caculateCR_US(team_status.getUserstories_cr(), userstory_CR_details, CR_list);
+		        defect_CR_details = common_fun_obj.caculateCR_DE(team_status.getDefects_cr(), defect_CR_details, CR_list);
 				System.out.println(team_name+"  success");	
 			}
-			userstory_CR_details.displayAll();
+			team_status.setUserstories_cr(userstory_CR_details);
+			team_status.setDefects_cr(defect_CR_details);
 			
+			//userstory_CR_details.displayAll();
+			//defect_CR_details.displayAll();
+			//defect_CR_details.displayAllSeverity();
+			//defect_CR_details.displayAllState();
 	    }
 		finally 
 		{
@@ -167,6 +176,13 @@ public class Get_Iteration_data
 		testcase=common_fun_obj.calculate_percent_testcase(testcase);
 		teams_status_total.setTestCases(testcase);
 		
+		//team_status.getUserstories_cr().displayAll();
+		//team_status.getDefects_cr().displayAll();
+		team_status.getDefects_cr().displayAllSeverity();
+		team_status.getDefects_cr().displayAllState();		
+		
+		write.write_CRwise_userstories_and_defect(team_status, CR_list, "iteration");
+		write.write_CRwise_defect_details(team_status, CR_list, "iteration");
 		write.write_Iteration_Status(teams_status_total,"Sprint Total");	
 		common_fun_obj.draw_pie_chart(sprint_name,teams_status_total);
 	}
@@ -178,7 +194,8 @@ public class Get_Iteration_data
 		Defects defect= new Defects();
 		TestCases testcase=new TestCases();
 		UserStories_CR userstory_details_cr=new UserStories_CR();
-		 
+		Defects_CR defect_details_cr=new Defects_CR();
+		
 		// get userstory values
 		
 		type_story_or_defect="userstory";	    
@@ -186,20 +203,24 @@ public class Get_Iteration_data
 	    userstory_details_cr=temp.getUserstories_cr();
 	    userstory=temp.getUserStories();	    
 	    TestCases testcase1=temp.getTestCases(); 
-	   
-	    
-	    //userstory_details_cr.displayAll(); //display cr details
-	    
+	    write.write_testable_userstory_field_count(userstory, team_name, "iteration", type_story_or_defect);
+	    write.write_testable_userstories(userstory, team_name, "Iteration", type_story_or_defect);
+		
+	    	    	    
 	    // get defect values
 		
 	    type_story_or_defect="defects";		
 	    temp=common_fun_obj.callRestApi_CR(team_name, sprint_name, type_story_or_defect, "iteration", CR_list);
 		defect=temp.getDefects();		
+		defect_details_cr=temp.getDefects_cr();
 		TestCases testcase2=temp.getTestCases();	
 		testcase=common_fun_obj.addTwoTestCases(testcase1, testcase2);		
 		testcase=common_fun_obj.calculate_percent_testcase(testcase);	
-		//write.write_Defect_Details_with_state_and_severity(defect, team_name, "Iteration",type_story_or_defect);
-		//write.write_testcase_details(testcase, team_name,  "Iteration");
+		write.write_Defect_Details_with_state_and_severity(defect, team_name, "Iteration",type_story_or_defect);
+		write.write_testcase_details(testcase, team_name,  "Iteration");
+		
+		//defect_details_cr.displayAllSeverity();
+		//defect_details_cr.displayAllState();
 		
 		TeamStatus team_status=new TeamStatus();		
 		
@@ -207,9 +228,10 @@ public class Get_Iteration_data
 		team_status.setDefects(defect);			
 		team_status.setTestCases(testcase);  
 		team_status.setUserstories_cr(userstory_details_cr);
+		team_status.setDefects_cr(defect_details_cr);
 		//write to excel	
-		//write.write_automated_testcase_count(testcase, team_name, "iteration");
-		//write.write_Iteration_Status(team_status,team_name);		
+		write.write_automated_testcase_count(testcase, team_name, "iteration");
+		write.write_Iteration_Status(team_status,team_name);		
 		common_fun_obj.add_total(team_status,teams_status_total);		
 		return team_status;		
 	}

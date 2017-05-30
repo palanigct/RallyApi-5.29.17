@@ -35,7 +35,7 @@ public class RallyRunner
 		other_fun_obj.copy_template_folder();	     //copy template folder to output folder	
 		
 		
-		
+		/*
 		team_list=other_fun_obj.get_team_List();     //get the team list
 		
 		ite_obj.Exe_Iteration(team_list);            //execute iteration function for get the iterations data's 
@@ -43,10 +43,8 @@ public class RallyRunner
 		//rele_obj.Exe_Release(team_list);		     //execute releases function for get the releases data's 		
 		
 		drawchart.draw_chart_in_excel();             //draw the chart in inside the excel sheet 
-			
 		
-		other_fun_obj.copy_output_folder();          //copy the output folder to system 
-		
+		*/	
 						
 		
 		team_list=other_fun_obj.get_team_List();           //get the team list
@@ -55,7 +53,7 @@ public class RallyRunner
 		
 		ite_obj.Exe_Iteration_CR(team_list, CR_list);  	   //execute iteration function for get the iterations data's with CR wise details
 		
-		System.out.println(CR_list);		
+		other_fun_obj.copy_output_folder();                //copy the output folder to system 
 				
 		System.out.println("\ncompleted");		
 	}	
@@ -74,7 +72,7 @@ public class RallyRunner
    Automatable TestCases          -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint
    TestCase Details               -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint  
    Defect Details Based on Reopen -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint
-   CRWise UserStories             -  
+   CRWise UserStories             -  Get_Iteration_data    -  Exe_Iteration_CR
    CRWise Defect Details          -  
    CRWise TestCase Details        -  
    UserStories                    -  Common_Functions     -  callRestApi
