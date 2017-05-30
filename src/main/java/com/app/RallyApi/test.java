@@ -45,7 +45,7 @@ public class test {
         String password 		= "Lalith@93";        
         String applicationName  = "Find Defects by Iterations and Team";
        
-       
+        System.out.println(" test delete ");
         
         RallyRestApi restApi = null;
         try {
