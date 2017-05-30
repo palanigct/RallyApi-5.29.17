@@ -550,14 +550,27 @@ public class Common_Functions
 		int[] minor_cr=new int [10];
 		int[] total_state_cr=new int [10];
 		
-		int total_tc=0;
+		
 		int pass_tc=0;
 		int fail_tc=0;
 		int in_progress_tc=0;
 		int blocked_tc=0;
 		int no_run_tc=0;
+		int total_tc=0;
 		int method_count_tc=0;
 		int automated_count_tc=0;
+		int exe_tc=0;
+		
+		int[] pass_tc_cr		= new int[10];
+		int[] fail_tc_cr  		=new int[10];
+		int[] in_progress_tc_cr = new int[10];
+		int[] blocked_tc_cr		= new int[10];
+		int[] no_run_tc_cr		= new int[10];
+		int[] total_tc_cr	    = new int[10];		
+		int[] extra_cr		= new int[10];
+		int[] automated_count_tc_cr =new int[10];
+		int[] method_count_tc_cr =new int[10];
+		int[] exe_tc_cr=new int[10];
 		
 		
 		
@@ -686,8 +699,8 @@ public class Common_Functions
                  story.setCRNumber(CRNumber);
                  write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);           
                  
-                 //TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
-                 TestCases TC=new TestCases();
+                 TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
+                 //TestCases TC=new TestCases();
                  
                  pass_tc  		+= TC.getPass();
                  fail_tc  		+= TC.getFail();
@@ -754,6 +767,17 @@ public class Common_Functions
                             if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_cr[i]++;    total_severity_cr[i]++; }
                             if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_cr[i]++;    total_severity_cr[i]++; }
                             
+                            pass_tc_cr[i]		 += TC.getPass();
+                    		fail_tc_cr[i]  		 += TC.getFail();
+                    		in_progress_tc_cr[i] += TC.getIn_progress();
+                    		blocked_tc_cr[i]	 += TC.getBlocked();
+                    	    no_run_tc_cr[i]		 += TC.getNo_run();
+                    		total_tc_cr[i]	     += TC.getTotal();		
+                    		exe_tc_cr[i]         += TC.getExecuted();
+                    		automated_count_tc_cr[i]  += TC.getAutomated_count();
+                    		method_count_tc_cr[i]     += TC.getMethod_count();
+                    		
+                            
                             total_cr[i]++;
                 	 	}
                  }
@@ -769,6 +793,7 @@ public class Common_Functions
     	 UserStories_CR userstory_details_cr=new UserStories_CR();
     	 Defects_CR defect_details_cr= new Defects_CR();
     	 TestCases_CR testcase_details_cr= new TestCases_CR();
+    	 
     	
     	 userstory_details.setAllTestable(backlogs_testable, defined_testable, in_progress_testable, completed_testable, accepted_testable, total_count_testable);
     	 userstory_details.setAll(backlogs, defined, in_progress, completed, accepted, total_count);
@@ -784,15 +809,185 @@ public class Common_Functions
     	 defect_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
     	 defect_details_cr.setAllSeverity(critical_cr, major_cr, average_cr, minor_cr, total_severity_cr);
     	 defect_details_cr.setAllState(submitted_cr, open_cr, fixed_cr, closed_cr, reopen_cr, ready_for_test_cr, total_state_cr);
+    	 testcase_details_cr.setAll(pass_tc_cr, fail_tc_cr, in_progress_tc_cr, blocked_tc_cr, no_run_tc_cr, exe_tc_cr, total_tc_cr);
+    	 testcase_details_cr.setAutomated_count(automated_count_tc_cr);
+    	 testcase_details_cr.setMethod_count(method_count_tc_cr);
     	 
     	 team_status.setDefects_cr(defect_details_cr);
     	 team_status.setUserstories_cr(userstory_details_cr);
+    	 team_status.setTestcases_cr(testcase_details_cr);
     	 team_status.setAll(userstory_details, defect_details, testcase_details);
     	 return team_status; 
 		 
 	
 	}
+	
+	
+	public static TestCases getTestcase_details_CR(String workProduct_name,String type_sprint_or_release) throws IOException
+	{
+		int pass		= 0;
+		int fail  		= 0;
+		int in_progress = 0;
+		int blocked		= 0;
+		int no_run		= 0;
+		int total	    = 0;		
+		int extra		= 0;
+		int automated_count =0;
+		int method_count =0;
+		
+		int[] pass_cr		= new int[10];
+		int[] fail_cr  		=new int[10];
+		int[] in_progress_cr = new int[10];
+		int[] blocked_cr		= new int[10];
+		int[] no_run_cr		= new int[10];
+		int[] total_cr	    = new int[10];		
+		int[] extra_cr		= new int[10];
+		int[] automated_count_cr =new int[10];
+		int[] method_count_cr =new int[10];
+		
+		
+		String status      = "Null";
+		String formattedId = "Null";		
+		String team_Name   = "Null";
+		String method      = "Null";
+		String automated   = "Null";
+		
+		
+		QueryRequest testcaseRequest = new QueryRequest("TestCases"); 
+        testcaseRequest.setQueryFilter(new QueryFilter("WorkProduct.Name", "=",workProduct_name  ));  //new QueryFilter("Iteration.Name", "=", iterationName).and
+        QueryResponse testcaseResponse = restApi.query(testcaseRequest);
+        total=testcaseResponse.getResults().size();
+        
+        for (int i=0; i<testcaseResponse.getResults().size();i++)
+        {
+            JsonObject testcaseJsonObject = testcaseResponse.getResults().get(i).getAsJsonObject();
+            formattedId = testcaseJsonObject.get("FormattedID").getAsString();
+            
+            if(!(testcaseJsonObject.get("LastVerdict").toString().equals("null"))) 	
+            {
+            	 status  = testcaseJsonObject.get("LastVerdict").getAsString();
+            }            
+                      
+            if(!(testcaseJsonObject.get("Project").toString().equals("null"))) 	
+            {
+            	JsonObject projectJson = (JsonObject) testcaseJsonObject.get("Project");                	
+           	    team_Name = projectJson.get("_refObjectName").getAsString();
+            }            
+           
+            if(!(testcaseJsonObject.get("Method").toString().equals("null"))) 	
+            {
+            	method = testcaseJsonObject.get("Method").getAsString();
+            	method_count++;
+            }  
+            
+            try
+            {
+            	 if(!(testcaseJsonObject.get("c_CanbeAutomated").toString().equals("null"))) 	
+                 {
+            		 automated = testcaseJsonObject.get("c_CanbeAutomated").getAsString();
+            		 if(StringUtils.containsIgnoreCase(automated, "yes"))
+            			 automated_count++;
+                 }
+            }
+            catch(Exception e)
+            {
+            	automated="CanbeAutomated Field Not Exist";
+            }
+            
+            
+            TestCases TC = new TestCases();
+            TC.setFormattedId(formattedId);
+            TC.setStatus(status);
+            TC.setWorkProduct_name(workProduct_name);
+            TC.setTeam_name(team_Name);
+            TC.setMethod(method);
+            TC.setAutomated(automated);
+            
+            //System.out.println("     TC : "+formattedId+" : "+status);
+            write.write_testcase(TC, type_sprint_or_release);
+            
+            if(StringUtils.containsIgnoreCase(status, "Pass")) 	{	  pass++; }
+            else if(StringUtils.containsIgnoreCase(status, "Fail")) 	{	  fail++; }	
+            else if(StringUtils.containsIgnoreCase(status, "In Progress")){ in_progress++; }
+            else  if(StringUtils.containsIgnoreCase(status, "Blocked")) {		  blocked++;  }
+            else if(StringUtils.containsIgnoreCase(status, "No Run"))  {	  no_run++;     }            
+            else if(StringUtils.containsIgnoreCase(status, "Null")) { extra++; }
+            else { extra++; }
+            
+         }
+        
+        TestCases testcases = new TestCases();
+        testcases.setAll(pass, fail, in_progress, blocked, no_run, total, 0 , 0 , 0); 
+        testcases.setAutomated_count(automated_count);
+        testcases.setMethod_count(method_count);
+        
+        return testcases;
+	}
+	
 
+	public static TestCases_CR addTwoTestCases_CR(TestCases_CR testcase1,TestCases_CR testcase2)
+	{
+		    TestCases_CR temp =new TestCases_CR();	
+		
+		    int[] pass_1 = testcase1.getPass();
+		    int[] fail_1  = testcase1.getFail();
+		    int[] in_progress_1  =testcase1.getIn_progress();
+		    int[] blocked_1  = testcase1.getBlocked();
+		    int[] no_run_1  = testcase1.getNo_run();
+		    int[] total_1  = testcase1.getTotal();		  
+		    int[] method_count_1  =testcase1.getMethod_count();
+		    int[] automated_count_1  = testcase1.getAutomated_count();
+		    int[] executed_1  = testcase1.getExecuted();
+		    
+		    int[] pass_2 = testcase2.getPass();
+		    int[] fail_2  = testcase2.getFail();
+		    int[] in_progress_2  =testcase2.getIn_progress();
+		    int[] blocked_2  = testcase2.getBlocked();
+		    int[] no_run_2  = testcase2.getNo_run();
+		    int[] total_2  = testcase2.getTotal();		  
+		    int[] method_count_2  =testcase2.getMethod_count();
+		    int[] automated_count_2  = testcase2.getAutomated_count();
+		    int[] executed_2  = testcase2.getExecuted();
+		    
+		    int[] pass = new int[10];
+		    int[] fail  = new int[10];
+		    int[] in_progress  = new int[10];
+		    int[] blocked  = new int[10];
+		    int[] no_run  = new int[10];
+		    int[] executed  = new int[10];
+		    int[] total  = new int[10];		    
+		    int[] method_count  = new int[10];
+		    int[] automated_count  = new int[10];
+		   
+		
+		for(int i=0;i<pass_1.length;i++)
+		{
+			pass[i]			= pass_1[i]+pass_2[i];
+			fail[i]			= fail_1[i]+fail_2[i];
+			in_progress[i]	= in_progress_1[i]+in_progress_2[i];
+			blocked[i]		= blocked_1[i]+blocked_2[i];
+			no_run[i]		= no_run_1[i]+no_run_2[i];
+			executed[i]		= executed_1[i]+	executed_2[i];
+			total[i]		= total_1[i]+	total_2[i];
+			method_count[i] = method_count_1[i]+method_count_2[i];
+			automated_count[i]=automated_count_1[i]+automated_count_2[i];			
+		}
+		
+		
+		temp.setPass(pass);
+		temp.setFail(fail);
+		temp.setIn_progress(in_progress);
+		temp.setBlocked(blocked);
+		temp.setNo_run(no_run);
+		temp.setExecuted(executed);
+		temp.setTotal(total);	
+		temp.setAutomated_count(automated_count);
+		temp.setMethod_count(method_count);
+		
+		return temp;
+	}
+	
+	 
 	public static UserStories_CR caculateCR_US(UserStories_CR userstory_details_cr,UserStories_CR userstory_details_cr_total,ArrayList<String> CR_list)
 	{
 		int[] backlogs_cr = userstory_details_cr.getBacklogs();
@@ -894,9 +1089,7 @@ public class Common_Functions
 			major_total[i]      += major_cr[i];
 			average_total[i]    += average_cr[i];
 			minor_total[i]      += minor_cr[i];
-			total_state_total[i]+= total_state_cr[i];
-			
-			
+			total_state_total[i]+= total_state_cr[i];			
 		}
 		
 		defect_details_cr_total.setAll(backlogs_total, defined_total, in_progress_total, completed_total, accepted_total, total_total);
@@ -907,7 +1100,68 @@ public class Common_Functions
 		return defect_details_cr_total;
 	}
 	
-	
+	public static TestCases_CR caculateCR_TC(TestCases_CR testcase_details_cr,TestCases_CR testcase_details_cr_total,ArrayList<String> CR_list)
+	{
+		   TestCases_CR temp =new TestCases_CR();	
+			
+		    int[] pass_1 = testcase_details_cr.getPass();
+		    int[] fail_1  = testcase_details_cr.getFail();
+		    int[] in_progress_1  =testcase_details_cr.getIn_progress();
+		    int[] blocked_1  = testcase_details_cr.getBlocked();
+		    int[] no_run_1  = testcase_details_cr.getNo_run();
+		    int[] total_1  = testcase_details_cr.getTotal();		  
+		    int[] method_count_1  =testcase_details_cr.getMethod_count();
+		    int[] automated_count_1  = testcase_details_cr.getAutomated_count();
+		    int[] executed_1  = testcase_details_cr.getExecuted();
+		    
+		    int[] pass_2 = testcase_details_cr_total.getPass();
+		    int[] fail_2  = testcase_details_cr_total.getFail();
+		    int[] in_progress_2  =testcase_details_cr_total.getIn_progress();
+		    int[] blocked_2  = testcase_details_cr_total.getBlocked();
+		    int[] no_run_2  = testcase_details_cr_total.getNo_run();
+		    int[] total_2  = testcase_details_cr_total.getTotal();		  
+		    int[] method_count_2  =testcase_details_cr_total.getMethod_count();
+		    int[] automated_count_2  = testcase_details_cr_total.getAutomated_count();
+		    int[] executed_2  = testcase_details_cr_total.getExecuted();
+		    
+		    int[] pass = new int[10];
+		    int[] fail  = new int[10];
+		    int[] in_progress  = new int[10];
+		    int[] blocked  = new int[10];
+		    int[] no_run  = new int[10];
+		    int[] executed  = new int[10];
+		    int[] total  = new int[10];		    
+		    int[] method_count  = new int[10];
+		    int[] automated_count  = new int[10];
+		   
+		
+		for(int i=0;i<pass_1.length;i++)
+		{
+			pass[i]			= pass_1[i]+pass_2[i];
+			fail[i]			= fail_1[i]+fail_2[i];
+			in_progress[i]	= in_progress_1[i]+in_progress_2[i];
+			blocked[i]		= blocked_1[i]+blocked_2[i];
+			no_run[i]		= no_run_1[i]+no_run_2[i];
+			executed[i]		= executed_1[i]+	executed_2[i];
+			total[i]		= total_1[i]+	total_2[i];
+			method_count[i] = method_count_1[i]+method_count_2[i];
+			automated_count[i]=automated_count_1[i]+automated_count_2[i];			
+		}
+		
+		
+		temp.setPass(pass);
+		temp.setFail(fail);
+		temp.setIn_progress(in_progress);
+		temp.setBlocked(blocked);
+		temp.setNo_run(no_run);
+		temp.setExecuted(executed);
+		temp.setTotal(total);	
+		temp.setAutomated_count(automated_count);
+		temp.setMethod_count(method_count);
+		
+		return temp;
+	}
+
 }
 
 

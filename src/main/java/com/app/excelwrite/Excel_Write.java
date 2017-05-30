@@ -27,6 +27,7 @@ import com.app.pojos.Defects;
 import com.app.pojos.Defects_CR;
 import com.app.pojos.TeamStatus;
 import com.app.pojos.TestCases;
+import com.app.pojos.TestCases_CR;
 import com.app.pojos.UserStories;
 import com.app.pojos.UserStories_CR;
 
@@ -800,7 +801,7 @@ public class Excel_Write
         outFile.close();	
 	}
 	
-	public static void write_CRwise_testCase_details(TestCases testcase,String teamName,String type_iteration_or_release) throws IOException
+	public static void write_CRwise_testCase_details(TeamStatus team_status,ArrayList<String> CR_list,String type_iteration_or_release) throws IOException
 	{
 		String 	filename="";
 		int currentRow=0;
@@ -828,30 +829,46 @@ public class Excel_Write
         HSSFCellStyle style3=sheet.getRow(2).getCell(13).getCellStyle();        
         
 		
+        TestCases_CR testcase_details_cr=team_status.getTestcases_cr();
+        
+        int[] pass = testcase_details_cr.getPass();
+	    int[] fail  = testcase_details_cr.getFail();
+	    int[] in_progress =testcase_details_cr.getIn_progress();
+	    int[] blocked  = testcase_details_cr.getBlocked();
+	    int[] no_run = testcase_details_cr.getNo_run();
+	    int[] total= testcase_details_cr.getTotal();		  
+	    int[] method_count  =testcase_details_cr.getMethod_count();
+	    int[] automated_count  = testcase_details_cr.getAutomated_count();
+	    int[] executed  = testcase_details_cr.getExecuted();
+	    
+        
         //int currentRow=sheet.getLastRowNum()+1;       
         //row=sheet.createRow(currentRow);currentRow_ite
-        row=sheet.createRow(currentRow);
+        //row=sheet.createRow(currentRow);
         
-        for(int i=0;i<25;i++)
+        for(int i=0;i<CR_list.size();i++)        	
         {
-        	cell=row.createCell(i);
-        	switch(i)
-        	{
-        		case 0: cell.setCellValue(teamName);                        cell.setCellStyle(style1); break;
-        		case 1: cell.setCellValue(testcase.getExecuted());    cell.setCellStyle(style2); break;
-        		case 2: cell.setCellValue(testcase.getPass());     cell.setCellStyle(style2);break;
-        		case 3: cell.setCellValue(testcase.getFail()); cell.setCellStyle(style2); break;
-        		case 4: cell.setCellValue(testcase.getIn_progress());   cell.setCellStyle(style2);break;
-        		case 5: cell.setCellValue(testcase.getBlocked());    cell.setCellStyle(style2);break;
-        		case 6: cell.setCellValue(testcase.getNo_run());       cell.setCellStyle(style2);break;
-        		case 7: cell.setCellValue(testcase.getTotal());       cell.setCellStyle(style3);break;
-        		case 8: cell.setCellValue(testcase.getPercentage_execute());       cell.setCellStyle(style2);break;
-        		case 9: cell.setCellValue(testcase.getPercentage_pass());       cell.setCellStyle(style2);break;
-        		case 10: cell.setCellValue(testcase.getPercentage_fail());       cell.setCellStyle(style2);break;
-        		default : break;       			
-        	}
-        	
-        }
+        	row=sheet.createRow(i+3);
+        	for(int j=0;j<25;j++)
+            {
+            	cell=row.createCell(j);
+            	switch(j)
+            	{
+            	 		case 0:   cell.setCellValue(CR_list.get(i)); 			 cell.setCellStyle(style1); break;
+            	 		case 1:   cell.setCellValue(executed[i]);    		 cell.setCellStyle(style2); break;
+            	 		case 2:   cell.setCellValue(pass[i]);    		 cell.setCellStyle(style2); break;
+            	 		case 3:   cell.setCellValue(fail[i]);     		 cell.setCellStyle(style2);break;
+            	 		case 4:   cell.setCellValue(in_progress[i]); 		 cell.setCellStyle(style2);break;
+            	 		case 5:   cell.setCellValue(blocked[i]);   		 cell.setCellStyle(style2);break;
+            	 		case 6:   cell.setCellValue(no_run[i]);   			 cell.setCellStyle(style2);break;        		
+            	 		case 7:   cell.setCellValue(total[i]);       		 cell.setCellStyle(style3);break;
+            	 		case 8:    cell.setCellValue(1);      cell.setCellStyle(style2);break;
+            	 		case 9:    cell.setCellValue(1);        cell.setCellStyle(style2);break;
+            	 		case 10:  cell.setCellValue(1); 	   cell.setCellStyle(style2);break;        	
+            	 			default:  break;        			
+            	}            	
+            }
+        }	
         
         file.close();        
         FileOutputStream outFile =new FileOutputStream(new File(filename));

@@ -157,15 +157,19 @@ public class Get_Iteration_data
 		       
 		        userstory_CR_details=common_fun_obj.caculateCR_US(team_status.getUserstories_cr(), userstory_CR_details, CR_list);
 		        defect_CR_details = common_fun_obj.caculateCR_DE(team_status.getDefects_cr(), defect_CR_details, CR_list);
-				System.out.println(team_name+"  success");	
+		        testcase_CR_details=common_fun_obj.caculateCR_TC(team_status.getTestcases_cr(), testcase_CR_details, CR_list);
+		        testcase_CR_details.displayAll();
+		        
+		        System.out.println(team_name+"  success");	
 			}
 			team_status.setUserstories_cr(userstory_CR_details);
 			team_status.setDefects_cr(defect_CR_details);
-			
+			team_status.setTestcases_cr(testcase_CR_details);
 			//userstory_CR_details.displayAll();
 			//defect_CR_details.displayAll();
 			//defect_CR_details.displayAllSeverity();
 			//defect_CR_details.displayAllState();
+			testcase_CR_details.displayAll();
 	    }
 		finally 
 		{
@@ -178,11 +182,12 @@ public class Get_Iteration_data
 		
 		//team_status.getUserstories_cr().displayAll();
 		//team_status.getDefects_cr().displayAll();
-		team_status.getDefects_cr().displayAllSeverity();
-		team_status.getDefects_cr().displayAllState();		
+		//team_status.getDefects_cr().displayAllSeverity();
+		//team_status.getDefects_cr().displayAllState();		
 		
 		write.write_CRwise_userstories_and_defect(team_status, CR_list, "iteration");
 		write.write_CRwise_defect_details(team_status, CR_list, "iteration");
+		write.write_CRwise_testCase_details(team_status, CR_list, "iteration");
 		write.write_Iteration_Status(teams_status_total,"Sprint Total");	
 		common_fun_obj.draw_pie_chart(sprint_name,teams_status_total);
 	}
@@ -195,12 +200,15 @@ public class Get_Iteration_data
 		TestCases testcase=new TestCases();
 		UserStories_CR userstory_details_cr=new UserStories_CR();
 		Defects_CR defect_details_cr=new Defects_CR();
+		TestCases_CR testcase_details_cr=new TestCases_CR();
+		
 		
 		// get userstory values
 		
 		type_story_or_defect="userstory";	    
 	    TeamStatus temp=common_fun_obj.callRestApi_CR(team_name, sprint_name, type_story_or_defect, "iteration", CR_list);
 	    userstory_details_cr=temp.getUserstories_cr();
+	    TestCases_CR testcase_details_cr1=temp.getTestcases_cr();
 	    userstory=temp.getUserStories();	    
 	    TestCases testcase1=temp.getTestCases(); 
 	    write.write_testable_userstory_field_count(userstory, team_name, "iteration", type_story_or_defect);
@@ -213,9 +221,12 @@ public class Get_Iteration_data
 	    temp=common_fun_obj.callRestApi_CR(team_name, sprint_name, type_story_or_defect, "iteration", CR_list);
 		defect=temp.getDefects();		
 		defect_details_cr=temp.getDefects_cr();
+		TestCases_CR testcase_details_cr2=temp.getTestcases_cr();
 		TestCases testcase2=temp.getTestCases();	
 		testcase=common_fun_obj.addTwoTestCases(testcase1, testcase2);		
 		testcase=common_fun_obj.calculate_percent_testcase(testcase);	
+		testcase_details_cr=common_fun_obj.addTwoTestCases_CR(testcase_details_cr1, testcase_details_cr2);
+		
 		write.write_Defect_Details_with_state_and_severity(defect, team_name, "Iteration",type_story_or_defect);
 		write.write_testcase_details(testcase, team_name,  "Iteration");
 		
@@ -229,6 +240,8 @@ public class Get_Iteration_data
 		team_status.setTestCases(testcase);  
 		team_status.setUserstories_cr(userstory_details_cr);
 		team_status.setDefects_cr(defect_details_cr);
+		team_status.setTestcases_cr(testcase_details_cr);
+		
 		//write to excel	
 		write.write_automated_testcase_count(testcase, team_name, "iteration");
 		write.write_Iteration_Status(team_status,team_name);		

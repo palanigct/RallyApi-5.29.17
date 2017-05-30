@@ -53,6 +53,9 @@ public class RallyRunner
 		
 		ite_obj.Exe_Iteration_CR(team_list, CR_list);  	   //execute iteration function for get the iterations data's with CR wise details
 		
+		drawchart.draw_chart_in_excel();                   //draw the chart in inside the excel sheet 
+		
+		
 		other_fun_obj.copy_output_folder();                //copy the output folder to system 
 				
 		System.out.println("\ncompleted");		
