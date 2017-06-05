@@ -18,7 +18,7 @@ public class RallyRunner
 	public static RallyRunner obj=new RallyRunner();
 	public static Get_Iteration_data ite_obj=new Get_Iteration_data();
 	public static Other_Functions other_fun_obj=new Other_Functions();
-	public static Get_Release_data rele_obj=new Get_Release_data();	
+	//public static Get_Release_data rele_obj=new Get_Release_data();	
 	public static DrawChart_Excel drawchart=new DrawChart_Excel();
 	
 	public static ArrayList<String> team_list=new ArrayList<String>();
@@ -34,31 +34,21 @@ public class RallyRunner
 				
 		other_fun_obj.copy_template_folder();	     //copy template folder to output folder	
 		
+							
 		
-		/*
 		team_list=other_fun_obj.get_team_List();     //get the team list
 		
-		ite_obj.Exe_Iteration(team_list);            //execute iteration function for get the iterations data's 
+		CR_list=other_fun_obj.get_CR_List();         //get the CR list
 		
-		//rele_obj.Exe_Release(team_list);		     //execute releases function for get the releases data's 		
-		
-		drawchart.draw_chart_in_excel();             //draw the chart in inside the excel sheet 
-		
-		*/	
-						
-		
-		team_list=other_fun_obj.get_team_List();           //get the team list
-		
-		CR_list=other_fun_obj.get_CR_List();               //get the CR list
-		
-		ite_obj.Exe_Iteration_CR(team_list, CR_list);  	   //execute iteration function for get the iterations data's with CR wise details
-		
-		drawchart.draw_chart_in_excel();                   //draw the chart in inside the excel sheet 
+		ite_obj.Exe_Iteration_CR(CR_list);  	     //execute iteration function for get the iterations data's with CR wise details
 		
 		
-		other_fun_obj.copy_output_folder();                //copy the output folder to system 
+		
+		//drawchart.draw_chart_in_excel();                   //draw the chart in inside the excel sheet 
+		
+		other_fun_obj.copy_output_folder();           //copy the output folder to system 
 				
-		System.out.println("\ncompleted");		
+		System.out.println("\n completed");		
 	}	
 	
 }

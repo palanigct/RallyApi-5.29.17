@@ -44,13 +44,13 @@ public class test {
 			System.out.println("delete this ");
 			
 			System.out.println("*************************user story*******************************");
-			test.userstoryreq();
+			//test.userstoryreq();
 			System.out.println("*************************test case*******************************");
 			//test.testcasereq("ffdhd");
 			System.out.println("*************************Iteration*******************************");
 			//test.iterationreq();
 			System.out.println("*************************Release*******************************");
-			//test.releasereq();
+			test.releasereq();
 			System.out.println("*************************test *******************************");
 			//test.testreq();				
 	}    
@@ -77,8 +77,8 @@ public class test {
             int count_0=0;
             int count_1=0;
             int count_nill=0;
-            QueryRequest userstoryRequest = new QueryRequest("HierarchicalRequirement"); 
-           // QueryRequest userstoryRequest = new QueryRequest("Defects"); 
+           // QueryRequest userstoryRequest = new QueryRequest("HierarchicalRequirement"); 
+            QueryRequest userstoryRequest = new QueryRequest("Defects"); 
             //userstoryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=", iterationName).and(new QueryFilter("Project.Name", "=", team_name)));  //new QueryFilter("Project.Name", "=", team_name).and
             //userstoryRequest.setQueryFilter(new QueryFilter("FormattedID", "=", "US168722"));  //new QueryFilter("Project.Name", "=", team_name).and
            //  userstoryRequest.setQueryFilter(new QueryFilter("c_Application.Count", "=", "0"));  //new QueryFilter("Project.Name", "=", team_name).and
@@ -122,7 +122,7 @@ public class test {
               
                 
                 //============================appliction=================================
-             try{
+            /* try{
                 	   JsonObject application = (JsonObject) userstoryJsonObject.get("c_Application"); 
                 	               
                 	   JsonArray list =new JsonArray();
@@ -162,10 +162,12 @@ public class test {
                 	count_nill++;
                 	System.out.println("application false");
                 }
-                
+                */
               //================================  cr  =======================================
                
                 try{
+                	
+                	//CR5571  CR5367 CR4594
              	   JsonObject crnumber = (JsonObject) userstoryJsonObject.get("c_CR"); 
              	               
              	   JsonArray list =new JsonArray();
@@ -182,13 +184,14 @@ public class test {
                  	   //System.out.println("app obj : "+appobj+ " CR name : "+appobj.get("Name").getAsString());
                  	   appname=appobj.get("Name").getAsString();
                     
+                 	  System.out.println("CR list : "+list+" size : "+list.size()+"  "+userstoryJsonObject.get("FormattedID"));
                  	   
-                 	   if(appname.contains("CR5571"))
+                 	  /* if(appname.contains("CR5571"))
                         {
                      	   System.out.println(" cr CR5981 is there");
                      	  cr_count++;
                      	   System.out.println("CR list : "+list+" size : "+list.size()+"  "+userstoryJsonObject.get("FormattedID"));
-                        }
+                        }*/
                  	  // CR5981
                   
                     }

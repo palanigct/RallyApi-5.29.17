@@ -1,4 +1,4 @@
-package com.app.Rally.CRWise;
+/*package com.app.Rally.CRWise;
 
 import java.io.IOException;
 import java.net.URI;
@@ -132,7 +132,7 @@ public class Get_Release_data
 	
 	
 	//=============================== for program wise (CR) =============================
-   /* if(name.contains(program_name))
+    if(name.contains(program_name))
     {
    	 write.write_userstoryAndDefect(story, team_name, "Release", type);
    	 TestCases TC=common_fun_obj.getTestcase_details(name);
@@ -143,11 +143,11 @@ public class Get_Release_data
         blocked_tc  	+= TC.getBlocked();
         no_run_tc  	+= TC.getNo_run();
         total_tc   	+= TC.getTotal();
-    }*/
+    }
                      
    //================================== for program wise (CR) =============================== 
 	
-	/*
+	
 	public static void main(String arg[]) throws Exception
 	{
 		Get_Iteration_data obj=new Get_Iteration_data();
@@ -472,5 +472,6 @@ public class Get_Release_data
 		
 		return testcase;
 	}
-	*/
+	
 
+*/

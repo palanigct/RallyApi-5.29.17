@@ -18,6 +18,7 @@ import com.app.pojos.TestCases;
 import com.app.pojos.TestCases_CR;
 import com.app.pojos.UserStories;
 import com.app.pojos.UserStories_CR;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.rallydev.rest.RallyRestApi;
@@ -34,354 +35,6 @@ public class Common_Functions
 	public static RallyRestApi restApi = null;
 	public static String program_name="CR5981";
 	
-		
-	public static TeamStatus callRestApi(String team_name,String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release) throws IOException, URISyntaxException
-	{
-		TeamStatus team_status=new TeamStatus();
-		
-		int total_count=0;		
-		int backlogs=0;
-		int defined=0;
-		int in_progress=0;
-		int completed=0;
-		int accepted=0;
-		
-		
-		
-		int total_count_testable=0;		
-		int backlogs_testable=0;
-		int defined_testable=0;
-		int in_progress_testable=0;
-		int completed_testable=0;
-		int accepted_testable=0;
-		
-		int total_tc=0;
-		int pass_tc=0;
-		int fail_tc=0;
-		int in_progress_tc=0;
-		int blocked_tc=0;
-		int no_run_tc=0;
-		int method_count_tc=0;
-		int automated_count_tc=0;
-		
-		int submitted=0;
-		int open=0;
-		int fixed=0;
-		int closed=0;
-		int reopen=0;
-		int ready_for_test=0;
-		int total_severity=0;
-		int critical=0;
-		int major=0;
-		int average=0;
-		int minor=0;
-		int total_state=0;
-		
-		
-		int testable_field_count=0;		
-		
-		
-  	    String iterationName	= name_release_or_sprint;
-  	    String reqKey="";
-        String testable="";     
-        ArrayList<String> CR_list=new ArrayList<String>();
-        CR_list=other_functions.get_CR_List();
-        
-        if(type_story_or_defect.contains("userstory")) reqKey="HierarchicalRequirement";
-        else reqKey="Defects";
-
-        try {
-             QueryRequest storyRequest = new QueryRequest(reqKey);          
-             storyRequest.setPageSize(10);
-             storyRequest.setLimit(1000);
-             storyRequest.setScopedDown(false);
-             storyRequest.setScopedUp(false);
-             if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Release"))
-             {
-            	 storyRequest.setQueryFilter(new QueryFilter("Release.Name", "=",name_release_or_sprint).and(new QueryFilter("Project.Name", "=", team_name)));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
-             }
-             else if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Iteration"))
-             {
-            	 storyRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",name_release_or_sprint).and(new QueryFilter("Project.Name", "=", team_name)));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
-             }
-                    
-             QueryResponse storyQueryResponse = restApi.query(storyRequest);
-             total_count=storyQueryResponse.getTotalResultCount();
-           
-             
-             for (int j=0; j<storyQueryResponse.getResults().size();j++)
-             {
-                 JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
-                                
-                 int totaltc=storyJsonObject.get("TestCaseCount").getAsInt();
-                 int passtc=storyJsonObject.get("PassingTestCaseCount").getAsInt();
-                 String testCaseStatus=storyJsonObject.get("TestCaseStatus").getAsString(); 
-                              
-                 String state_temp=storyJsonObject.get("ScheduleState").getAsString();
-                 String name=storyJsonObject.get("Name").getAsString();
-                 String formId=storyJsonObject.get("FormattedID").getAsString();                 
-                 
-                
-                 //String creationDate=storyJsonObject.get("CreationDate").getAsString();
-                // String lastUpdateDate=storyJsonObject.get("LastUpdateDate").getAsString();
-                // String acceptedDate=storyJsonObject.get("AcceptedDate").getAsString();
-                // String closedDate=storyJsonObject.get("ClosedDate").getAsString();
-                // String inProgressDate=storyJsonObject.get("InProgressDate").getAsString();
-                // String openedDate=storyJsonObject.get("OpenedDate").getAsString();
-                // String targetDate=storyJsonObject.get("TargetDate").getAsString();
-                 
-                 JsonObject releaseJson=null;
-                 JsonObject sprintJson=null;
-                 String releaseName="Null";
-                 String sprintName="Null";                                
-                 String severity  ="Null";               
-                 String defectState ="Null";
-                 String CRNumber="Null";
-                 
-                 CRNumber=other_functions.getCRnumber(name);
-                 
-                 
-                 if(!(storyJsonObject.get("Release").toString().equals("null"))) 	
-                 {
-                	 releaseJson=(JsonObject) storyJsonObject.get("Release");                	
-                	 releaseName=releaseJson.get("_refObjectName").getAsString();
-                 }                
-                 
-                 if(!(storyJsonObject.get("Iteration").toString().equals("null"))) 	
-                 {
-                	 sprintJson=(JsonObject) storyJsonObject.get("Iteration");                	 
-                	 sprintName=sprintJson.get("_refObjectName").getAsString();
-                 }
-                     
-                 try
-                 {
-                	 if(!(storyJsonObject.get("Severity").toString().equals("null"))) 	
-                     {
-                		 severity=storyJsonObject.get("Severity").getAsString();
-                		 total_severity++;
-                     }
-                	  
-                 }
-                 catch(Exception e)
-                 {
-                	 severity="Field Does not Exist";
-                 }
-                 
-                 try
-                 {
-                	 if(!(storyJsonObject.get("State").toString().equals("null"))) 	
-                     {
-                		 defectState=storyJsonObject.get("State").getAsString();
-                		 total_state++;
-                     }
-                	  
-                 }
-                 catch(Exception e)
-                 {
-                	 defectState="Field Does not Exist";
-                 }
-                 
-                 try
-                 {
-                	 if(storyJsonObject.get("c_Testable").toString().equals("null"))
-                		 testable="Null";
-                	 else                	 
-                		 { testable=storyJsonObject.get("c_Testable").getAsString(); testable_field_count++;			}
-                 }
-                 catch(Exception e)
-                 {
-                	 	testable="Field Does not Exist";
-                 }
-                 UserStories story=new UserStories();
-                 story.setFormattedID(formId);
-                 story.setName(name);
-                 story.setStatus(state_temp);
-                 story.setSprintname(sprintName);
-                 story.setReleaseName(releaseName);
-                 story.setTestable(testable);
-                 story.setSeverity(severity);
-                 story.setState(defectState);
-                 story.setCRNumber(CRNumber);
-                 write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);           
-                 
-                 TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
-                 //TestCases TC=new TestCases();
-                 
-                 pass_tc  		+= TC.getPass();
-                 fail_tc  		+= TC.getFail();
-                 in_progress_tc += TC.getIn_progress();
-                 blocked_tc  	+= TC.getBlocked();
-                 no_run_tc  	+= TC.getNo_run();
-                 total_tc   	+= TC.getTotal();
-                 automated_count_tc += TC.getAutomated_count();
-                 method_count_tc    += TC.getMethod_count();
-                
-                 // TargetDate  CreationDate  LastUpdateDate AcceptedDate ClosedDate InProgressDate OpenedDate
-                 // Severity="Average" Critical Major Average Minor  
-                 // State="Closed"  Submitted Open Fixed Ready for Test Reopen              	 	
-                 
-                            
-                 
-                 if(StringUtils.containsIgnoreCase(defectState, "Submitted")) submitted++; 
-                 if(StringUtils.containsIgnoreCase(defectState, "Open")) 	  open++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Fixed"))  fixed++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) ready_for_test++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Reopen"))  reopen++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	 closed++;
-                	 
-                 if(StringUtils.containsIgnoreCase(severity, "Average")) 	  average++;
-                 if(StringUtils.containsIgnoreCase(severity, "Critical"))   critical++;
-                 if(StringUtils.containsIgnoreCase(severity, "Major"))  major++;
-                 if(StringUtils.containsIgnoreCase(severity, "Minor")) minor++;
-                	 
-                 if(state_temp.contains("Backlog")) 	backlogs++;
-                 if(state_temp.contains("Defined")) 	defined++;
-                 if(state_temp.contains("In-Progress")) in_progress++;
-                 if(state_temp.contains("Completed")) 	completed++;
-                 if(state_temp.contains("Accepted")) 	accepted++;
-                 
-                 if(StringUtils.containsIgnoreCase(testable, "yes"))
-                 {
-                	 if(state_temp.contains("Backlog")) 	backlogs_testable++;
-                     if(state_temp.contains("Defined")) 	defined_testable++;
-                     if(state_temp.contains("In-Progress")) in_progress_testable++;
-                     if(state_temp.contains("Completed")) 	completed_testable++;
-                     if(state_temp.contains("Accepted")) 	accepted_testable++;  
-                     
-                     total_count_testable++;
-                 }
-                 
-                 
-              }//end of for --loop for all stories	 
-     
-        }finally {    }
-		
-        
-    	 UserStories userstory_details=new UserStories();
-    	 Defects defect_details=new Defects();
-    	 TestCases testcase_details=new TestCases();
-    	 
-    	
-    	 userstory_details.setAllTestable(backlogs_testable, defined_testable, in_progress_testable, completed_testable, accepted_testable, total_count_testable);
-    	 userstory_details.setAll(backlogs, defined, in_progress, completed, accepted, total_count);
-    	 defect_details.setAll(backlogs, defined, in_progress, completed, accepted, total_count);
-    	 defect_details.setAllSeverity(major, average, minor, total_severity);
-    	 defect_details.setAllState(submitted, open, fixed, closed, reopen, ready_for_test, total_state);
-    	 testcase_details.setAll(pass_tc, fail_tc, in_progress_tc, blocked_tc, no_run_tc, total_tc,0,0,0);    	 
-    	 testcase_details.setAutomated_count(automated_count_tc);
-    	 testcase_details.setMethod_count(method_count_tc);    	 
-    	 userstory_details.setTestableFieldCount(testable_field_count);
-    	 
-    	 team_status.setAll(userstory_details, defect_details, testcase_details);    	 
-    	 return team_status;     
-	
-	}
-
-	public static TestCases getTestcase_details(String workProduct_name,String type_sprint_or_release) throws IOException
-	{
-		int pass		= 0;
-		int fail  		= 0;
-		int in_progress = 0;
-		int blocked		= 0;
-		int no_run		= 0;
-		int total	    = 0;		
-		int extra		= 0;
-		int automated_count =0;
-		int method_count =0;
-		
-		String status      = "Null";
-		String formattedId = "Null";		
-		String team_Name   = "Null";
-		String method      = "Null";
-		String automated   = "Null";
-		
-		
-		QueryRequest testcaseRequest = new QueryRequest("TestCases"); 
-        testcaseRequest.setQueryFilter(new QueryFilter("WorkProduct.Name", "=",workProduct_name  ));  //new QueryFilter("Iteration.Name", "=", iterationName).and
-        QueryResponse testcaseResponse = restApi.query(testcaseRequest);
-        total=testcaseResponse.getResults().size();
-        
-        for (int i=0; i<testcaseResponse.getResults().size();i++)
-        {
-            JsonObject testcaseJsonObject = testcaseResponse.getResults().get(i).getAsJsonObject();
-            formattedId = testcaseJsonObject.get("FormattedID").getAsString();
-            
-            if(!(testcaseJsonObject.get("LastVerdict").toString().equals("null"))) 	
-            {
-            	 status  = testcaseJsonObject.get("LastVerdict").getAsString();
-            }            
-                      
-            if(!(testcaseJsonObject.get("Project").toString().equals("null"))) 	
-            {
-            	JsonObject projectJson = (JsonObject) testcaseJsonObject.get("Project");                	
-           	    team_Name = projectJson.get("_refObjectName").getAsString();
-            }            
-           
-            if(!(testcaseJsonObject.get("Method").toString().equals("null"))) 	
-            {
-            	method = testcaseJsonObject.get("Method").getAsString();
-            	method_count++;
-            }  
-            
-            try
-            {
-            	 if(!(testcaseJsonObject.get("c_CanbeAutomated").toString().equals("null"))) 	
-                 {
-            		 automated = testcaseJsonObject.get("c_CanbeAutomated").getAsString();
-            		 if(StringUtils.containsIgnoreCase(automated, "yes"))
-            			 automated_count++;
-                 }
-            }
-            catch(Exception e)
-            {
-            	automated="CanbeAutomated Field Not Exist";
-            }
-            
-            
-            TestCases TC = new TestCases();
-            TC.setFormattedId(formattedId);
-            TC.setStatus(status);
-            TC.setWorkProduct_name(workProduct_name);
-            TC.setTeam_name(team_Name);
-            TC.setMethod(method);
-            TC.setAutomated(automated);
-            
-            //System.out.println("     TC : "+formattedId+" : "+status);
-            write.write_testcase(TC, type_sprint_or_release);
-            
-            if(StringUtils.containsIgnoreCase(status, "Pass")) 	{	  pass++; }
-            else if(StringUtils.containsIgnoreCase(status, "Fail")) 	{	  fail++; }	
-            else if(StringUtils.containsIgnoreCase(status, "In Progress")){ in_progress++; }
-            else  if(StringUtils.containsIgnoreCase(status, "Blocked")) {		  blocked++;  }
-            else if(StringUtils.containsIgnoreCase(status, "No Run"))  {	  no_run++;     }            
-            else if(StringUtils.containsIgnoreCase(status, "Null")) { extra++; }
-            else { extra++; }
-            
-         }
-        
-        TestCases testcases = new TestCases();
-        testcases.setAll(pass, fail, in_progress, blocked, no_run, total, 0 , 0 , 0); 
-        testcases.setAutomated_count(automated_count);
-        testcases.setMethod_count(method_count);
-        
-        return testcases;
-	}
-	
-	public static TestCases addTwoTestCases(TestCases testcase1,TestCases testcase2)
-	{
-		TestCases temp =new TestCases();	
-		
-		temp.setPass(testcase1.getPass()+testcase2.getPass());
-		temp.setFail(testcase1.getFail()+testcase2.getFail());
-		temp.setIn_progress(testcase1.getIn_progress()+testcase2.getIn_progress());
-		temp.setBlocked(testcase1.getBlocked()+testcase2.getBlocked());
-		temp.setNo_run(testcase1.getNo_run()+testcase2.getNo_run());
-		temp.setTotal(testcase1.getTotal()+testcase2.getTotal());	
-		temp.setAutomated_count(testcase1.getAutomated_count()+testcase2.getAutomated_count());
-		temp.setMethod_count(testcase1.getMethod_count()+testcase2.getMethod_count());
-		
-		return temp;
-	}
 	
 	public static TeamStatus add_total(TeamStatus teams_status,TeamStatus teams_status_total)
 	{
@@ -490,15 +143,8 @@ public class Common_Functions
 		return testcase;
 	}
 	
-	public static RallyRestApi getRestApi() {
-		return restApi;
-	}
-
-	public static void setRestApi(RallyRestApi restApi) {
-		Common_Functions.restApi = restApi;
-	}
-
-	public static TeamStatus callRestApi_CR(String team_name,String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> CR_list) throws IOException, URISyntaxException
+	
+	public static TeamStatus callRestApi_CR(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> CR_list) throws IOException, URISyntaxException
 	{
 		TeamStatus team_status=new TeamStatus();
 		
@@ -508,15 +154,8 @@ public class Common_Functions
 		int in_progress=0;
 		int completed=0;
 		int accepted=0;
-		int total_count=0;		
+		int total_count=0;	
 		
-		int[] backlogs_cr = new int [10];
-		int[] defined_cr  = new int [10];
-		int[] in_progress_cr = new int [10];
-		int[] completed_cr = new int [10];
-		int[] accepted_cr = new int [10];
-		int[] total_cr = new int [10];
-
 		int total_count_testable=0;		
 		int backlogs_testable=0;
 		int defined_testable=0;
@@ -537,6 +176,24 @@ public class Common_Functions
 		int minor=0;
 		int total_state=0;
 		
+		int pass_tc=0;
+		int fail_tc=0;
+		int in_progress_tc=0;
+		int blocked_tc=0;
+		int no_run_tc=0;
+		int total_tc=0;
+		int method_count_tc=0;
+		int automated_count_tc=0;
+		int exe_tc=0;
+		
+		
+		int[] backlogs_cr = new int [10];
+		int[] defined_cr  = new int [10];
+		int[] in_progress_cr = new int [10];
+		int[] completed_cr = new int [10];
+		int[] accepted_cr = new int [10];
+		int[] total_cr = new int [10];
+		
 		int[] submitted_cr= new int [10];
 		int[] open_cr= new int [10];
 		int[] fixed_cr=new int [10];
@@ -548,18 +205,7 @@ public class Common_Functions
 		int[] major_cr=new int [10];
 		int[] average_cr=new int [10];
 		int[] minor_cr=new int [10];
-		int[] total_state_cr=new int [10];
-		
-		
-		int pass_tc=0;
-		int fail_tc=0;
-		int in_progress_tc=0;
-		int blocked_tc=0;
-		int no_run_tc=0;
-		int total_tc=0;
-		int method_count_tc=0;
-		int automated_count_tc=0;
-		int exe_tc=0;
+		int[] total_state_cr=new int [10];		
 		
 		int[] pass_tc_cr		= new int[10];
 		int[] fail_tc_cr  		=new int[10];
@@ -571,240 +217,204 @@ public class Common_Functions
 		int[] automated_count_tc_cr =new int[10];
 		int[] method_count_tc_cr =new int[10];
 		int[] exe_tc_cr=new int[10];
+				
+		String state_temp="";
+        String name="";
+        String formId="";
+       
+        //String creationDate="";
+        // String lastUpdateDate="";
+        // String acceptedDate="";
+        // String closedDate="";
+        // String inProgressDate="";
+        // String openedDate="";
+        // String targetDate="";
+        
+        JsonObject releaseJson=null;
+        JsonObject sprintJson=null;
+        String releaseName="Null";
+        String sprintName="Null";                                
+        String severity  ="Null";               
+        String defectState ="Null";
+        String CRNumber="Null";
 		
-		
-		
-		
-		int testable_field_count=0;		
-		
-		
+        UserStories story=new UserStories();
+        String team_name="Null";
+		int testable_field_count=0;			
   	    String iterationName	= name_release_or_sprint;
   	    String reqKey="";
         String testable="";     
+        
+        //==========================================================================================
         
         if(type_story_or_defect.contains("userstory")) reqKey="HierarchicalRequirement";
         else reqKey="Defects";
 
         try {
              QueryRequest storyRequest = new QueryRequest(reqKey);          
-             storyRequest.setPageSize(10);
-             storyRequest.setLimit(1000);
+             storyRequest.setPageSize(Integer.MAX_VALUE);
+             storyRequest.setLimit(Integer.MAX_VALUE);
              storyRequest.setScopedDown(false);
              storyRequest.setScopedUp(false);
              if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Release"))
              {
-            	 storyRequest.setQueryFilter(new QueryFilter("Release.Name", "=",name_release_or_sprint).and(new QueryFilter("Project.Name", "=", team_name)));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
+            	 storyRequest.setQueryFilter(new QueryFilter("Release.Name", "=",name_release_or_sprint));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
              }
              else if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Iteration"))
              {
-            	 storyRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",name_release_or_sprint).and(new QueryFilter("Project.Name", "=", team_name)));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
+            	 storyRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",name_release_or_sprint));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
              }
                     
              QueryResponse storyQueryResponse = restApi.query(storyRequest);
              total_count=storyQueryResponse.getTotalResultCount();
            
-             
-             for (int j=0; j<storyQueryResponse.getResults().size();j++)
+             //result looping is start here
+             for (int j=0; j<storyQueryResponse.getTotalResultCount();j++)
              {
                  JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
-                                
-                 int totaltc=storyJsonObject.get("TestCaseCount").getAsInt();
-                 int passtc=storyJsonObject.get("PassingTestCaseCount").getAsInt();
-                 String testCaseStatus=storyJsonObject.get("TestCaseStatus").getAsString(); 
-                              
-                 String state_temp=storyJsonObject.get("ScheduleState").getAsString();
-                 String name=storyJsonObject.get("Name").getAsString();
-                 String formId=storyJsonObject.get("FormattedID").getAsString();                 
                  
-                
-                 //String creationDate=storyJsonObject.get("CreationDate").getAsString();
-                // String lastUpdateDate=storyJsonObject.get("LastUpdateDate").getAsString();
-                // String acceptedDate=storyJsonObject.get("AcceptedDate").getAsString();
-                // String closedDate=storyJsonObject.get("ClosedDate").getAsString();
-                // String inProgressDate=storyJsonObject.get("InProgressDate").getAsString();
-                // String openedDate=storyJsonObject.get("OpenedDate").getAsString();
-                // String targetDate=storyJsonObject.get("TargetDate").getAsString();
+                 //================================  CR  =======================================
                  
-                 JsonObject releaseJson=null;
-                 JsonObject sprintJson=null;
-                 String releaseName="Null";
-                 String sprintName="Null";                                
-                 String severity  ="Null";               
-                 String defectState ="Null";
-                 String CRNumber="Null";
-                 
-                 CRNumber=other_functions.getCRnumber(name);
-                 
-                 
-                 if(!(storyJsonObject.get("Release").toString().equals("null"))) 	
-                 {
-                	 releaseJson=(JsonObject) storyJsonObject.get("Release");                	
-                	 releaseName=releaseJson.get("_refObjectName").getAsString();
-                 }                
-                 
-                 if(!(storyJsonObject.get("Iteration").toString().equals("null"))) 	
-                 {
-                	 sprintJson=(JsonObject) storyJsonObject.get("Iteration");                	 
-                	 sprintName=sprintJson.get("_refObjectName").getAsString();
-                 }
-                     
-                 try
-                 {
-                	 if(!(storyJsonObject.get("Severity").toString().equals("null"))) 	
-                     {
-                		 severity=storyJsonObject.get("Severity").getAsString();
-                		 total_severity++;
-                     }
-                	  
-                 }
-                 catch(Exception e)
-                 {
-                	 severity="Field Does not Exist";
-                 }
-                 
-                 try
-                 {
-                	 if(!(storyJsonObject.get("State").toString().equals("null"))) 	
-                     {
-                		 defectState=storyJsonObject.get("State").getAsString();
-                		 total_state++;
-                     }
-                	  
-                 }
-                 catch(Exception e)
-                 {
-                	 defectState="Field Does not Exist";
-                 }
-                 
-                 try
-                 {
-                	 if(storyJsonObject.get("c_Testable").toString().equals("null"))
-                		 testable="Null";
-                	 else                	 
-                		 { testable=storyJsonObject.get("c_Testable").getAsString(); testable_field_count++;			}
-                 }
-                 catch(Exception e)
-                 {
-                	 	testable="Field Does not Exist";
-                 }
-                 UserStories story=new UserStories();
-                 story.setFormattedID(formId);
-                 story.setName(name);
-                 story.setStatus(state_temp);
-                 story.setSprintname(sprintName);
-                 story.setReleaseName(releaseName);
-                 story.setTestable(testable);
-                 story.setSeverity(severity);
-                 story.setState(defectState);
-                 story.setCRNumber(CRNumber);
-                 write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);           
-                 
-                 TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
-                 //TestCases TC=new TestCases();
-                 
-                 pass_tc  		+= TC.getPass();
-                 fail_tc  		+= TC.getFail();
-                 in_progress_tc += TC.getIn_progress();
-                 blocked_tc  	+= TC.getBlocked();
-                 no_run_tc  	+= TC.getNo_run();
-                 total_tc   	+= TC.getTotal();
-                 automated_count_tc += TC.getAutomated_count();
-                 method_count_tc    += TC.getMethod_count();
-                
-                 // TargetDate  CreationDate  LastUpdateDate AcceptedDate ClosedDate InProgressDate OpenedDate
-                 // Severity="Average" Critical Major Average Minor  
-                 // State="Closed"  Submitted Open Fixed Ready for Test Reopen              	 	
-                 
-                 if(StringUtils.containsIgnoreCase(defectState, "Submitted")) submitted++; 
-                 if(StringUtils.containsIgnoreCase(defectState, "Open")) 	  open++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Fixed"))  fixed++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) ready_for_test++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Reopen"))  reopen++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	 closed++;
-                	 
-                 if(StringUtils.containsIgnoreCase(severity, "Average")) 	  average++;
-                 if(StringUtils.containsIgnoreCase(severity, "Critical"))   critical++;
-                 if(StringUtils.containsIgnoreCase(severity, "Major"))  major++;
-                 if(StringUtils.containsIgnoreCase(severity, "Minor")) minor++;
-                	 
-                 if(state_temp.contains("Backlog")) 	backlogs++;
-                 if(state_temp.contains("Defined")) 	defined++;
-                 if(state_temp.contains("In-Progress")) in_progress++;
-                 if(state_temp.contains("Completed")) 	completed++;
-                 if(state_temp.contains("Accepted")) 	accepted++;
-                 
-                 if(StringUtils.containsIgnoreCase(testable, "yes"))
-                 {
-                	 if(state_temp.contains("Backlog")) 	backlogs_testable++;
-                     if(state_temp.contains("Defined")) 	defined_testable++;
-                     if(state_temp.contains("In-Progress")) in_progress_testable++;
-                     if(state_temp.contains("Completed")) 	completed_testable++;
-                     if(state_temp.contains("Accepted")) 	accepted_testable++;                       
-                     
-                     total_count_testable++;
-                 }
-                 
-                 for(int i=0;i<CR_list.size();i++)
-                 {             	 
-                 
-                	 	if(StringUtils.containsIgnoreCase(CRNumber, CR_list.get(i)))
-                	 	{
-                	 		if(state_temp.contains("Backlog")) 	backlogs_cr[i]++;
-                            if(state_temp.contains("Defined")) 	defined_cr[i]++;
-                            if(state_temp.contains("In-Progress")) in_progress_cr[i]++;
-                            if(state_temp.contains("Completed")) 	completed_cr[i]++;
-                            if(state_temp.contains("Accepted")) 	accepted_cr[i]++; 
-                            
-                            if(StringUtils.containsIgnoreCase(defectState, "Submitted"))      { submitted_cr[i]++;      total_state_cr[i]++; }
-                            if(StringUtils.containsIgnoreCase(defectState, "Open")) 	      { open_cr[i]++;           total_state_cr[i]++;    }
-                            if(StringUtils.containsIgnoreCase(defectState, "Fixed"))          { fixed_cr[i]++;          total_state_cr[i]++; }
-                            if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) { ready_for_test_cr[i]++; total_state_cr[i]++; }
-                            if(StringUtils.containsIgnoreCase(defectState, "Reopen"))         { reopen_cr[i]++;         total_state_cr[i]++; }
-                            if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	      { closed_cr[i]++;         total_state_cr[i]++;}
-                           	 
-                            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 { average_cr[i]++;  total_severity_cr[i]++; }
-                            if(StringUtils.containsIgnoreCase(severity, "Critical"))     { critical_cr[i]++; total_severity_cr[i]++; }
-                            if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_cr[i]++;    total_severity_cr[i]++; }
-                            if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_cr[i]++;    total_severity_cr[i]++; }
-                            
-                            pass_tc_cr[i]		 += TC.getPass();
-                    		fail_tc_cr[i]  		 += TC.getFail();
-                    		in_progress_tc_cr[i] += TC.getIn_progress();
-                    		blocked_tc_cr[i]	 += TC.getBlocked();
-                    	    no_run_tc_cr[i]		 += TC.getNo_run();
-                    		total_tc_cr[i]	     += TC.getTotal();		
-                    		exe_tc_cr[i]         += TC.getExecuted();
-                    		automated_count_tc_cr[i]  += TC.getAutomated_count();
-                    		method_count_tc_cr[i]     += TC.getMethod_count();
-                    		
-                            
-                            total_cr[i]++;
-                	 	}
-                 }
-                 
-              }	 
-     
-        }finally {    }
+                 try{
+              	   		JsonObject CR_number = (JsonObject) storyJsonObject.get("c_CR");              	               
+              	   		JsonArray list =new JsonArray();
+                        if(CR_number.get("_tagsNameArray").getAsJsonArray().size()!=0)
+                        {                            	                  	   
+                        	list=CR_number.get("_tagsNameArray").getAsJsonArray();                         	              	   
+                        	JsonObject appobj=(JsonObject) list.get(0) ;                        	
+                        	CRNumber=appobj.get("Name").getAsString();                    
+                        	
+                        	int index=0;
+                        	boolean check=false;
+                        	
+                        	for(int i=0;i<CR_list.size();i++)          //check the CR number in list
+                            { 
+                        		if(StringUtils.containsIgnoreCase(CRNumber, CR_list.get(i)))
+                           	 	{                      			 
+                        			 index=i;  
+                        			 check=true;
+                                     break;                                   
+                        		}                        	                  
+                            }
+                        	
+                        	if(check==true)
+                        	{
+                        		 int i=index;
+                        		
+                        		 state_temp=storyJsonObject.get("ScheduleState").getAsString();
+                      	         name=storyJsonObject.get("Name").getAsString();
+                      	         formId=storyJsonObject.get("FormattedID").getAsString(); 
+                      	       
+                      	         // creationDate=storyJsonObject.get("CreationDate").getAsString();
+                      	         // lastUpdateDate=storyJsonObject.get("LastUpdateDate").getAsString();
+                      	         // acceptedDate=storyJsonObject.get("AcceptedDate").getAsString();
+                      	         // closedDate=storyJsonObject.get("ClosedDate").getAsString();
+                      	         // inProgressDate=storyJsonObject.get("InProgressDate").getAsString();
+                      	         // openedDate=storyJsonObject.get("OpenedDate").getAsString();
+                      	         // targetDate=storyJsonObject.get("TargetDate").getAsString();
+                      	         
+                      	          
+                      	           if(!(storyJsonObject.get("Project").toString().equals("null"))) 	
+                                   {
+                                  	 releaseJson=(JsonObject) storyJsonObject.get("Project");                	
+                                  	 team_name=releaseJson.get("_refObjectName").getAsString();
+                                   } 
+                      	         
+                      	           if(!(storyJsonObject.get("Release").toString().equals("null"))) 	
+                                   {
+                                  	 releaseJson=(JsonObject) storyJsonObject.get("Release");                	
+                                  	 releaseName=releaseJson.get("_refObjectName").getAsString();
+                                   }                
+                                   
+                                   if(!(storyJsonObject.get("Iteration").toString().equals("null"))) 	
+                                   {
+                                  	 sprintJson=(JsonObject) storyJsonObject.get("Iteration");                	 
+                                  	 sprintName=sprintJson.get("_refObjectName").getAsString();
+                                   }
+                      	         
+                      	           try //get severity field
+                                   {
+                                  	 if(!(storyJsonObject.get("Severity").toString().equals("null"))) 	
+                                       {
+                                  		 severity=storyJsonObject.get("Severity").getAsString();
+                                  		 total_severity++;
+                                       }                                    	  
+                                   }catch(Exception e)
+                                   {
+                                  	 severity="Field Does not Exist";
+                                   }
+                                   
+                                   try //get state field
+                                   {
+                                  	 if(!(storyJsonObject.get("State").toString().equals("null"))) 	
+                                       {
+                                  		 defectState=storyJsonObject.get("State").getAsString();
+                                  		 total_state++;
+                                       }                                    	  
+                                   }catch(Exception e)
+                                   {
+                                  	 defectState="Field Does not Exist";
+                                   }
+                                   
+                                   //====================== set values and write to excel======
+                                   story.setFormattedID(formId);
+                                   story.setName(name);
+                                   story.setStatus(state_temp);
+                                   story.setSprintname(sprintName);
+                                   story.setReleaseName(releaseName);
+                                   story.setTestable(testable);
+                                   story.setSeverity(severity);
+                                   story.setState(defectState);
+                                   story.setCRNumber(CRNumber);
+                                   write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);
+                               	
+                                   if(state_temp.contains("Backlog")) 	  backlogs_cr[i]++;
+                                   if(state_temp.contains("Defined")) 	  defined_cr[i]++;
+                                   if(state_temp.contains("In-Progress")) in_progress_cr[i]++;
+                                   if(state_temp.contains("Completed"))   completed_cr[i]++;
+                                   if(state_temp.contains("Accepted")) 	  accepted_cr[i]++; 
+                                              
+                                   if(StringUtils.containsIgnoreCase(defectState, "Submitted"))      { submitted_cr[i]++;      total_state_cr[i]++; }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Open")) 	         { open_cr[i]++;           total_state_cr[i]++;    }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Fixed"))          { fixed_cr[i]++;          total_state_cr[i]++; }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) { ready_for_test_cr[i]++; total_state_cr[i]++; }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Reopen"))         { reopen_cr[i]++;         total_state_cr[i]++; }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	     { closed_cr[i]++;         total_state_cr[i]++;}
+                                             	 
+                                   if(StringUtils.containsIgnoreCase(severity, "Average")) 	    { average_cr[i]++;  total_severity_cr[i]++; }
+                                   if(StringUtils.containsIgnoreCase(severity, "Critical"))     { critical_cr[i]++; total_severity_cr[i]++; }
+                                   if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_cr[i]++;    total_severity_cr[i]++; }
+                                   if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_cr[i]++;    total_severity_cr[i]++; }
+                                              
+                                   total_cr[i]++;
+                        	}    
+                        }
+                        else
+                        {
+                        	 //System.out.println(" CR name list is an empty array");
+                        }  
+                 	}catch(Exception e)
+                 		{              
+                 			//System.out.println("CR field is not available");
+                 		}
+             }//end of for loop (result loop)   
+            
+             // =======================================  END CR ==========================================            
+           
+        }catch(Exception e)
+        	{
+        			
+        	}
+        finally 
+            {   
+        		
+            }
 		
-        
-    	 UserStories userstory_details=new UserStories();
-    	 Defects defect_details=new Defects();
-    	 TestCases testcase_details=new TestCases();
+     
     	 UserStories_CR userstory_details_cr=new UserStories_CR();
     	 Defects_CR defect_details_cr= new Defects_CR();
     	 TestCases_CR testcase_details_cr= new TestCases_CR();
-    	 
     	
-    	 userstory_details.setAllTestable(backlogs_testable, defined_testable, in_progress_testable, completed_testable, accepted_testable, total_count_testable);
-    	 userstory_details.setAll(backlogs, defined, in_progress, completed, accepted, total_count);
-    	 defect_details.setAll(backlogs, defined, in_progress, completed, accepted, total_count);
-    	 defect_details.setAllSeverity(major, average, minor, total_severity);
-    	 defect_details.setAllState(submitted, open, fixed, closed, reopen, ready_for_test, total_state);
-    	 testcase_details.setAll(pass_tc, fail_tc, in_progress_tc, blocked_tc, no_run_tc, total_tc,0,0,0);    	 
-    	 testcase_details.setAutomated_count(automated_count_tc);
-    	 testcase_details.setMethod_count(method_count_tc);
-    	 
-    	 userstory_details.setTestableFieldCount(testable_field_count);
     	 userstory_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
     	 defect_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
     	 defect_details_cr.setAllSeverity(critical_cr, major_cr, average_cr, minor_cr, total_severity_cr);
@@ -815,352 +425,19 @@ public class Common_Functions
     	 
     	 team_status.setDefects_cr(defect_details_cr);
     	 team_status.setUserstories_cr(userstory_details_cr);
-    	 team_status.setTestcases_cr(testcase_details_cr);
-    	 team_status.setAll(userstory_details, defect_details, testcase_details);
+    	 team_status.setTestcases_cr(testcase_details_cr);    	 
+    	   	 
     	 return team_status; 
-		 
-	
 	}
-	
-	
-	public static TestCases getTestcase_details_CR(String workProduct_name,String type_sprint_or_release) throws IOException
-	{
-		int pass		= 0;
-		int fail  		= 0;
-		int in_progress = 0;
-		int blocked		= 0;
-		int no_run		= 0;
-		int total	    = 0;		
-		int extra		= 0;
-		int automated_count =0;
-		int method_count =0;
 		
-		int[] pass_cr		= new int[10];
-		int[] fail_cr  		=new int[10];
-		int[] in_progress_cr = new int[10];
-		int[] blocked_cr		= new int[10];
-		int[] no_run_cr		= new int[10];
-		int[] total_cr	    = new int[10];		
-		int[] extra_cr		= new int[10];
-		int[] automated_count_cr =new int[10];
-		int[] method_count_cr =new int[10];
-		
-		
-		String status      = "Null";
-		String formattedId = "Null";		
-		String team_Name   = "Null";
-		String method      = "Null";
-		String automated   = "Null";
-		
-		
-		QueryRequest testcaseRequest = new QueryRequest("TestCases"); 
-        testcaseRequest.setQueryFilter(new QueryFilter("WorkProduct.Name", "=",workProduct_name  ));  //new QueryFilter("Iteration.Name", "=", iterationName).and
-        QueryResponse testcaseResponse = restApi.query(testcaseRequest);
-        total=testcaseResponse.getResults().size();
-        
-        for (int i=0; i<testcaseResponse.getResults().size();i++)
-        {
-            JsonObject testcaseJsonObject = testcaseResponse.getResults().get(i).getAsJsonObject();
-            formattedId = testcaseJsonObject.get("FormattedID").getAsString();
-            
-            if(!(testcaseJsonObject.get("LastVerdict").toString().equals("null"))) 	
-            {
-            	 status  = testcaseJsonObject.get("LastVerdict").getAsString();
-            }            
-                      
-            if(!(testcaseJsonObject.get("Project").toString().equals("null"))) 	
-            {
-            	JsonObject projectJson = (JsonObject) testcaseJsonObject.get("Project");                	
-           	    team_Name = projectJson.get("_refObjectName").getAsString();
-            }            
-           
-            if(!(testcaseJsonObject.get("Method").toString().equals("null"))) 	
-            {
-            	method = testcaseJsonObject.get("Method").getAsString();
-            	method_count++;
-            }  
-            
-            try
-            {
-            	 if(!(testcaseJsonObject.get("c_CanbeAutomated").toString().equals("null"))) 	
-                 {
-            		 automated = testcaseJsonObject.get("c_CanbeAutomated").getAsString();
-            		 if(StringUtils.containsIgnoreCase(automated, "yes"))
-            			 automated_count++;
-                 }
-            }
-            catch(Exception e)
-            {
-            	automated="CanbeAutomated Field Not Exist";
-            }
-            
-            
-            TestCases TC = new TestCases();
-            TC.setFormattedId(formattedId);
-            TC.setStatus(status);
-            TC.setWorkProduct_name(workProduct_name);
-            TC.setTeam_name(team_Name);
-            TC.setMethod(method);
-            TC.setAutomated(automated);
-            
-            //System.out.println("     TC : "+formattedId+" : "+status);
-            write.write_testcase(TC, type_sprint_or_release);
-            
-            if(StringUtils.containsIgnoreCase(status, "Pass")) 	{	  pass++; }
-            else if(StringUtils.containsIgnoreCase(status, "Fail")) 	{	  fail++; }	
-            else if(StringUtils.containsIgnoreCase(status, "In Progress")){ in_progress++; }
-            else  if(StringUtils.containsIgnoreCase(status, "Blocked")) {		  blocked++;  }
-            else if(StringUtils.containsIgnoreCase(status, "No Run"))  {	  no_run++;     }            
-            else if(StringUtils.containsIgnoreCase(status, "Null")) { extra++; }
-            else { extra++; }
-            
-         }
-        
-        TestCases testcases = new TestCases();
-        testcases.setAll(pass, fail, in_progress, blocked, no_run, total, 0 , 0 , 0); 
-        testcases.setAutomated_count(automated_count);
-        testcases.setMethod_count(method_count);
-        
-        return testcases;
+	public static RallyRestApi getRestApi() {
+		return restApi;
 	}
-	
 
-	public static TestCases_CR addTwoTestCases_CR(TestCases_CR testcase1,TestCases_CR testcase2)
-	{
-		    TestCases_CR temp =new TestCases_CR();	
-		
-		    int[] pass_1 = testcase1.getPass();
-		    int[] fail_1  = testcase1.getFail();
-		    int[] in_progress_1  =testcase1.getIn_progress();
-		    int[] blocked_1  = testcase1.getBlocked();
-		    int[] no_run_1  = testcase1.getNo_run();
-		    int[] total_1  = testcase1.getTotal();		  
-		    int[] method_count_1  =testcase1.getMethod_count();
-		    int[] automated_count_1  = testcase1.getAutomated_count();
-		    int[] executed_1  = testcase1.getExecuted();
-		    
-		    int[] pass_2 = testcase2.getPass();
-		    int[] fail_2  = testcase2.getFail();
-		    int[] in_progress_2  =testcase2.getIn_progress();
-		    int[] blocked_2  = testcase2.getBlocked();
-		    int[] no_run_2  = testcase2.getNo_run();
-		    int[] total_2  = testcase2.getTotal();		  
-		    int[] method_count_2  =testcase2.getMethod_count();
-		    int[] automated_count_2  = testcase2.getAutomated_count();
-		    int[] executed_2  = testcase2.getExecuted();
-		    
-		    int[] pass = new int[10];
-		    int[] fail  = new int[10];
-		    int[] in_progress  = new int[10];
-		    int[] blocked  = new int[10];
-		    int[] no_run  = new int[10];
-		    int[] executed  = new int[10];
-		    int[] total  = new int[10];		    
-		    int[] method_count  = new int[10];
-		    int[] automated_count  = new int[10];
-		   
-		
-		for(int i=0;i<pass_1.length;i++)
-		{
-			pass[i]			= pass_1[i]+pass_2[i];
-			fail[i]			= fail_1[i]+fail_2[i];
-			in_progress[i]	= in_progress_1[i]+in_progress_2[i];
-			blocked[i]		= blocked_1[i]+blocked_2[i];
-			no_run[i]		= no_run_1[i]+no_run_2[i];
-			executed[i]		= executed_1[i]+	executed_2[i];
-			total[i]		= total_1[i]+	total_2[i];
-			method_count[i] = method_count_1[i]+method_count_2[i];
-			automated_count[i]=automated_count_1[i]+automated_count_2[i];			
-		}
-		
-		
-		temp.setPass(pass);
-		temp.setFail(fail);
-		temp.setIn_progress(in_progress);
-		temp.setBlocked(blocked);
-		temp.setNo_run(no_run);
-		temp.setExecuted(executed);
-		temp.setTotal(total);	
-		temp.setAutomated_count(automated_count);
-		temp.setMethod_count(method_count);
-		
-		return temp;
+	public static void setRestApi(RallyRestApi restApi) {
+		Common_Functions.restApi = restApi;
 	}
-	
-	 
-	public static UserStories_CR caculateCR_US(UserStories_CR userstory_details_cr,UserStories_CR userstory_details_cr_total,ArrayList<String> CR_list)
-	{
-		int[] backlogs_cr = userstory_details_cr.getBacklogs();
-		int[] defined_cr  = userstory_details_cr.getDefined();
-		int[] in_progress_cr = userstory_details_cr.getIn_progress();
-		int[] completed_cr = userstory_details_cr.getCompleted();
-		int[] accepted_cr = userstory_details_cr.getAccepted();
-		int[] total_cr = userstory_details_cr.getTotal();
-		
-		
-		int[] backlogs_total = userstory_details_cr_total.getBacklogs();
-		int[] defined_total  =userstory_details_cr_total.getDefined();
-		int[] in_progress_total = userstory_details_cr_total.getIn_progress();
-		int[] completed_total = userstory_details_cr_total.getCompleted();
-		int[] accepted_total = userstory_details_cr_total.getAccepted();
-		int[] total_total = userstory_details_cr_total.getTotal();
-		
-		
-		
-		
-		for(int i=0;i<CR_list.size();i++)
-		{   
-			backlogs_total[i]    += backlogs_cr[i];
-			defined_total[i]     += defined_cr[i];
-			in_progress_total[i] += in_progress_cr[i];
-			completed_total[i]   += completed_cr[i];
-			accepted_total[i]    += accepted_cr[i];
-			total_total[i]       += total_cr[i];
-		}
-		
-		userstory_details_cr_total.setAll(backlogs_total, defined_total, in_progress_total, completed_total, accepted_total, total_total);
-		//userstory_details_cr_total.displayAll();
-		return userstory_details_cr_total;
-	}
-	
-	public static Defects_CR caculateCR_DE(Defects_CR defect_details_cr,Defects_CR defect_details_cr_total,ArrayList<String> CR_list)
-	{
-		int[] backlogs_cr = defect_details_cr.getBacklogs();
-		int[] defined_cr  = defect_details_cr.getDefined();
-		int[] in_progress_cr = defect_details_cr.getIn_progress();
-		int[] completed_cr = defect_details_cr.getCompleted();
-		int[] accepted_cr = defect_details_cr.getAccepted();
-		int[] total_cr = defect_details_cr.getTotal();
-		
-		int[] submitted_cr= defect_details_cr.getSubmitted();
-		int[] open_cr= defect_details_cr.getOpen();
-		int[] fixed_cr=defect_details_cr.getFixed();
-		int[] closed_cr=defect_details_cr.getClosed();
-		int[] reopen_cr=defect_details_cr.getReopen();
-		int[] ready_for_test_cr=defect_details_cr.getReady_for_test();
-		int[] total_severity_cr=defect_details_cr.getTotal_severity();
-		int[] critical_cr=defect_details_cr.getCritical();
-		int[] major_cr=defect_details_cr.getMajor();
-		int[] average_cr=defect_details_cr.getAverage();
-		int[] minor_cr=defect_details_cr.getMinor();
-		int[] total_state_cr=defect_details_cr.getTotal_state();
-		
-		
-		
-		int[] backlogs_total = defect_details_cr_total.getBacklogs();
-		int[] defined_total  =defect_details_cr_total.getDefined();
-		int[] in_progress_total = defect_details_cr_total.getIn_progress();
-		int[] completed_total = defect_details_cr_total.getCompleted();
-		int[] accepted_total = defect_details_cr_total.getAccepted();
-		int[] total_total = defect_details_cr_total.getTotal();
-		
-		int[] submitted_total= defect_details_cr_total.getSubmitted();
-		int[] open_total= defect_details_cr_total.getOpen();
-		int[] fixed_total=defect_details_cr_total.getFixed();
-		int[] closed_total=defect_details_cr_total.getClosed();
-		int[] reopen_total=defect_details_cr_total.getReopen();
-		int[] ready_for_test_total=defect_details_cr_total.getReady_for_test();
-		int[] total_severity_total=defect_details_cr_total.getTotal_severity();
-		int[] critical_total=defect_details_cr_total.getCritical();
-		int[] major_total=defect_details_cr_total.getMajor();
-		int[] average_total=defect_details_cr_total.getAverage();
-		int[] minor_total=defect_details_cr_total.getMinor();
-		int[] total_state_total=defect_details_cr_total.getTotal_state();
-		
-		
-		for(int i=0;i<CR_list.size();i++)
-		{   
-			backlogs_total[i]    += backlogs_cr[i];
-			defined_total[i]     += defined_cr[i];
-			in_progress_total[i] += in_progress_cr[i];
-			completed_total[i]   += completed_cr[i];
-			accepted_total[i]    += accepted_cr[i];
-			total_total[i]       += total_cr[i];
-			
-			submitted_total[i]  += submitted_cr[i];
-			open_total[i]       += open_cr[i];
-			fixed_total[i]      += fixed_cr[i];
-			closed_total[i]     += closed_cr[i];
-			reopen_total[i]     += reopen_cr[i];
-			ready_for_test_total[i]+=ready_for_test_cr[i];
-			total_severity_total[i]+=total_severity_cr[i];
-			
-			critical_total[i]   += critical_cr[i];
-			major_total[i]      += major_cr[i];
-			average_total[i]    += average_cr[i];
-			minor_total[i]      += minor_cr[i];
-			total_state_total[i]+= total_state_cr[i];			
-		}
-		
-		defect_details_cr_total.setAll(backlogs_total, defined_total, in_progress_total, completed_total, accepted_total, total_total);
-		defect_details_cr_total.setAllSeverity(critical_total, major_total, average_total, minor_total, total_severity_total);
-		defect_details_cr_total.setAllState(submitted_total, open_total, fixed_total, closed_total, reopen_total, ready_for_test_total, total_state_total);
-		
-		//userstory_details_cr_total.displayAll();
-		return defect_details_cr_total;
-	}
-	
-	public static TestCases_CR caculateCR_TC(TestCases_CR testcase_details_cr,TestCases_CR testcase_details_cr_total,ArrayList<String> CR_list)
-	{
-		   TestCases_CR temp =new TestCases_CR();	
-			
-		    int[] pass_1 = testcase_details_cr.getPass();
-		    int[] fail_1  = testcase_details_cr.getFail();
-		    int[] in_progress_1  =testcase_details_cr.getIn_progress();
-		    int[] blocked_1  = testcase_details_cr.getBlocked();
-		    int[] no_run_1  = testcase_details_cr.getNo_run();
-		    int[] total_1  = testcase_details_cr.getTotal();		  
-		    int[] method_count_1  =testcase_details_cr.getMethod_count();
-		    int[] automated_count_1  = testcase_details_cr.getAutomated_count();
-		    int[] executed_1  = testcase_details_cr.getExecuted();
-		    
-		    int[] pass_2 = testcase_details_cr_total.getPass();
-		    int[] fail_2  = testcase_details_cr_total.getFail();
-		    int[] in_progress_2  =testcase_details_cr_total.getIn_progress();
-		    int[] blocked_2  = testcase_details_cr_total.getBlocked();
-		    int[] no_run_2  = testcase_details_cr_total.getNo_run();
-		    int[] total_2  = testcase_details_cr_total.getTotal();		  
-		    int[] method_count_2  =testcase_details_cr_total.getMethod_count();
-		    int[] automated_count_2  = testcase_details_cr_total.getAutomated_count();
-		    int[] executed_2  = testcase_details_cr_total.getExecuted();
-		    
-		    int[] pass = new int[10];
-		    int[] fail  = new int[10];
-		    int[] in_progress  = new int[10];
-		    int[] blocked  = new int[10];
-		    int[] no_run  = new int[10];
-		    int[] executed  = new int[10];
-		    int[] total  = new int[10];		    
-		    int[] method_count  = new int[10];
-		    int[] automated_count  = new int[10];
-		   
-		
-		for(int i=0;i<pass_1.length;i++)
-		{
-			pass[i]			= pass_1[i]+pass_2[i];
-			fail[i]			= fail_1[i]+fail_2[i];
-			in_progress[i]	= in_progress_1[i]+in_progress_2[i];
-			blocked[i]		= blocked_1[i]+blocked_2[i];
-			no_run[i]		= no_run_1[i]+no_run_2[i];
-			executed[i]		= executed_1[i]+	executed_2[i];
-			total[i]		= total_1[i]+	total_2[i];
-			method_count[i] = method_count_1[i]+method_count_2[i];
-			automated_count[i]=automated_count_1[i]+automated_count_2[i];			
-		}
-		
-		
-		temp.setPass(pass);
-		temp.setFail(fail);
-		temp.setIn_progress(in_progress);
-		temp.setBlocked(blocked);
-		temp.setNo_run(no_run);
-		temp.setExecuted(executed);
-		temp.setTotal(total);	
-		temp.setAutomated_count(automated_count);
-		temp.setMethod_count(method_count);
-		
-		return temp;
-	}
+
 
 }
 
