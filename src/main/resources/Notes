@@ -28,7 +28,7 @@ RallyApi 4.7.17
         sheet formatting
         
         
-      Updates:-(5.12.17)    
+      Updates:-(5.29.17)    
       
            Completed tasks :-
   			1)Sprint wise and release wise report.
@@ -46,15 +46,16 @@ RallyApi 4.7.17
 			7)preparing an UI.------
 			8)Try to create the custom API in inside the Rally.
 			9)Work with Comcast to see how their report works – Color Code report – Lokesh to send  the file and contact. 
-
+			10)defect and test case status based on  application
           	        completed 
           	           1) defect and test case status based on  CR
           	           2) Defect status report based on state and severity (based on date is depends on intividual defects)
                        
                     in-progress
-                       5)Design automated mailing system.
+                       5)Design automated mail system.(smtp server user name password issue)
 					   6)Run this tool in Jenkins.
-					   7)preparing an UI.(server creation is difficult)
+					   7)preparing an UI.(partialy completed difficulties faced on download excel)
+					   10)defect and test case status based on  application
         
                      difficult tasks
                        3)Test case report based on Testset.
@@ -62,6 +63,11 @@ RallyApi 4.7.17
           	           8)Try to create the custom API in inside the Rally.
 			           9)Work with Comcast to see how their report works – Color Code report – Lokesh to send  the file and contact. 
           	           
+          	           suggested by Nivetha
+          	           1)use filter intividualy for CR wise and application wise
+          	           2)defect report for submitted date wise
+          	           3)mongo DB
+          	           4)UI structure
           	           
           	           
           	           

@@ -3,7 +3,9 @@ package com.app.RallyApi;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 
@@ -33,37 +35,66 @@ public class test {
 	public static String uuid="cc844b31-bc0f-4637-a8cc-2857ed438664";
 	public static String usname="CR6176 SLSL Add address line two for qualification";
 	
+
+	
+	public static void main(String[] args) throws IOException, URISyntaxException 
+	{
+			test tst=new test();
+			
+			System.out.println("delete this ");
+			
+			System.out.println("*************************user story*******************************");
+			test.userstoryreq();
+			System.out.println("*************************test case*******************************");
+			//test.testcasereq("ffdhd");
+			System.out.println("*************************Iteration*******************************");
+			//test.iterationreq();
+			System.out.println("*************************Release*******************************");
+			//test.releasereq();
+			System.out.println("*************************test *******************************");
+			//test.testreq();				
+	}    
 	
 	public static void userstoryreq() throws IOException, URISyntaxException
 	{
-		String iterationName	= "Sprint 219";
+		String iterationName	= "Sprint 238";
 		String releaseName      = "PI10 2017.04";
-	    String team_name        = "Apttus PS";
-	    
+	    String team_name        = "NerdHerd";
+		//String team_name        = "SDWAN Kenobi";
 		String host 			= "https://rally1.rallydev.com";
         String username 		= "palanisamy.subramani@centurylink.com";
         String password 		= "Lalith@93";        
         String applicationName  = "Find Defects by Iterations and Team";
        
+        int application_count=0;
+        int cr_count=0;
         System.out.println(" test delete ");
         
         RallyRestApi restApi = null;
         try {
         	restApi = new RallyRestApi(new URI(host),username,password);
             //restApi.setApplicationName(applicationName); 
-
-           // QueryRequest userstoryRequest = new QueryRequest("HierarchicalRequirement"); 
-            QueryRequest userstoryRequest = new QueryRequest("Defects"); 
-            userstoryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=", iterationName).and(new QueryFilter("Project.Name", "=", team_name)));  //new QueryFilter("Project.Name", "=", team_name).and
-            
+            int count_0=0;
+            int count_1=0;
+            int count_nill=0;
+            QueryRequest userstoryRequest = new QueryRequest("HierarchicalRequirement"); 
+           // QueryRequest userstoryRequest = new QueryRequest("Defects"); 
+            //userstoryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=", iterationName).and(new QueryFilter("Project.Name", "=", team_name)));  //new QueryFilter("Project.Name", "=", team_name).and
+            //userstoryRequest.setQueryFilter(new QueryFilter("FormattedID", "=", "US168722"));  //new QueryFilter("Project.Name", "=", team_name).and
+           //  userstoryRequest.setQueryFilter(new QueryFilter("c_Application.Count", "=", "0"));  //new QueryFilter("Project.Name", "=", team_name).and
+             
+            //c_Application={"_rallyAPIMajor":"2","_rallyAPIMinor":"0","_ref":"https://rally1.rallydev.com/slm/webservice/v2.0/HierarchicalRequirement/123479683440/c_Application","_type":"AllowedAttributeValue","_tagsNameArray":[{"Name":"SFAINT","_ref":"/allowedattributevalue/78432701188"}],"Count":1}
+           // FormattedID = US168722  c_Application.Name =SFAINT
             //userstoryRequest.setQueryFilter(new QueryFilter("Release.Name", "=", releaseName).and(new QueryFilter("Project.Name", "=", team_name)));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
-        
+            userstoryRequest.setLimit(Integer.MAX_VALUE);
+            userstoryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=", iterationName));
 
             QueryResponse userstoryResponse = restApi.query(userstoryRequest);
             System.out.println("exe Successful: " + userstoryResponse.wasSuccessful());
             System.out.println("US Size: " + userstoryResponse.getTotalResultCount());
-           
-            for (int i=0; i<userstoryResponse.getResults().size()&&i<1;i++)
+                       
+            
+            for (int i=0; i<userstoryResponse.getTotalResultCount();i++)
             {
                 JsonObject userstoryJsonObject = userstoryResponse.getResults().get(i).getAsJsonObject();
                  
@@ -83,11 +114,104 @@ public class test {
                 String work_ref=workref.toString();
                 String objid=obid.toString();
                 
-                JsonObject release=(JsonObject) userstoryJsonObject.get("Release");
+               // JsonObject release=(JsonObject) userstoryJsonObject.get("Release");
                 JsonObject sprint=null;//(JsonObject) userstoryJsonObject.get("Iteration");
                 Object obj=userstoryJsonObject.get("Iteration");
                 //String str1=obj.toString();
+                String appname="";
+              
+                
+                //============================appliction=================================
+             try{
+                	   JsonObject application = (JsonObject) userstoryJsonObject.get("c_Application"); 
+                	               
+                	   JsonArray list =new JsonArray();
+                       if(application.get("_tagsNameArray").getAsJsonArray().size()!=0)
+                       {
+                    	   
+                    	   
+                    	   //System.out.println(" not an  empty array");
+                    	   
+                    	   list=application.get("_tagsNameArray").getAsJsonArray();                    	   
+                    	   //list=(List<String>) application.get("_tagsNameArray");
+                    	   
+                    	  // System.out.println("app list : "+list+" size : "+list.size());
+                    	   
+                    	   JsonObject appobj=(JsonObject) list.get(0) ;
+                    	   //System.out.println("app obj : "+appobj+ " app name : "+appobj.get("Name").getAsString());
+                    	   appname=appobj.get("Name").getAsString();
+                       
+                    	   
+                    	   if(appname.contains("SFAINT"))
+                           {
+                        	   System.out.println(" application sfaint is there");
+                        	   application_count++;
+                        	   System.out.println("app list : "+list+" size : "+list.size()+"  "+userstoryJsonObject.get("FormattedID"));
+                           }
+                    	  // CR5981
+                       
+                       }
+                       else
+                       {
+                    	   //System.out.println(" empty array");
+                       }
+                	 
+                	
+                	 //System.out.println(i+" "+" true  "+application.get("_tagsNameArray"));
+                }catch(Exception e){
+                	count_nill++;
+                	System.out.println("application false");
+                }
+                
+              //================================  cr  =======================================
                
+                try{
+             	   JsonObject crnumber = (JsonObject) userstoryJsonObject.get("c_CR"); 
+             	               
+             	   JsonArray list =new JsonArray();
+                    if(crnumber.get("_tagsNameArray").getAsJsonArray().size()!=0)
+                    {
+                 	   
+                 	   
+                 	   //System.out.println(" not an  empty array");
+                 	   
+                 	   list=crnumber.get("_tagsNameArray").getAsJsonArray();   
+                 	   //System.out.println("CR list : "+list+" size : "+list.size());
+                 	   
+                 	   JsonObject appobj=(JsonObject) list.get(0) ;
+                 	   //System.out.println("app obj : "+appobj+ " CR name : "+appobj.get("Name").getAsString());
+                 	   appname=appobj.get("Name").getAsString();
+                    
+                 	   
+                 	   if(appname.contains("CR5571"))
+                        {
+                     	   System.out.println(" cr CR5981 is there");
+                     	  cr_count++;
+                     	   System.out.println("CR list : "+list+" size : "+list.size()+"  "+userstoryJsonObject.get("FormattedID"));
+                        }
+                 	  // CR5981
+                  
+                    }
+                    else
+                    {
+                 	  // System.out.println(" empty array");
+                    }
+             	 
+             	
+             	 //System.out.println(i+" "+" true  "+application.get("_tagsNameArray"));
+             }catch(Exception e){
+             	count_nill++;
+             	System.out.println("CR false");
+             }
+      // ==================================================================================            
+                
+                
+             
+                
+            /*	   
+                
+              
+                
                 try
                 {
                 	if(userstoryJsonObject.get("c_Testable5").toString().equals("null"))
@@ -107,14 +231,14 @@ public class test {
                 }
                 
                // usname=name.toString();
-                Object relName=release.get("_refObjectName");
+               // Object relName=release.get("_refObjectName");
                 Object sprName="";//sprint.get("_refObjectName");
                 
                 System.out.println(" US===form id : " +fmid+" state : "+ stat);
                 //System.out.println("uuid : "+uuids+" name: "+name);
                 //System.out.println(" US===form id : " +fmid+" state : "+ stat+" rele Name : "+relName+ " spr name : "+sprName+ " obj "+obj);
                 System.out.println(" obj id : "+obid+" totalcount : "+ tccount +" pass : "+passTc +" test status : "+testCaseStatus);
-                
+               
                 //test.testcasereq(str1);
                 
                 Set<?> key=userstoryJsonObject.entrySet();
@@ -125,7 +249,10 @@ public class test {
                 	System.out.println("str : "+str);  
                 }
                  
+         */  
                 
+                
+            //==============================================================================================    
                 /*
                 System.out.println("work ref : "+workref);
                 // System.out.println("obid:TC:PTC"+obid+":"+tccount+":"+passTc+"\n\n"+testcasejson);
@@ -172,31 +299,14 @@ public class test {
             }
 
         } finally {
+        	System.out.println("sfaint app count : "+application_count);
+        	System.out.println("cr  count : "+cr_count);
             if (restApi != null) {
                 restApi.close();
             }
         }
 	}
 	
-	
-	
-	public static void main(String[] args) throws IOException, URISyntaxException 
-	{
-			test tst=new test();
-			
-			System.out.println("delete this ");
-			
-			System.out.println("*************************user story*******************************");
-			test.userstoryreq();
-			System.out.println("*************************test case*******************************");
-			//test.testcasereq("ffdhd");
-			System.out.println("*************************Iteration*******************************");
-			//test.iterationreq();
-			System.out.println("*************************Release*******************************");
-			//test.releasereq();
-			System.out.println("*************************test *******************************");
-			//test.testreq();				
-	}    
 	
 	public static void delete_fun() throws IOException, URISyntaxException
 	{
