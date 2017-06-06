@@ -44,9 +44,9 @@ public class test {
 			System.out.println("delete this ");
 			
 			System.out.println("*************************user story*******************************");
-			test.userstoryreq();
+			//test.userstoryreq();
 			System.out.println("*************************test case*******************************");
-			//test.testcasereq("ffdhd");
+			test.testcasereq("ffdhd");
 			System.out.println("*************************Iteration*******************************");
 			//test.iterationreq();
 			System.out.println("*************************Release*******************************");

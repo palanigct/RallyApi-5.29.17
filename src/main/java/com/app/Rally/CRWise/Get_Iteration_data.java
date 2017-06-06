@@ -89,9 +89,17 @@ public class Get_Iteration_data
 	   	    	    	    
 	    // get defect values
 		
-	    type_story_or_defect="defects";		
+	    //type_story_or_defect="defect";		
+	    //TeamStatus temp=common_fun_obj.callRestApi_CR(sprint_name, type_story_or_defect, "iteration", CR_list);			
+		//defect_details_cr=temp.getDefects_cr();		
+		
+		// get testcase values
+		
+	    type_story_or_defect="testcase";		
 	    TeamStatus temp=common_fun_obj.callRestApi_CR(sprint_name, type_story_or_defect, "iteration", CR_list);			
-		defect_details_cr=temp.getDefects_cr();		
+	    testcase_details_cr=temp.getTestcases_cr();		
+		
+		
 		
 		TeamStatus team_status=new TeamStatus();		
 		 
