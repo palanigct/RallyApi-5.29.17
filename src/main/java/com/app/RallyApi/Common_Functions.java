@@ -223,10 +223,10 @@ public class Common_Functions
                             
                  
                  if(StringUtils.containsIgnoreCase(defectState, "Submitted")) submitted++; 
-                 if(StringUtils.containsIgnoreCase(defectState, "Open")) 	  open++;
+                 if(StringUtils.equalsIgnoreCase(defectState, "Open")) 	  open++;
                  if(StringUtils.containsIgnoreCase(defectState, "Fixed"))  fixed++;
                  if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) ready_for_test++;
-                 if(StringUtils.containsIgnoreCase(defectState, "Reopen"))  reopen++;
+                 if(StringUtils.equalsIgnoreCase(defectState, "Reopen"))  reopen++;
                  if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	 closed++;
                 	 
                  if(StringUtils.containsIgnoreCase(severity, "Average")) 	  average++;

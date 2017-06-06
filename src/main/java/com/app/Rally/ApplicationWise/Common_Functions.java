@@ -283,7 +283,7 @@ public class Common_Functions
                         	list=c_Application.get("_tagsNameArray").getAsJsonArray();                         	              	   
                         	JsonObject appobj=(JsonObject) list.get(0) ;                        	
                         	application_name=appobj.get("Name").getAsString();                    
-                        	
+                        	                        	
                         	int index=0;
                         	boolean check=false;
                         	
@@ -377,10 +377,10 @@ public class Common_Functions
                                    if(state_temp.contains("Accepted")) 	  accepted_app[i]++; 
                                               
                                    if(StringUtils.containsIgnoreCase(defectState, "Submitted"))      { submitted_app[i]++;      total_state_app[i]++; }
-                                   if(StringUtils.containsIgnoreCase(defectState, "Open")) 	         { open_app[i]++;           total_state_app[i]++;    }
+                                   if(StringUtils.equalsIgnoreCase(defectState, "Open")) 	         { open_app[i]++;           total_state_app[i]++;    }
                                    if(StringUtils.containsIgnoreCase(defectState, "Fixed"))          { fixed_app[i]++;          total_state_app[i]++; }
                                    if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) { ready_for_test_app[i]++; total_state_app[i]++; }
-                                   if(StringUtils.containsIgnoreCase(defectState, "Reopen"))         { reopen_app[i]++;         total_state_app[i]++; }
+                                   if(StringUtils.equalsIgnoreCase(defectState, "Reopen"))         { reopen_app[i]++;         total_state_app[i]++; }
                                    if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	     { closed_app[i]++;         total_state_app[i]++;}
                                              	 
                                    if(StringUtils.containsIgnoreCase(severity, "Average")) 	    { average_app[i]++;  total_severity_app[i]++; }
@@ -425,10 +425,14 @@ public class Common_Functions
     	 testcase_details_app.setAutomated_count(automated_count_tc_app);
     	 testcase_details_app.setMethod_count(method_count_tc_app);
     	 
+    	 
+    	 //defect_details_app.displayAll();
+    	 //defect_details_app.displayAllSeverity();
+    	 //defect_details_app.displayAllState();
     	 team_status.setAllApplication(userstory_details_app, defect_details_app, testcase_details_app);   	 
     	   	 
-    	 team_status.getUserstories_application().displayAll();
- 		team_status.getDefects_application().displayAll();
+    	 ///team_status.getUserstories_application().displayAll();
+ 		 //team_status.getDefects_application().displayAll();
     	 return team_status; 
 	}
 		

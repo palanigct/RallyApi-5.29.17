@@ -31,9 +31,9 @@ public class TeamStatus
 	
 	public void setAllApplication(UserStories_Application userstories_application,Defects_Application defects_application,TestCases_Application testcases_application)
 	{
-		this.userstories=userstories;
-		this.defects=defects;
-		this.testcases=testcases;		
+		this.userstories_application=userstories_application;
+		this.defects_application=defects_application;
+		this.testcases_application=testcases_application;
 	}
    
 	

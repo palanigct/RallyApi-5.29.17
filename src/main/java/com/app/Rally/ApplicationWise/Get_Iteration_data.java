@@ -89,14 +89,14 @@ public class Get_Iteration_data
 		
 		// get userstory values
 		
-		type_story_or_defect="userstory";	    
-	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);
-	    userstory_details_app=temp.getUserstories_application();   
+		//type_story_or_defect="userstory";	    
+	    //TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);
+	    //userstory_details_app=temp.getUserstories_application();   
 	   	    	    	    
 	    // get defect values
 		
 	    type_story_or_defect="defects";		
-	    temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
+	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
 		defect_details_app=temp.getDefects_application();		
 		
 		//get testcase values
