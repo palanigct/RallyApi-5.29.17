@@ -17,6 +17,7 @@ public class Other_Functions
 	public static List<HashMap<String,String>> mydata_App_Data = read.data("src/main/resources/INPUT.xls", "APP_DATA");
 	public static ArrayList<String> team_list=new ArrayList<String>();
 	public static ArrayList<String> CRList=new ArrayList<String>();
+	public static ArrayList<String> AppList=new ArrayList<String>();
 	
 	public static ArrayList<String> get_team_List()
 	{
@@ -44,6 +45,15 @@ public class Other_Functions
 		return CRList;		
 	}
 	
+	public static ArrayList<String> get_Application_List()
+	{
+		for(int i=0;i<mydata_App_Data.size();i++)
+		{	
+			 if(!(mydata_App_Data.get(i).get("Applications").equals("")))
+				 AppList.add(mydata_App_Data.get(i).get("Applications"));			
+		}
+		return AppList;		
+	}
 	
 	public static void copy_template_folder() throws Throwable
 	{		

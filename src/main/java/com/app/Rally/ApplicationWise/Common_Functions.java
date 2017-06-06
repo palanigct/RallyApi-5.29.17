@@ -144,7 +144,7 @@ public class Common_Functions
 	}
 	
 	
-	public static TeamStatus callRestApi_Application(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> CR_list) throws IOException, URISyntaxException
+	public static TeamStatus callRestApi_Application(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> Application_list) throws IOException, URISyntaxException
 	{
 		TeamStatus team_status=new TeamStatus();
 		
@@ -236,7 +236,7 @@ public class Common_Functions
         String sprintName="Null";                                
         String severity  ="Null";               
         String defectState ="Null";
-        String CRNumber="Null";
+        String application_name="Null";
 		
         UserStories story=new UserStories();
         String team_name="Null";
@@ -276,20 +276,20 @@ public class Common_Functions
                  //================================  CR  =======================================
                  
                  try{
-              	   		JsonObject CR_number = (JsonObject) storyJsonObject.get("c_CR");              	               
+              	   		JsonObject c_Application = (JsonObject) storyJsonObject.get("c_Application");              	               
               	   		JsonArray list =new JsonArray();
-                        if(CR_number.get("_tagsNameArray").getAsJsonArray().size()!=0)
+                        if(c_Application.get("_tagsNameArray").getAsJsonArray().size()!=0)
                         {                            	                  	   
-                        	list=CR_number.get("_tagsNameArray").getAsJsonArray();                         	              	   
+                        	list=c_Application.get("_tagsNameArray").getAsJsonArray();                         	              	   
                         	JsonObject appobj=(JsonObject) list.get(0) ;                        	
-                        	CRNumber=appobj.get("Name").getAsString();                    
+                        	application_name=appobj.get("Name").getAsString();                    
                         	
                         	int index=0;
                         	boolean check=false;
                         	
-                        	for(int i=0;i<CR_list.size();i++)          //check the CR number in list
+                        	for(int i=0;i<Application_list.size();i++)          //check the CR number in list
                             { 
-                        		if(StringUtils.containsIgnoreCase(CRNumber, CR_list.get(i)))
+                        		if(StringUtils.containsIgnoreCase(application_name, Application_list.get(i)))
                            	 	{                      			 
                         			 index=i;  
                         			 check=true;
@@ -365,7 +365,9 @@ public class Common_Functions
                                    story.setTestable(testable);
                                    story.setSeverity(severity);
                                    story.setState(defectState);
-                                   story.setCRNumber(CRNumber);
+                                   story.setApplication(application_name);
+                                   //story.setCRNumber(CRNumber);
+                                   
                                    write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);
                                	
                                    if(state_temp.contains("Backlog")) 	  backlogs_cr[i]++;

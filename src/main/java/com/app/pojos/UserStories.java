@@ -28,7 +28,18 @@ public class UserStories
 	private String severity; 
 	private String state; 
 	private String CRNumber;
+	private String application;
 	
+	
+	
+	public String getApplication() {
+		return application;
+	}
+
+	public void setApplication(String application) {
+		this.application = application;
+	}
+
 	public String getSeverity() {
 		return severity;
 	}

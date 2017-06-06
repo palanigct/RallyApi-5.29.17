@@ -39,7 +39,7 @@ public class Get_Iteration_data
 	public static RallyRestApi restApi = null;
 	public static Common_Functions common_fun_obj=new Common_Functions();
 		
-	public void Exe_Iteration_Application(ArrayList<String> CR_list) throws Throwable
+	public void Exe_Iteration_Application(ArrayList<String> Application_list) throws Throwable
 	{
 
 		String host 			  =  mydata_App_Login.get(0).get("Host");
@@ -60,19 +60,19 @@ public class Get_Iteration_data
 	        restApi.setApplicationName(applicationName); 
 	        common_fun_obj.setRestApi(restApi);
 	        
-	        team_status=ite_obj.get_Iteration_Status_details_for_team_and_sprint_Application(sprint_name, CR_list);
+	        team_status=ite_obj.get_Iteration_Status_details_for_team_and_sprint_Application(sprint_name, Application_list);
 	    }
 		finally 
 		{
 			if (restApi != null) { 	   restApi.close();   } 			
 		} 		
 		
-		write.write_CRwise_userstories_and_defect(team_status, CR_list, "iteration");
-		write.write_CRwise_defect_details(team_status, CR_list, "iteration");
-		write.write_CRwise_testCase_details(team_status, CR_list, "iteration");					
+		write.write_ApplicationWise_userstories_and_defect(team_status, Application_list, "iteration");
+		write.write_ApplicationWise_defect_details(team_status, Application_list, "iteration");
+		write.write_ApplicationWise_testCase_details(team_status, Application_list, "iteration");					
 	}
 	
-	public static TeamStatus get_Iteration_Status_details_for_team_and_sprint_Application(String sprint_name,ArrayList<String> CR_list) throws Exception
+	public static TeamStatus get_Iteration_Status_details_for_team_and_sprint_Application(String sprint_name,ArrayList<String> Application_list) throws Exception
 	{
 		String type_story_or_defect="";
 		
@@ -83,14 +83,14 @@ public class Get_Iteration_data
 		
 		// get userstory values
 		
-		//type_story_or_defect="userstory";	    
-	    // TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", CR_list);
-	    // userstory_details_cr=temp.getUserstories_cr();	    	    
+		type_story_or_defect="userstory";	    
+	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);
+	    userstory_details_cr=temp.getUserstories_cr();	    	    
 	   	    	    	    
 	    // get defect values
 		
 	    type_story_or_defect="defects";		
-	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", CR_list);			
+	    temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
 		defect_details_cr=temp.getDefects_cr();		
 		
 		TeamStatus team_status=new TeamStatus();		

@@ -22,7 +22,7 @@ public class RallyRunner
 	public static DrawChart_Excel drawchart=new DrawChart_Excel();
 	
 	public static ArrayList<String> team_list=new ArrayList<String>();
-	public static ArrayList<String> CR_list=new ArrayList<String>();
+	public static ArrayList<String> Application_list=new ArrayList<String>();
 	
 	public static void main(String arg[]) throws Throwable
 	{
@@ -38,9 +38,9 @@ public class RallyRunner
 		
 		team_list=other_fun_obj.get_team_List();     //get the team list
 		
-		CR_list=other_fun_obj.get_CR_List();         //get the CR list
-		
-		ite_obj.Exe_Iteration_Application(CR_list);  	     //execute iteration function for get the iterations data's with CR wise details
+		Application_list=other_fun_obj.get_Application_List();        //get the Application list
+	
+		ite_obj.Exe_Iteration_Application(Application_list);  	     //execute iteration function for get the iterations data's with CR wise details
 		
 		
 		
