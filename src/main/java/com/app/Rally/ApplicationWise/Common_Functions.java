@@ -12,12 +12,12 @@ import org.apache.commons.lang.StringUtils;
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
 import com.app.pojos.Defects;
-import com.app.pojos.Defects_CR;
+import com.app.pojos.Defects_Application;
 import com.app.pojos.TeamStatus;
 import com.app.pojos.TestCases;
-import com.app.pojos.TestCases_CR;
+import com.app.pojos.TestCases_Application;
 import com.app.pojos.UserStories;
-import com.app.pojos.UserStories_CR;
+import com.app.pojos.UserStories_Application;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -187,36 +187,36 @@ public class Common_Functions
 		int exe_tc=0;
 		
 		
-		int[] backlogs_cr = new int [10];
-		int[] defined_cr  = new int [10];
-		int[] in_progress_cr = new int [10];
-		int[] completed_cr = new int [10];
-		int[] accepted_cr = new int [10];
-		int[] total_cr = new int [10];
+		int[] backlogs_app = new int [10];
+		int[] defined_app  = new int [10];
+		int[] in_progress_app = new int [10];
+		int[] completed_app = new int [10];
+		int[] accepted_app = new int [10];
+		int[] total_app = new int [10];
 		
-		int[] submitted_cr= new int [10];
-		int[] open_cr= new int [10];
-		int[] fixed_cr=new int [10];
-		int[] closed_cr=new int [10];
-		int[] reopen_cr=new int [10];
-		int[] ready_for_test_cr=new int [10];
-		int[] total_severity_cr=new int [10];
-		int[] critical_cr=new int [10];
-		int[] major_cr=new int [10];
-		int[] average_cr=new int [10];
-		int[] minor_cr=new int [10];
-		int[] total_state_cr=new int [10];		
+		int[] submitted_app= new int [10];
+		int[] open_app= new int [10];
+		int[] fixed_app=new int [10];
+		int[] closed_app=new int [10];
+		int[] reopen_app=new int [10];
+		int[] ready_for_test_app=new int [10];
+		int[] total_severity_app=new int [10];
+		int[] critical_app=new int [10];
+		int[] major_app=new int [10];
+		int[] average_app=new int [10];
+		int[] minor_app=new int [10];
+		int[] total_state_app=new int [10];		
 		
-		int[] pass_tc_cr		= new int[10];
-		int[] fail_tc_cr  		=new int[10];
-		int[] in_progress_tc_cr = new int[10];
-		int[] blocked_tc_cr		= new int[10];
-		int[] no_run_tc_cr		= new int[10];
-		int[] total_tc_cr	    = new int[10];		
-		int[] extra_cr		= new int[10];
-		int[] automated_count_tc_cr =new int[10];
-		int[] method_count_tc_cr =new int[10];
-		int[] exe_tc_cr=new int[10];
+		int[] pass_tc_app		= new int[10];
+		int[] fail_tc_app  		=new int[10];
+		int[] in_progress_tc_app = new int[10];
+		int[] blocked_tc_app		= new int[10];
+		int[] no_run_tc_app		= new int[10];
+		int[] total_tc_app	    = new int[10];		
+		int[] extra_app		= new int[10];
+		int[] automated_count_tc_app =new int[10];
+		int[] method_count_tc_app =new int[10];
+		int[] exe_tc_app=new int[10];
 				
 		String state_temp="";
         String name="";
@@ -287,7 +287,7 @@ public class Common_Functions
                         	int index=0;
                         	boolean check=false;
                         	
-                        	for(int i=0;i<Application_list.size();i++)          //check the CR number in list
+                        	for(int i=0;i<Application_list.size();i++)          //check the Application name in list
                             { 
                         		if(StringUtils.containsIgnoreCase(application_name, Application_list.get(i)))
                            	 	{                      			 
@@ -370,25 +370,25 @@ public class Common_Functions
                                    
                                    write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);
                                	
-                                   if(state_temp.contains("Backlog")) 	  backlogs_cr[i]++;
-                                   if(state_temp.contains("Defined")) 	  defined_cr[i]++;
-                                   if(state_temp.contains("In-Progress")) in_progress_cr[i]++;
-                                   if(state_temp.contains("Completed"))   completed_cr[i]++;
-                                   if(state_temp.contains("Accepted")) 	  accepted_cr[i]++; 
+                                   if(state_temp.contains("Backlog")) 	  backlogs_app[i]++;
+                                   if(state_temp.contains("Defined")) 	  defined_app[i]++;
+                                   if(state_temp.contains("In-Progress")) in_progress_app[i]++;
+                                   if(state_temp.contains("Completed"))   completed_app[i]++;
+                                   if(state_temp.contains("Accepted")) 	  accepted_app[i]++; 
                                               
-                                   if(StringUtils.containsIgnoreCase(defectState, "Submitted"))      { submitted_cr[i]++;      total_state_cr[i]++; }
-                                   if(StringUtils.containsIgnoreCase(defectState, "Open")) 	         { open_cr[i]++;           total_state_cr[i]++;    }
-                                   if(StringUtils.containsIgnoreCase(defectState, "Fixed"))          { fixed_cr[i]++;          total_state_cr[i]++; }
-                                   if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) { ready_for_test_cr[i]++; total_state_cr[i]++; }
-                                   if(StringUtils.containsIgnoreCase(defectState, "Reopen"))         { reopen_cr[i]++;         total_state_cr[i]++; }
-                                   if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	     { closed_cr[i]++;         total_state_cr[i]++;}
+                                   if(StringUtils.containsIgnoreCase(defectState, "Submitted"))      { submitted_app[i]++;      total_state_app[i]++; }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Open")) 	         { open_app[i]++;           total_state_app[i]++;    }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Fixed"))          { fixed_app[i]++;          total_state_app[i]++; }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) { ready_for_test_app[i]++; total_state_app[i]++; }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Reopen"))         { reopen_app[i]++;         total_state_app[i]++; }
+                                   if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	     { closed_app[i]++;         total_state_app[i]++;}
                                              	 
-                                   if(StringUtils.containsIgnoreCase(severity, "Average")) 	    { average_cr[i]++;  total_severity_cr[i]++; }
-                                   if(StringUtils.containsIgnoreCase(severity, "Critical"))     { critical_cr[i]++; total_severity_cr[i]++; }
-                                   if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_cr[i]++;    total_severity_cr[i]++; }
-                                   if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_cr[i]++;    total_severity_cr[i]++; }
+                                   if(StringUtils.containsIgnoreCase(severity, "Average")) 	    { average_app[i]++;  total_severity_app[i]++; }
+                                   if(StringUtils.containsIgnoreCase(severity, "Critical"))     { critical_app[i]++; total_severity_app[i]++; }
+                                   if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_app[i]++;    total_severity_app[i]++; }
+                                   if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_app[i]++;    total_severity_app[i]++; }
                                               
-                                   total_cr[i]++;
+                                   total_app[i]++;
                         	}    
                         }
                         else
@@ -413,22 +413,22 @@ public class Common_Functions
             }
 		
      
-    	 UserStories_CR userstory_details_cr=new UserStories_CR();
-    	 Defects_CR defect_details_cr= new Defects_CR();
-    	 TestCases_CR testcase_details_cr= new TestCases_CR();
+    	 UserStories_Application userstory_details_app=new UserStories_Application();
+    	 Defects_Application defect_details_app= new Defects_Application();
+    	 TestCases_Application testcase_details_app= new TestCases_Application();
     	
-    	 userstory_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
-    	 defect_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
-    	 defect_details_cr.setAllSeverity(critical_cr, major_cr, average_cr, minor_cr, total_severity_cr);
-    	 defect_details_cr.setAllState(submitted_cr, open_cr, fixed_cr, closed_cr, reopen_cr, ready_for_test_cr, total_state_cr);
-    	 testcase_details_cr.setAll(pass_tc_cr, fail_tc_cr, in_progress_tc_cr, blocked_tc_cr, no_run_tc_cr, exe_tc_cr, total_tc_cr);
-    	 testcase_details_cr.setAutomated_count(automated_count_tc_cr);
-    	 testcase_details_cr.setMethod_count(method_count_tc_cr);
+    	 userstory_details_app.setAll(backlogs_app, defined_app, in_progress_app, completed_app, accepted_app, total_app);
+    	 defect_details_app.setAll(backlogs_app, defined_app, in_progress_app, completed_app, accepted_app, total_app);
+    	 defect_details_app.setAllSeverity(critical_app, major_app, average_app, minor_app, total_severity_app);
+    	 defect_details_app.setAllState(submitted_app, open_app, fixed_app, closed_app, reopen_app, ready_for_test_app, total_state_app);
+    	 testcase_details_app.setAll(pass_tc_app, fail_tc_app, in_progress_tc_app, blocked_tc_app, no_run_tc_app, exe_tc_app, total_tc_app);
+    	 testcase_details_app.setAutomated_count(automated_count_tc_app);
+    	 testcase_details_app.setMethod_count(method_count_tc_app);
     	 
-    	 team_status.setDefects_cr(defect_details_cr);
-    	 team_status.setUserstories_cr(userstory_details_cr);
-    	 team_status.setTestcases_cr(testcase_details_cr);    	 
+    	 team_status.setAllApplication(userstory_details_app, defect_details_app, testcase_details_app);   	 
     	   	 
+    	 team_status.getUserstories_application().displayAll();
+ 		team_status.getDefects_application().displayAll();
     	 return team_status; 
 	}
 		

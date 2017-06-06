@@ -10,17 +10,64 @@ public class TeamStatus
 	Defects_CR defects_cr=new Defects_CR();
 	TestCases_CR testcases_cr=new TestCases_CR();
 	
+	UserStories_Application userstories_application=new UserStories_Application();
+	Defects_Application defects_application=new Defects_Application();
+	TestCases_Application testcases_application=new TestCases_Application();
+	
+	
 	public void setAll(UserStories userstories,Defects defects,TestCases testcases)
 	{
 		this.userstories=userstories;
 		this.defects=defects;
 		this.testcases=testcases;		
 	}
+	
+	public void setAll_CR(UserStories_CR userstories_cr,Defects_CR defects_cr,TestCases_CR testcases_cr)
+	{
+		this.userstories_cr=userstories_cr;
+		this.defects_cr=defects_cr;
+		this.testcases_cr=testcases_cr;
+	}
+	
+	public void setAllApplication(UserStories_Application userstories_application,Defects_Application defects_application,TestCases_Application testcases_application)
+	{
+		this.userstories=userstories;
+		this.defects=defects;
+		this.testcases=testcases;		
+	}
    
+	
+	
+	public UserStories_Application getUserstories_application() {
+		return userstories_application;
+	}
+
+	public void setUserstories_application(UserStories_Application userstories_application) {
+		this.userstories_application = userstories_application;
+	}
+
+	public Defects_Application getDefects_application() {
+		return defects_application;
+	}
+
+	public void setDefects_application(Defects_Application defects_application) {
+		this.defects_application = defects_application;
+	}
+
+	public TestCases_Application getTestcases_application() {
+		return testcases_application;
+	}
+
+	public void setTestcases_application(TestCases_Application testcases_application) {
+		this.testcases_application = testcases_application;
+	}
+
 	public UserStories getUserstories() {
 		return userstories;
 	}
 
+	
+	
 	public void setUserstories(UserStories userstories) {
 		this.userstories = userstories;
 	}

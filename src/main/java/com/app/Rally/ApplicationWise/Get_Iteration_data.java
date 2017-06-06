@@ -12,11 +12,14 @@ import org.apache.commons.lang.StringUtils;
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
 import com.app.pojos.Defects;
+import com.app.pojos.Defects_Application;
 import com.app.pojos.Defects_CR;
 import com.app.pojos.TeamStatus;
 import com.app.pojos.TestCases;
+import com.app.pojos.TestCases_Application;
 import com.app.pojos.TestCases_CR;
 import com.app.pojos.UserStories;
+import com.app.pojos.UserStories_Application;
 import com.app.pojos.UserStories_CR;
 import com.google.gson.JsonObject;
 import com.rallydev.rest.RallyRestApi;
@@ -67,6 +70,9 @@ public class Get_Iteration_data
 			if (restApi != null) { 	   restApi.close();   } 			
 		} 		
 		
+		//team_status.getUserstories_application().displayAll();
+		//team_status.getDefects_application().displayAll();
+		
 		write.write_ApplicationWise_userstories_and_defect(team_status, Application_list, "iteration");
 		write.write_ApplicationWise_defect_details(team_status, Application_list, "iteration");
 		write.write_ApplicationWise_testCase_details(team_status, Application_list, "iteration");					
@@ -76,32 +82,36 @@ public class Get_Iteration_data
 	{
 		String type_story_or_defect="";
 		
-		UserStories_CR userstory_details_cr=new UserStories_CR();
-		Defects_CR defect_details_cr=new Defects_CR();
-		TestCases_CR testcase_details_cr=new TestCases_CR();
+		UserStories_Application userstory_details_app=new UserStories_Application();
+		Defects_Application defect_details_app=new Defects_Application();
+		TestCases_Application testcase_details_app=new TestCases_Application();
 		
 		
 		// get userstory values
 		
 		type_story_or_defect="userstory";	    
 	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);
-	    userstory_details_cr=temp.getUserstories_cr();	    	    
+	    userstory_details_app=temp.getUserstories_application();   
 	   	    	    	    
 	    // get defect values
 		
 	    type_story_or_defect="defects";		
 	    temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
-		defect_details_cr=temp.getDefects_cr();		
+		defect_details_app=temp.getDefects_application();		
+		
+		//get testcase values
+		
+		//type_story_or_defect="testcase";
+		//temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
+		//testcase_details_app=temp.getTestcases_application();
+		
 		
 		TeamStatus team_status=new TeamStatus();		
 		 
-		team_status.setUserstories_cr(userstory_details_cr);
-		team_status.setDefects_cr(defect_details_cr);
-		team_status.setTestcases_cr(testcase_details_cr);	
+		team_status.setAllApplication(userstory_details_app, defect_details_app, testcase_details_app);	
 			
 		return team_status;		
 	}
-
 	
 }	
 
