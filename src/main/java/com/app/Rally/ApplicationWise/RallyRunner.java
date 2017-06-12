@@ -34,9 +34,7 @@ public class RallyRunner
 				
 		other_fun_obj.copy_template_folder();	     //copy template folder to output folder	
 		
-							
-		
-		team_list=other_fun_obj.get_team_List();     //get the team list
+				
 		
 		Application_list=other_fun_obj.get_Application_List();        //get the Application list
 	

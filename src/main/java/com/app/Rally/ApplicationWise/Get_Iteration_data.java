@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
+import com.app.excelwrite.Excel_Write_Way2;
 import com.app.pojos.Defects;
 import com.app.pojos.Defects_Application;
 import com.app.pojos.Defects_CR;
@@ -35,6 +36,7 @@ public class Get_Iteration_data
 	private static final String Static = null;
 	public static Readfile read = new Readfile();
 	public static Excel_Write write=new Excel_Write();
+	public static Excel_Write_Way2 write2=new Excel_Write_Way2();
 	public static List<HashMap<String,String>> mydata_App_Login = read.data("src/main/resources/INPUT.xls", "APP_LOGIN");
 	public static List<HashMap<String,String>> mydata_App_Data = read.data("src/main/resources/INPUT.xls", "APP_DATA");
 	public static Get_Iteration_data ite_obj=new Get_Iteration_data();
@@ -74,10 +76,13 @@ public class Get_Iteration_data
 		//team_status.getDefects_application().displayAll();
 		
 		
+		write2.write_Iteration_Status_Dashboard_APP(team_status, Application_list,"iteration");
+		write2.write_DE_Details_Severity_APP(team_status, Application_list, "iteration");
+		write2.write_TC_Details_APP(team_status,Application_list , "iteration");
 		
-		write.write_ApplicationWise_userstories_and_defect(team_status, Application_list, "iteration");
-		write.write_ApplicationWise_defect_details(team_status, Application_list, "iteration");
-		write.write_ApplicationWise_testCase_details(team_status, Application_list, "iteration");					
+		//write.write_ApplicationWise_userstories_and_defect(team_status, Application_list, "iteration");
+		//write.write_ApplicationWise_defect_details(team_status, Application_list, "iteration");
+		//write.write_ApplicationWise_testCase_details(team_status, Application_list, "iteration");					
 	}
 	
 	public static TeamStatus get_Iteration_Status_details_for_team_and_sprint_Application(String sprint_name,ArrayList<String> Application_list) throws Exception
@@ -91,14 +96,14 @@ public class Get_Iteration_data
 		
 		// get userstory values
 		
-		//type_story_or_defect="userstory";	    
-	    //TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);
-	    //userstory_details_app=temp.getUserstories_application();   
+		type_story_or_defect="userstory";	    
+	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);
+	    userstory_details_app=temp.getUserstories_application();   
 	   	    	    	    
 	    // get defect values
 		
 	    type_story_or_defect="defects";		
-	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
+	    temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
 		defect_details_app=temp.getDefects_application();		
 		
 		//get testcase values

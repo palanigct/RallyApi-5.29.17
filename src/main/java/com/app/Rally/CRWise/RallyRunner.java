@@ -34,15 +34,11 @@ public class RallyRunner
 				
 		other_fun_obj.copy_template_folder();	     //copy template folder to output folder	
 		
-							
-		
-		team_list=other_fun_obj.get_team_List();     //get the team list
 		
 		CR_list=other_fun_obj.get_CR_List();         //get the CR list
 		
 		ite_obj.Exe_Iteration_CR(CR_list);  	     //execute iteration function for get the iterations data's with CR wise details
-		
-		
+	
 		
 		//drawchart.draw_chart_in_excel();                   //draw the chart in inside the excel sheet 
 		

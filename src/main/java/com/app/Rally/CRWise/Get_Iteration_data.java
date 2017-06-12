@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
+import com.app.excelwrite.Excel_Write_Way2;
 import com.app.pojos.Defects;
 import com.app.pojos.Defects_CR;
 import com.app.pojos.TeamStatus;
@@ -32,6 +33,7 @@ public class Get_Iteration_data
 	private static final String Static = null;
 	public static Readfile read = new Readfile();
 	public static Excel_Write write=new Excel_Write();
+	public static Excel_Write_Way2 write2=new Excel_Write_Way2();
 	public static List<HashMap<String,String>> mydata_App_Login = read.data("src/main/resources/INPUT.xls", "APP_LOGIN");
 	public static List<HashMap<String,String>> mydata_App_Data = read.data("src/main/resources/INPUT.xls", "APP_DATA");
 	public static Get_Iteration_data ite_obj=new Get_Iteration_data();
@@ -67,9 +69,15 @@ public class Get_Iteration_data
 			if (restApi != null) { 	   restApi.close();   } 			
 		} 		
 		
-		write.write_CRwise_userstories_and_defect(team_status, CR_list, "iteration");
-		write.write_CRwise_defect_details(team_status, CR_list, "iteration");
-		write.write_CRwise_testCase_details(team_status, CR_list, "iteration");					
+
+		write2.write_Iteration_Status_Dashboard_CR(team_status, CR_list,"iteration");
+		write2.write_DE_Details_Severity_CR(team_status, CR_list, "iteration");
+		write2.write_TC_Details_CR(team_status,CR_list , "iteration");
+		
+		
+		//write.write_CRwise_userstories_and_defect(team_status, CR_list, "iteration");
+		//write.write_CRwise_defect_details(team_status, CR_list, "iteration");
+		//write.write_CRwise_testCase_details(team_status, CR_list, "iteration");					
 	}
 	
 	public static TeamStatus get_Iteration_Status_details_for_team_and_sprint_CR(String sprint_name,ArrayList<String> CR_list) throws Exception
@@ -83,21 +91,21 @@ public class Get_Iteration_data
 		
 		// get userstory values
 		
-		//type_story_or_defect="userstory";	    
-	    // TeamStatus temp=common_fun_obj.callRestApi_CR(sprint_name, type_story_or_defect, "iteration", CR_list);
-	    // userstory_details_cr=temp.getUserstories_cr();	    	    
+		type_story_or_defect="userstory";	    
+	    TeamStatus temp=common_fun_obj.callRestApi_CR(sprint_name, type_story_or_defect, "iteration", CR_list);
+	    userstory_details_cr=temp.getUserstories_cr();	    	    
 	   	    	    	    
 	    // get defect values
 		
-	    //type_story_or_defect="defect";		
-	    //TeamStatus temp=common_fun_obj.callRestApi_CR(sprint_name, type_story_or_defect, "iteration", CR_list);			
-		//defect_details_cr=temp.getDefects_cr();		
+	    type_story_or_defect="defect";		
+	    temp=common_fun_obj.callRestApi_CR(sprint_name, type_story_or_defect, "iteration", CR_list);			
+		defect_details_cr=temp.getDefects_cr();		
 		
 		// get testcase values
 		
-	    type_story_or_defect="testcase";		
-	    TeamStatus temp=common_fun_obj.callRestApi_CR(sprint_name, type_story_or_defect, "iteration", CR_list);			
-	    testcase_details_cr=temp.getTestcases_cr();		
+	    //type_story_or_defect="testcase";		
+	    //TeamStatus temp=common_fun_obj.callRestApi_CR(sprint_name, type_story_or_defect, "iteration", CR_list);			
+	    // testcase_details_cr=temp.getTestcases_cr();		
 		
 		
 		

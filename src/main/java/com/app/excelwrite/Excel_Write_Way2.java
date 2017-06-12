@@ -604,84 +604,89 @@ public class Excel_Write_Way2
 	//=============================================CR==========================================================
 	
 
-	public static void write_Iteration_Status_Dashboard_CR(TeamStatus team_status,String team_name) throws Exception
+	public static void write_Iteration_Status_Dashboard_CR(TeamStatus team_status,ArrayList<String> CR_list,String type_iteration_or_release) throws Exception
 	{	
-		String filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
+		//String filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
 		
+
+		String 	filename="";
+		int currentRow=0;
+		if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
+		{
+			filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
+			currentRow=currentRow_ite;
+		}
+		else if(StringUtils.containsIgnoreCase(type_iteration_or_release, "release"))
+		{
+			filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Release Status.xls";
+			currentRow=currentRow_rele;
+		}
+			
 		FileInputStream file = new FileInputStream(new File(filename));
         HSSFWorkbook workbook = new HSSFWorkbook(file);
-        HSSFSheet sheet = workbook.getSheet("TMWise-Dashboard");
+        HSSFSheet sheet=null;
         HSSFCell cell = null;
-        HSSFRow row=null;
+        HSSFRow row=null;        
                
-        HSSFCellStyle style1=sheet.getRow(2).getCell(24).getCellStyle();
-        HSSFCellStyle style2=sheet.getRow(2).getCell(22).getCellStyle();
-        HSSFCellStyle style3=sheet.getRow(2).getCell(23).getCellStyle();
         
-        if(StringUtils.containsIgnoreCase(team_name, "total"))
-        	style1=style2=style3;
+        sheet = workbook.getSheet("CRWise-Dashboard");
+        HSSFCellStyle style1=sheet.getRow(2).getCell(22).getCellStyle();
+        HSSFCellStyle style2=sheet.getRow(2).getCell(23).getCellStyle();
+        HSSFCellStyle style3=sheet.getRow(2).getCell(24).getCellStyle();
         
-        	
-        
-        row=sheet.createRow(currentRow_ite);
-        
-       
-        UserStories userstory= team_status.getUserStories();
-		Defects defects=team_status.getDefects();
-		TestCases testCase=team_status.getTestCases();	
-		String per_exe="";
-		String per_pass="";
-		String per_fail="";
-      
-		if(testCase.getTotal()==0)
-		{
-			per_exe  = "N/A";
-			per_pass = "N/A";
-			per_fail = "N/A";			
-		}
-		else
-		{
-			per_exe  = testCase.getPercentage_execute()+"%";
-			per_pass = testCase.getPercentage_pass()+"%";
-			per_fail = testCase.getPercentage_fail()+"%";
-		}
+     		
+		UserStories_CR userstory_details_cr=team_status.getUserstories_cr();
+		Defects_CR defect_details_cr = team_status.getDefects_cr();
 		
-        for(short i=0;i<25;i++)
+		
+		int[] backlogs_cr_us = userstory_details_cr.getBacklogs();
+		int[] defined_cr_us  = userstory_details_cr.getDefined();
+		int[] in_progress_cr_us = userstory_details_cr.getIn_progress();
+		int[] completed_cr_us = userstory_details_cr.getCompleted();
+		int[] accepted_cr_us = userstory_details_cr.getAccepted();
+		int[] total_cr_us = userstory_details_cr.getTotal();
+		
+		int[] backlogs_cr_de = defect_details_cr.getBacklogs();
+		int[] defined_cr_de  = defect_details_cr.getDefined();
+		int[] in_progress_cr_de = defect_details_cr.getIn_progress();
+		int[] completed_cr_de = defect_details_cr.getCompleted();
+		int[] accepted_cr_de = defect_details_cr.getAccepted();
+		int[] total_cr_de = defect_details_cr.getTotal();
+		
+		
+        //int currentRow=sheet.getLastRowNum()+1;       
+        //row=sheet.createRow(currentRow);currentRow_ite
+        //row=sheet.createRow(currentRow);
+        
+        for(int i=0;i<CR_list.size();i++)        	
         {
-        	cell=row.createCell(i);
-        	
-        	switch(i)
-        	{
-        	    case 0:   cell.setCellValue(team_name); 				 cell.setCellStyle(style1); break;
-        		case 1:   cell.setCellValue(userstory.getBacklogs());    cell.setCellStyle(style2); break;
-        		case 2:   cell.setCellValue(userstory.getDefined());     cell.setCellStyle(style2);break;
-        		case 3:   cell.setCellValue(userstory.getIn_progress()); cell.setCellStyle(style2);break;
-        		case 4:   cell.setCellValue(userstory.getCompleted());   cell.setCellStyle(style2);break;
-        		case 5:   cell.setCellValue(userstory.getAccepted());    cell.setCellStyle(style2);break;        		
-        		case 6:   cell.setCellValue(userstory.getTotal());       cell.setCellStyle(style3);break;
-        		case 7:   cell.setCellValue(defects.getBacklogs());      cell.setCellStyle(style2);break;
-        		case 8:   cell.setCellValue(defects.getDefined());       cell.setCellStyle(style2);break;
-        		case 9:   cell.setCellValue(defects.getIn_progress());   cell.setCellStyle(style2);break;        	
-        		case 10:  cell.setCellValue(defects.getCompleted());     cell.setCellStyle(style2);break;
-        		case 11:  cell.setCellValue(defects.getAccepted());      cell.setCellStyle(style2);break;
-        		case 12:   cell.setCellValue(defects.getTotal()); 	     cell.setCellStyle(style3);break;
-        		case 13:   cell.setCellValue(testCase.getPass()); 	     cell.setCellStyle(style2);break;
-        		case 14:   cell.setCellValue(testCase.getFail());        cell.setCellStyle(style2);break;        	
-        		case 15:   cell.setCellValue(testCase.getIn_progress()); cell.setCellStyle(style2);break;
-        		case 16:   cell.setCellValue(testCase.getBlocked()); cell.setCellStyle(style2);break;
-        		case 17:   cell.setCellValue(testCase.getNo_run());  cell.setCellStyle(style2);break;      		
-        		case 18:   cell.setCellValue(testCase.getTotal());	 cell.setCellStyle(style3);break; 
-        		case 19:   cell.setCellValue(per_exe); 				 cell.setCellStyle(style2);break; 
-        		case 20:   cell.setCellValue(per_pass); 			 cell.setCellStyle(style2);break; 
-        		case 21:   cell.setCellValue(per_fail);	 			 cell.setCellStyle(style2);break; 
-        		default:   cell.setCellValue("");  					break;
-        	}        	
-        }//end for
+        	row=sheet.createRow(i+3);
+        	for(int j=0;j<25;j++)
+            {
+            	cell=row.createCell(j);
+            	switch(j)
+            	{
+            	 		case 0:   cell.setCellValue(CR_list.get(i)); 			 cell.setCellStyle(style1); break;
+            	 		case 1:   cell.setCellValue(backlogs_cr_us[i]);    		 cell.setCellStyle(style2); break;
+            	 		case 2:   cell.setCellValue(defined_cr_us[i]);     		 cell.setCellStyle(style2);break;
+            	 		case 3:   cell.setCellValue(in_progress_cr_us[i]); 		 cell.setCellStyle(style2);break;
+            	 		case 4:   cell.setCellValue(completed_cr_us[i]);   		 cell.setCellStyle(style2);break;
+            	 		case 5:   cell.setCellValue(accepted_cr_us[i]);   			 cell.setCellStyle(style2);break;        		
+            	 		case 6:   cell.setCellValue(total_cr_us[i]);       		 cell.setCellStyle(style3);break;
+            	 		case 7:   cell.setCellValue(backlogs_cr_de[i]);      cell.setCellStyle(style2);break;
+            	 		case 8:   cell.setCellValue(defined_cr_de[i]);        cell.setCellStyle(style2);break;
+            	 		case 9:   cell.setCellValue(in_progress_cr_de[i]); 	   cell.setCellStyle(style2);break;        	
+            	 		case 10:  cell.setCellValue(completed_cr_de[i]);     cell.setCellStyle(style2);break;
+            	 		case 11:  cell.setCellValue(accepted_cr_de[i]);      cell.setCellStyle(style2);break;
+            	 		case 12:  cell.setCellValue(total_cr_de[i]);  	     cell.setCellStyle(style3);break;
+            	 		default:  break;        			
+            	}            	
+            }
+        }
         
         
-        currentRow_ite++;
-        file.close();
- 
+        
+        file.close();        
         FileOutputStream outFile =new FileOutputStream(new File(filename));
         workbook.write(outFile);
         outFile.close();
@@ -886,8 +891,9 @@ public class Excel_Write_Way2
 		
 	}	
 	
-	public static void write_DE_Details_Severity_CR(Defects defects,String teamName,String type_iteration_or_release,String type_story_or_defect) throws IOException
+	public static void write_DE_Details_Severity_CR(TeamStatus team_status,ArrayList<String> CR_list,String type_iteration_or_release) throws IOException
 	{
+
 		String 	filename="";
 		int currentRow=0;
 		if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
@@ -908,40 +914,55 @@ public class Excel_Write_Way2
         HSSFRow row=null;        
                
         
-        sheet = workbook.getSheet("TMWise-DE-Details-Severity");
+        sheet = workbook.getSheet("CRWise-DE-Details-Severity");
         HSSFCellStyle style1=sheet.getRow(2).getCell(13).getCellStyle();
         HSSFCellStyle style2=sheet.getRow(2).getCell(14).getCellStyle();
-        HSSFCellStyle style3=sheet.getRow(2).getCell(15).getCellStyle();
+        HSSFCellStyle style3=sheet.getRow(2).getCell(15).getCellStyle();        
         
-        if(StringUtils.containsIgnoreCase(teamName, "total"))
-        	style1=style2=style3;
+        Defects_CR defect_details  = team_status.getDefects_cr();
+				
+        int[] submitted = defect_details .getSubmitted();
+		int[] open = defect_details .getOpen();
+		int[] fixed =defect_details .getFixed();
+		int[] closed =defect_details .getClosed();
+		int[] reopen =defect_details .getReopen();
+		int[] ready_for_test =defect_details .getReady_for_test();
+		int[] total_severity =defect_details .getTotal_severity();
+		int[] critical =defect_details .getCritical();
+		int[] major=defect_details .getMajor();
+		int[] average =defect_details .getAverage();
+		int[] minor =defect_details .getMinor();
+		int[] total_state =defect_details .getTotal_state();
         
         //int currentRow=sheet.getLastRowNum()+1;       
         //row=sheet.createRow(currentRow);currentRow_ite
-        row=sheet.createRow(currentRow);
+        //row=sheet.createRow(currentRow);
         
-        for(int i=0;i<25;i++)
+        for(int i=0;i<CR_list.size();i++)        	
         {
-        	cell=row.createCell(i);
-        	switch(i)
-        	{
-        		case 0: cell.setCellValue(teamName);                        cell.setCellStyle(style1); break;
-        		case 1: cell.setCellValue(defects.getSubmitted());    cell.setCellStyle(style2); break;
-        		case 2: cell.setCellValue(defects.getOpen());     cell.setCellStyle(style2);break;
-        		case 3: cell.setCellValue(defects.getFixed()); cell.setCellStyle(style2); break;
-        		case 4: cell.setCellValue(defects.getClosed());   cell.setCellStyle(style2);break;
-        		case 5: cell.setCellValue(defects.getReopen());    cell.setCellStyle(style2);break;
-        		case 6: cell.setCellValue(defects.getReady_for_test());       cell.setCellStyle(style2);break;
-        		case 7: cell.setCellValue(defects.getTotal_state());       cell.setCellStyle(style3);break;
-        		case 8: cell.setCellValue(defects.getCritical());       cell.setCellStyle(style2);break;
-        		case 9: cell.setCellValue(defects.getAverage());       cell.setCellStyle(style2);break;
-        		case 10: cell.setCellValue(defects.getMajor());       cell.setCellStyle(style2);break;
-        		case 11: cell.setCellValue(defects.getMinor());       cell.setCellStyle(style2);break;
-        		case 12: cell.setCellValue(defects.getTotal_severity());       cell.setCellStyle(style3);break;
-        		default : break;
-        	}
-        	
-        }
+        	row=sheet.createRow(i+3);
+        	for(int j=0;j<25;j++)
+            {
+            	cell=row.createCell(j);
+            	switch(j)
+            	{
+            	 		case 0:   cell.setCellValue(CR_list.get(i)); 			 cell.setCellStyle(style1); break;
+            	 		case 1:   cell.setCellValue(submitted [i]);    		 cell.setCellStyle(style2); break;
+            	 		case 2:   cell.setCellValue(open [i]);     		 cell.setCellStyle(style2);break;
+            	 		case 3:   cell.setCellValue(fixed [i]); 		 cell.setCellStyle(style2);break;
+            	 		case 4:   cell.setCellValue(closed [i]);   		 cell.setCellStyle(style2);break;
+            	 		case 5:   cell.setCellValue(reopen [i]);   			 cell.setCellStyle(style2);break;        		
+            	 		case 6:   cell.setCellValue(ready_for_test [i]);       		 cell.setCellStyle(style2);break;
+            	 		case 7:    cell.setCellValue(total_state [i]);      cell.setCellStyle(style3);break;
+            	 		case 8:    cell.setCellValue(critical [i]);        cell.setCellStyle(style2);break;
+            	 		case 9:   cell.setCellValue(major[i]); 	   cell.setCellStyle(style2);break;        	
+            	 		case 10:  cell.setCellValue(average [i]);     cell.setCellStyle(style2);break;
+            	 		case 11:  cell.setCellValue(minor [i]);      cell.setCellStyle(style2);break;
+            	 		case 12:  cell.setCellValue(total_severity [i]);  	     cell.setCellStyle(style3);break;
+            	 		default:  break;        			
+            	}            	
+            }
+        }	
         
         file.close();        
         FileOutputStream outFile =new FileOutputStream(new File(filename));
@@ -1014,8 +1035,9 @@ public class Excel_Write_Way2
 		
 	}	
 	
-	public static void write_TC_Details_CR(TestCases testcase,String teamName,String type_iteration_or_release) throws IOException
+	public static void write_TC_Details_CR(TeamStatus team_status,ArrayList<String> APP_list,String type_iteration_or_release) throws IOException
 	{
+		
 		String 	filename="";
 		int currentRow=0;
 		if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
@@ -1036,36 +1058,52 @@ public class Excel_Write_Way2
         HSSFRow row=null;        
                
         
-        sheet = workbook.getSheet("TMWise-TC-Details");
+        sheet = workbook.getSheet("CRWise-TC-Details");
         HSSFCellStyle style1=sheet.getRow(2).getCell(11).getCellStyle();
         HSSFCellStyle style2=sheet.getRow(2).getCell(12).getCellStyle();
-        HSSFCellStyle style3=sheet.getRow(2).getCell(13).getCellStyle();
+        HSSFCellStyle style3=sheet.getRow(2).getCell(13).getCellStyle();        
         
-                
+		
+        TestCases_CR testcase_details_cr=team_status.getTestcases_cr();
+        
+        int[] pass = testcase_details_cr.getPass();
+	    int[] fail  = testcase_details_cr.getFail();
+	    int[] in_progress =testcase_details_cr.getIn_progress();
+	    int[] blocked  = testcase_details_cr.getBlocked();
+	    int[] no_run = testcase_details_cr.getNo_run();
+	    int[] total= testcase_details_cr.getTotal();		  
+	    int[] method_count  =testcase_details_cr.getMethod_count();
+	    int[] automated_count  = testcase_details_cr.getAutomated_count();
+	    int[] executed  = testcase_details_cr.getExecuted();
+	    
+        
         //int currentRow=sheet.getLastRowNum()+1;       
         //row=sheet.createRow(currentRow);currentRow_ite
-        row=sheet.createRow(currentRow);
+        //row=sheet.createRow(currentRow);
         
-        for(int i=0;i<25;i++)
+        for(int i=0;i<APP_list.size();i++)        	
         {
-        	cell=row.createCell(i);
-        	switch(i)
-        	{
-        		case 0: cell.setCellValue(teamName);                        cell.setCellStyle(style1); break;
-        		case 1: cell.setCellValue(testcase.getExecuted());    cell.setCellStyle(style2); break;
-        		case 2: cell.setCellValue(testcase.getPass());     cell.setCellStyle(style2);break;
-        		case 3: cell.setCellValue(testcase.getFail()); cell.setCellStyle(style2); break;
-        		case 4: cell.setCellValue(testcase.getIn_progress());   cell.setCellStyle(style2);break;
-        		case 5: cell.setCellValue(testcase.getBlocked());    cell.setCellStyle(style2);break;
-        		case 6: cell.setCellValue(testcase.getNo_run());       cell.setCellStyle(style2);break;
-        		case 7: cell.setCellValue(testcase.getTotal());       cell.setCellStyle(style3);break;
-        		case 8: cell.setCellValue(testcase.getPercentage_execute());       cell.setCellStyle(style2);break;
-        		case 9: cell.setCellValue(testcase.getPercentage_pass());       cell.setCellStyle(style2);break;
-        		case 10: cell.setCellValue(testcase.getPercentage_fail());       cell.setCellStyle(style2);break;
-        		default : break;
-        	}
-        	
-        }
+        	row=sheet.createRow(i+3);
+        	for(int j=0;j<25;j++)
+            {
+            	cell=row.createCell(j);
+            	switch(j)
+            	{
+            	 		case 0:   cell.setCellValue(APP_list.get(i)); 			 cell.setCellStyle(style1); break;
+            	 		case 1:   cell.setCellValue(executed[i]);    		 cell.setCellStyle(style2); break;
+            	 		case 2:   cell.setCellValue(pass[i]);    		 cell.setCellStyle(style2); break;
+            	 		case 3:   cell.setCellValue(fail[i]);     		 cell.setCellStyle(style2);break;
+            	 		case 4:   cell.setCellValue(in_progress[i]); 		 cell.setCellStyle(style2);break;
+            	 		case 5:   cell.setCellValue(blocked[i]);   		 cell.setCellStyle(style2);break;
+            	 		case 6:   cell.setCellValue(no_run[i]);   			 cell.setCellStyle(style2);break;        		
+            	 		case 7:   cell.setCellValue(total[i]);       		 cell.setCellStyle(style3);break;
+            	 		case 8:    cell.setCellValue(1);      cell.setCellStyle(style2);break;
+            	 		case 9:    cell.setCellValue(1);        cell.setCellStyle(style2);break;
+            	 		case 10:  cell.setCellValue(1); 	   cell.setCellStyle(style2);break;        	
+            	 			default:  break;        			
+            	}            	
+            }
+        }	
         
         file.close();        
         FileOutputStream outFile =new FileOutputStream(new File(filename));
@@ -1131,84 +1169,89 @@ public class Excel_Write_Way2
 	//==========================================APPLICATION=============================================================
 
 
-		public static void write_Iteration_Status_Dashboard_APP(TeamStatus team_status,String team_name) throws Exception
+		public static void write_Iteration_Status_Dashboard_APP(TeamStatus team_status,ArrayList<String> APP_list,String type_iteration_or_release) throws Exception
 		{	
-			String filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
+			//String filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
 			
+
+			String 	filename="";
+			int currentRow=0;
+			if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
+			{
+				filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
+				currentRow=currentRow_ite;
+			}
+			else if(StringUtils.containsIgnoreCase(type_iteration_or_release, "release"))
+			{
+				filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Release Status.xls";
+				currentRow=currentRow_rele;
+			}
+				
 			FileInputStream file = new FileInputStream(new File(filename));
 	        HSSFWorkbook workbook = new HSSFWorkbook(file);
-	        HSSFSheet sheet = workbook.getSheet("TMWise-Dashboard");
+	        HSSFSheet sheet=null;
 	        HSSFCell cell = null;
-	        HSSFRow row=null;
+	        HSSFRow row=null;        
 	               
-	        HSSFCellStyle style1=sheet.getRow(2).getCell(24).getCellStyle();
-	        HSSFCellStyle style2=sheet.getRow(2).getCell(22).getCellStyle();
-	        HSSFCellStyle style3=sheet.getRow(2).getCell(23).getCellStyle();
 	        
-	        if(StringUtils.containsIgnoreCase(team_name, "total"))
-	        	style1=style2=style3;
+	        sheet = workbook.getSheet("APPWise-Dashboard");
+	        HSSFCellStyle style1=sheet.getRow(2).getCell(22).getCellStyle();
+	        HSSFCellStyle style2=sheet.getRow(2).getCell(23).getCellStyle();
+	        HSSFCellStyle style3=sheet.getRow(2).getCell(24).getCellStyle();
 	        
-	        	
-	        
-	        row=sheet.createRow(currentRow_ite);
-	        
-	       
-	        UserStories userstory= team_status.getUserStories();
-			Defects defects=team_status.getDefects();
-			TestCases testCase=team_status.getTestCases();	
-			String per_exe="";
-			String per_pass="";
-			String per_fail="";
-	      
-			if(testCase.getTotal()==0)
-			{
-				per_exe  = "N/A";
-				per_pass = "N/A";
-				per_fail = "N/A";			
-			}
-			else
-			{
-				per_exe  = testCase.getPercentage_execute()+"%";
-				per_pass = testCase.getPercentage_pass()+"%";
-				per_fail = testCase.getPercentage_fail()+"%";
-			}
+	     		
+			UserStories_Application userstory_details_app=team_status.getUserstories_application();
+			Defects_Application defect_details_app = team_status.getDefects_application();
 			
-	        for(short i=0;i<25;i++)
+			
+			int[] backlogs_app_us = userstory_details_app.getBacklogs();
+			int[] defined_app_us  = userstory_details_app.getDefined();
+			int[] in_progress_app_us = userstory_details_app.getIn_progress();
+			int[] completed_app_us = userstory_details_app.getCompleted();
+			int[] accepted_app_us = userstory_details_app.getAccepted();
+			int[] total_app_us = userstory_details_app.getTotal();
+			
+			int[] backlogs_app_de = defect_details_app.getBacklogs();
+			int[] defined_app_de  = defect_details_app.getDefined();
+			int[] in_progress_app_de = defect_details_app.getIn_progress();
+			int[] completed_app_de = defect_details_app.getCompleted();
+			int[] accepted_app_de = defect_details_app.getAccepted();
+			int[] total_app_de = defect_details_app.getTotal();
+			
+			
+	        //int currentRow=sheet.getLastRowNum()+1;       
+	        //row=sheet.createRow(currentRow);currentRow_ite
+	        //row=sheet.createRow(currentRow);
+	        
+	        for(int i=0;i<APP_list.size();i++)        	
 	        {
-	        	cell=row.createCell(i);
-	        	
-	        	switch(i)
-	        	{
-	        	    case 0:   cell.setCellValue(team_name); 				 cell.setCellStyle(style1); break;
-	        		case 1:   cell.setCellValue(userstory.getBacklogs());    cell.setCellStyle(style2); break;
-	        		case 2:   cell.setCellValue(userstory.getDefined());     cell.setCellStyle(style2);break;
-	        		case 3:   cell.setCellValue(userstory.getIn_progress()); cell.setCellStyle(style2);break;
-	        		case 4:   cell.setCellValue(userstory.getCompleted());   cell.setCellStyle(style2);break;
-	        		case 5:   cell.setCellValue(userstory.getAccepted());    cell.setCellStyle(style2);break;        		
-	        		case 6:   cell.setCellValue(userstory.getTotal());       cell.setCellStyle(style3);break;
-	        		case 7:   cell.setCellValue(defects.getBacklogs());      cell.setCellStyle(style2);break;
-	        		case 8:   cell.setCellValue(defects.getDefined());       cell.setCellStyle(style2);break;
-	        		case 9:   cell.setCellValue(defects.getIn_progress());   cell.setCellStyle(style2);break;        	
-	        		case 10:  cell.setCellValue(defects.getCompleted());     cell.setCellStyle(style2);break;
-	        		case 11:  cell.setCellValue(defects.getAccepted());      cell.setCellStyle(style2);break;
-	        		case 12:   cell.setCellValue(defects.getTotal()); 	     cell.setCellStyle(style3);break;
-	        		case 13:   cell.setCellValue(testCase.getPass()); 	     cell.setCellStyle(style2);break;
-	        		case 14:   cell.setCellValue(testCase.getFail());        cell.setCellStyle(style2);break;        	
-	        		case 15:   cell.setCellValue(testCase.getIn_progress()); cell.setCellStyle(style2);break;
-	        		case 16:   cell.setCellValue(testCase.getBlocked()); cell.setCellStyle(style2);break;
-	        		case 17:   cell.setCellValue(testCase.getNo_run());  cell.setCellStyle(style2);break;      		
-	        		case 18:   cell.setCellValue(testCase.getTotal());	 cell.setCellStyle(style3);break; 
-	        		case 19:   cell.setCellValue(per_exe); 				 cell.setCellStyle(style2);break; 
-	        		case 20:   cell.setCellValue(per_pass); 			 cell.setCellStyle(style2);break; 
-	        		case 21:   cell.setCellValue(per_fail);	 			 cell.setCellStyle(style2);break; 
-	        		default:   cell.setCellValue("");  					break;
-	        	}        	
-	        }//end for
+	        	row=sheet.createRow(i+3);
+	        	for(int j=0;j<25;j++)
+	            {
+	            	cell=row.createCell(j);
+	            	switch(j)
+	            	{
+	            	 		case 0:   cell.setCellValue(APP_list.get(i)); 			 cell.setCellStyle(style1); break;
+	            	 		case 1:   cell.setCellValue(backlogs_app_us[i]);    		 cell.setCellStyle(style2); break;
+	            	 		case 2:   cell.setCellValue(defined_app_us[i]);     		 cell.setCellStyle(style2);break;
+	            	 		case 3:   cell.setCellValue(in_progress_app_us[i]); 		 cell.setCellStyle(style2);break;
+	            	 		case 4:   cell.setCellValue(completed_app_us[i]);   		 cell.setCellStyle(style2);break;
+	            	 		case 5:   cell.setCellValue(accepted_app_us[i]);   			 cell.setCellStyle(style2);break;        		
+	            	 		case 6:   cell.setCellValue(total_app_us[i]);       		 cell.setCellStyle(style3);break;
+	            	 		case 7:   cell.setCellValue(backlogs_app_de[i]);      cell.setCellStyle(style2);break;
+	            	 		case 8:   cell.setCellValue(defined_app_de[i]);        cell.setCellStyle(style2);break;
+	            	 		case 9:   cell.setCellValue(in_progress_app_de[i]); 	   cell.setCellStyle(style2);break;        	
+	            	 		case 10:  cell.setCellValue(completed_app_de[i]);     cell.setCellStyle(style2);break;
+	            	 		case 11:  cell.setCellValue(accepted_app_de[i]);      cell.setCellStyle(style2);break;
+	            	 		case 12:  cell.setCellValue(total_app_de[i]);  	     cell.setCellStyle(style3);break;
+	            	 		default:  break;        			
+	            	}            	
+	            }
+	        }
 	        
 	        
-	        currentRow_ite++;
-	        file.close();
-	 
+	        
+	        file.close();        
 	        FileOutputStream outFile =new FileOutputStream(new File(filename));
 	        workbook.write(outFile);
 	        outFile.close();
@@ -1225,9 +1268,9 @@ public class Excel_Write_Way2
 	        HSSFCell cell = null;
 	        HSSFRow row=null;       
 	        
-	        HSSFCellStyle style1=sheet.getRow(2).getCell(24).getCellStyle();
-	        HSSFCellStyle style2=sheet.getRow(2).getCell(22).getCellStyle();
-	        HSSFCellStyle style3=sheet.getRow(2).getCell(23).getCellStyle();
+	        HSSFCellStyle style1=sheet.getRow(2).getCell(22).getCellStyle();
+	        HSSFCellStyle style2=sheet.getRow(2).getCell(23).getCellStyle();
+	        HSSFCellStyle style3=sheet.getRow(2).getCell(24).getCellStyle();
 	        
 	        if(StringUtils.containsIgnoreCase(team_name, "total"))
 	        	style1=style2=style3;
@@ -1413,8 +1456,9 @@ public class Excel_Write_Way2
 			
 		}	
 		
-		public static void write_DE_Details_Severity_APP(Defects defects,String teamName,String type_iteration_or_release,String type_story_or_defect) throws IOException
+		public static void write_DE_Details_Severity_APP(TeamStatus team_status,ArrayList<String> APP_list,String type_iteration_or_release) throws IOException
 		{
+
 			String 	filename="";
 			int currentRow=0;
 			if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
@@ -1435,40 +1479,55 @@ public class Excel_Write_Way2
 	        HSSFRow row=null;        
 	               
 	        
-	        sheet = workbook.getSheet("TMWise-DE-Details-Severity");
+	        sheet = workbook.getSheet("APPWise-DE-Details-Severity");
 	        HSSFCellStyle style1=sheet.getRow(2).getCell(13).getCellStyle();
 	        HSSFCellStyle style2=sheet.getRow(2).getCell(14).getCellStyle();
-	        HSSFCellStyle style3=sheet.getRow(2).getCell(15).getCellStyle();
+	        HSSFCellStyle style3=sheet.getRow(2).getCell(15).getCellStyle();        
 	        
-	        if(StringUtils.containsIgnoreCase(teamName, "total"))
-	        	style1=style2=style3;
+	        Defects_Application defect_details_app = team_status.getDefects_application();
+					
+	        int[] submitted_app= defect_details_app.getSubmitted();
+			int[] open_app= defect_details_app.getOpen();
+			int[] fixed_app=defect_details_app.getFixed();
+			int[] closed_app=defect_details_app.getClosed();
+			int[] reopen_app=defect_details_app.getReopen();
+			int[] ready_for_test_app=defect_details_app.getReady_for_test();
+			int[] total_severity_app=defect_details_app.getTotal_severity();
+			int[] critical_app=defect_details_app.getCritical();
+			int[] major_app=defect_details_app.getMajor();
+			int[] average_app=defect_details_app.getAverage();
+			int[] minor_app=defect_details_app.getMinor();
+			int[] total_state_app=defect_details_app.getTotal_state();
 	        
 	        //int currentRow=sheet.getLastRowNum()+1;       
 	        //row=sheet.createRow(currentRow);currentRow_ite
-	        row=sheet.createRow(currentRow);
+	        //row=sheet.createRow(currentRow);
 	        
-	        for(int i=0;i<25;i++)
+	        for(int i=0;i<APP_list.size();i++)        	
 	        {
-	        	cell=row.createCell(i);
-	        	switch(i)
-	        	{
-	        		case 0: cell.setCellValue(teamName);                        cell.setCellStyle(style1); break;
-	        		case 1: cell.setCellValue(defects.getSubmitted());    cell.setCellStyle(style2); break;
-	        		case 2: cell.setCellValue(defects.getOpen());     cell.setCellStyle(style2);break;
-	        		case 3: cell.setCellValue(defects.getFixed()); cell.setCellStyle(style2); break;
-	        		case 4: cell.setCellValue(defects.getClosed());   cell.setCellStyle(style2);break;
-	        		case 5: cell.setCellValue(defects.getReopen());    cell.setCellStyle(style2);break;
-	        		case 6: cell.setCellValue(defects.getReady_for_test());       cell.setCellStyle(style2);break;
-	        		case 7: cell.setCellValue(defects.getTotal_state());       cell.setCellStyle(style3);break;
-	        		case 8: cell.setCellValue(defects.getCritical());       cell.setCellStyle(style2);break;
-	        		case 9: cell.setCellValue(defects.getAverage());       cell.setCellStyle(style2);break;
-	        		case 10: cell.setCellValue(defects.getMajor());       cell.setCellStyle(style2);break;
-	        		case 11: cell.setCellValue(defects.getMinor());       cell.setCellStyle(style2);break;
-	        		case 12: cell.setCellValue(defects.getTotal_severity());       cell.setCellStyle(style3);break;
-	        		default : break;
-	        	}
-	        	
-	        }
+	        	row=sheet.createRow(i+3);
+	        	for(int j=0;j<25;j++)
+	            {
+	            	cell=row.createCell(j);
+	            	switch(j)
+	            	{
+	            	 		case 0:   cell.setCellValue(APP_list.get(i)); 			 cell.setCellStyle(style1); break;
+	            	 		case 1:   cell.setCellValue(submitted_app[i]);    		 cell.setCellStyle(style2); break;
+	            	 		case 2:   cell.setCellValue(open_app[i]);     		 cell.setCellStyle(style2);break;
+	            	 		case 3:   cell.setCellValue(fixed_app[i]); 		 cell.setCellStyle(style2);break;
+	            	 		case 4:   cell.setCellValue(closed_app[i]);   		 cell.setCellStyle(style2);break;
+	            	 		case 5:   cell.setCellValue(reopen_app[i]);   			 cell.setCellStyle(style2);break;        		
+	            	 		case 6:   cell.setCellValue(ready_for_test_app[i]);       		 cell.setCellStyle(style2);break;
+	            	 		case 7:    cell.setCellValue(total_state_app[i]);      cell.setCellStyle(style3);break;
+	            	 		case 8:    cell.setCellValue(critical_app[i]);        cell.setCellStyle(style2);break;
+	            	 		case 9:   cell.setCellValue(major_app[i]); 	   cell.setCellStyle(style2);break;        	
+	            	 		case 10:  cell.setCellValue(average_app[i]);     cell.setCellStyle(style2);break;
+	            	 		case 11:  cell.setCellValue(minor_app[i]);      cell.setCellStyle(style2);break;
+	            	 		case 12:  cell.setCellValue(total_severity_app[i]);  	     cell.setCellStyle(style3);break;
+	            	 		default:  break;        			
+	            	}            	
+	            }
+	        }	
 	        
 	        file.close();        
 	        FileOutputStream outFile =new FileOutputStream(new File(filename));
@@ -1499,7 +1558,7 @@ public class Excel_Write_Way2
 	        HSSFRow row=null;        
 	               
 	        
-	        sheet = workbook.getSheet("TMWise-DE-Details-Date");
+	        sheet = workbook.getSheet("APPWise-DE-Details-Date");
 	        HSSFCellStyle style1=sheet.getRow(2).getCell(13).getCellStyle();
 	        HSSFCellStyle style2=sheet.getRow(2).getCell(14).getCellStyle();
 	        HSSFCellStyle style3=sheet.getRow(2).getCell(15).getCellStyle();
@@ -1541,7 +1600,7 @@ public class Excel_Write_Way2
 			
 		}	
 		
-		public static void write_TC_Details_APP(TestCases testcase,String teamName,String type_iteration_or_release) throws IOException
+		public static void write_TC_Details_APP(TeamStatus team_status,ArrayList<String> APP_list,String type_iteration_or_release) throws IOException
 		{
 			String 	filename="";
 			int currentRow=0;
@@ -1563,36 +1622,52 @@ public class Excel_Write_Way2
 	        HSSFRow row=null;        
 	               
 	        
-	        sheet = workbook.getSheet("TMWise-TC-Details");
+	        sheet = workbook.getSheet("APPWise-TC-Details");
 	        HSSFCellStyle style1=sheet.getRow(2).getCell(11).getCellStyle();
 	        HSSFCellStyle style2=sheet.getRow(2).getCell(12).getCellStyle();
-	        HSSFCellStyle style3=sheet.getRow(2).getCell(13).getCellStyle();
+	        HSSFCellStyle style3=sheet.getRow(2).getCell(13).getCellStyle();        
 	        
-	                
+			
+	        TestCases_CR testcase_details_cr=team_status.getTestcases_cr();
+	        
+	        int[] pass = testcase_details_cr.getPass();
+		    int[] fail  = testcase_details_cr.getFail();
+		    int[] in_progress =testcase_details_cr.getIn_progress();
+		    int[] blocked  = testcase_details_cr.getBlocked();
+		    int[] no_run = testcase_details_cr.getNo_run();
+		    int[] total= testcase_details_cr.getTotal();		  
+		    int[] method_count  =testcase_details_cr.getMethod_count();
+		    int[] automated_count  = testcase_details_cr.getAutomated_count();
+		    int[] executed  = testcase_details_cr.getExecuted();
+		    
+	        
 	        //int currentRow=sheet.getLastRowNum()+1;       
 	        //row=sheet.createRow(currentRow);currentRow_ite
-	        row=sheet.createRow(currentRow);
+	        //row=sheet.createRow(currentRow);
 	        
-	        for(int i=0;i<25;i++)
+	        for(int i=0;i<APP_list.size();i++)        	
 	        {
-	        	cell=row.createCell(i);
-	        	switch(i)
-	        	{
-	        		case 0: cell.setCellValue(teamName);                        cell.setCellStyle(style1); break;
-	        		case 1: cell.setCellValue(testcase.getExecuted());    cell.setCellStyle(style2); break;
-	        		case 2: cell.setCellValue(testcase.getPass());     cell.setCellStyle(style2);break;
-	        		case 3: cell.setCellValue(testcase.getFail()); cell.setCellStyle(style2); break;
-	        		case 4: cell.setCellValue(testcase.getIn_progress());   cell.setCellStyle(style2);break;
-	        		case 5: cell.setCellValue(testcase.getBlocked());    cell.setCellStyle(style2);break;
-	        		case 6: cell.setCellValue(testcase.getNo_run());       cell.setCellStyle(style2);break;
-	        		case 7: cell.setCellValue(testcase.getTotal());       cell.setCellStyle(style3);break;
-	        		case 8: cell.setCellValue(testcase.getPercentage_execute());       cell.setCellStyle(style2);break;
-	        		case 9: cell.setCellValue(testcase.getPercentage_pass());       cell.setCellStyle(style2);break;
-	        		case 10: cell.setCellValue(testcase.getPercentage_fail());       cell.setCellStyle(style2);break;
-	        		default : break;
-	        	}
-	        	
-	        }
+	        	row=sheet.createRow(i+3);
+	        	for(int j=0;j<25;j++)
+	            {
+	            	cell=row.createCell(j);
+	            	switch(j)
+	            	{
+	            	 		case 0:   cell.setCellValue(APP_list.get(i)); 			 cell.setCellStyle(style1); break;
+	            	 		case 1:   cell.setCellValue(executed[i]);    		 cell.setCellStyle(style2); break;
+	            	 		case 2:   cell.setCellValue(pass[i]);    		 cell.setCellStyle(style2); break;
+	            	 		case 3:   cell.setCellValue(fail[i]);     		 cell.setCellStyle(style2);break;
+	            	 		case 4:   cell.setCellValue(in_progress[i]); 		 cell.setCellStyle(style2);break;
+	            	 		case 5:   cell.setCellValue(blocked[i]);   		 cell.setCellStyle(style2);break;
+	            	 		case 6:   cell.setCellValue(no_run[i]);   			 cell.setCellStyle(style2);break;        		
+	            	 		case 7:   cell.setCellValue(total[i]);       		 cell.setCellStyle(style3);break;
+	            	 		case 8:    cell.setCellValue(1);      cell.setCellStyle(style2);break;
+	            	 		case 9:    cell.setCellValue(1);        cell.setCellStyle(style2);break;
+	            	 		case 10:  cell.setCellValue(1); 	   cell.setCellStyle(style2);break;        	
+	            	 			default:  break;        			
+	            	}            	
+	            }
+	        }	
 	        
 	        file.close();        
 	        FileOutputStream outFile =new FileOutputStream(new File(filename));
@@ -2246,7 +2321,7 @@ public class Excel_Write_Way2
             	 		case 6:   cell.setCellValue(ready_for_test_app[i]);       		 cell.setCellStyle(style2);break;
             	 		case 7:    cell.setCellValue(total_state_app[i]);      cell.setCellStyle(style3);break;
             	 		case 8:    cell.setCellValue(critical_app[i]);        cell.setCellStyle(style2);break;
-            	 		case 9:  cell.setCellValue(major_app[i]); 	   cell.setCellStyle(style2);break;        	
+            	 		case 9:   cell.setCellValue(major_app[i]); 	   cell.setCellStyle(style2);break;        	
             	 		case 10:  cell.setCellValue(average_app[i]);     cell.setCellStyle(style2);break;
             	 		case 11:  cell.setCellValue(minor_app[i]);      cell.setCellStyle(style2);break;
             	 		case 12:  cell.setCellValue(total_severity_app[i]);  	     cell.setCellStyle(style3);break;
