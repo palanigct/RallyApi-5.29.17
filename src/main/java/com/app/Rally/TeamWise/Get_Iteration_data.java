@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
+import com.app.excelwrite.Excel_Write_Way2;
 import com.app.pojos.Defects;
 import com.app.pojos.Defects_CR;
 import com.app.pojos.TeamStatus;
@@ -32,6 +33,7 @@ public class Get_Iteration_data
 	private static final String Static = null;
 	public static Readfile read = new Readfile();
 	public static Excel_Write write=new Excel_Write();
+	public static Excel_Write_Way2 write2=new Excel_Write_Way2();
 	public static List<HashMap<String,String>> mydata_App_Login = read.data("src/main/resources/INPUT.xls", "APP_LOGIN");
 	public static List<HashMap<String,String>> mydata_App_Data = read.data("src/main/resources/INPUT.xls", "APP_DATA");
 	public static Get_Iteration_data ite_obj=new Get_Iteration_data();
@@ -96,8 +98,10 @@ public class Get_Iteration_data
 	    TeamStatus temp=common_fun_obj.callRestApi(team_name, sprint_name,type_story_or_defect,"Iteration");
 	    userstory=temp.getUserStories();		   
 	    TestCases testcase1=temp.getTestCases(); 
-	    write.write_testable_userstory_field_count(userstory, team_name, "iteration", type_story_or_defect);
-	    write.write_testable_userstories(userstory, team_name, "Iteration", type_story_or_defect);
+	    write2.write_US_Details_Testable_CT(userstory, team_name, "iteration", type_story_or_defect);
+	    write2.write_US_Details_Testable(userstory, team_name, "iteration", type_story_or_defect);	    
+	    //write.write_testable_userstory_field_count(userstory, team_name, "iteration", type_story_or_defect);
+	    //write.write_testable_userstories(userstory, team_name, "Iteration", type_story_or_defect);
 		
 	    // get defect values
 		
@@ -107,8 +111,10 @@ public class Get_Iteration_data
 		TestCases testcase2=temp.getTestCases();	
 		testcase=common_fun_obj.addTwoTestCases(testcase1, testcase2);		
 		testcase=common_fun_obj.calculate_percent_testcase(testcase);	
-		write.write_Defect_Details_with_state_and_severity(defect, team_name, "Iteration",type_story_or_defect);
-		write.write_testcase_details(testcase, team_name,  "Iteration");
+		write2.write_DE_Details_Severity(defect, team_name, "iteration", type_story_or_defect);
+		write2.write_TC_Details(testcase, team_name, "iteration");
+		//write.write_Defect_Details_with_state_and_severity(defect, team_name, "Iteration",type_story_or_defect);
+		//write.write_testcase_details(testcase, team_name,  "Iteration");
 		
 		TeamStatus team_status=new TeamStatus();		
 		
@@ -117,8 +123,11 @@ public class Get_Iteration_data
 		team_status.setTestCases(testcase);  
 		
 		//write to excel	
-		write.write_automated_testcase_count(testcase, team_name, "iteration");
-		write.write_Iteration_Status(team_status,team_name);		
+		
+		write2.write_Iteration_Status_Dashboard(team_status, team_name);
+		write2.write_TC_Details_Automatable(testcase, team_name, "iteration");		
+		//write.write_Iteration_Status(team_status,team_name);	
+		//write.write_automated_testcase_count(testcase, team_name, "iteration");			
 		common_fun_obj.add_total(team_status,teams_status_total);		
 		return team_status;		
 	}

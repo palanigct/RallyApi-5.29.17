@@ -56,6 +56,54 @@ public class RallyRunner
 
 
 /* reports write method calling location 
+  	Dashboard
+	Testable UserStories Count
+	Testable Userstories
+	Defect Details for Severity
+	Defect-Date
+	TestCase Details
+	Automatable TestCases 
+	
+	UserStories
+	Defects
+	TestCases
+
+	TMWise-Dashboard
+	TMWise-US-Details-Testable-CT
+	TMWise-US-Details-Testable
+	TMWise-DE-Details-Severity
+	TMWise-DE-Details-Date
+	TMWise-TC-Details
+	TMWise-TC-Details-Automatable
+
+
+Report                         -  Class                 -  Method
+--------------------------------------------------------------------------------------------------
+TMWise-Dashboard               - Get_Iteration_data     - get_Iteration_Status_details_for_team_and_sprint
+TMWise-US-Details-Testable-CT  - Get_Iteration_data     - get_Iteration_Status_details_for_team_and_sprint
+TMWise-US-Details-Testable     - Get_Iteration_data     - get_Iteration_Status_details_for_team_and_sprint
+TMWise-DE-Details-Severity     - Get_Iteration_data		- get_Iteration_Status_details_for_team_and_sprint
+TMWise-DE-Details-Date         - Get_Iteration_data		- get_Iteration_Status_details_for_team_and_sprint
+TMWise-TC-Details              - Get_Iteration_data 	- get_Iteration_Status_details_for_team_and_sprint
+TMWise-TC-Details-Automatable  - Get_Iteration_data		- get_Iteration_Status_details_for_team_and_sprint
+
+UserStories                    -  Common_Functions      -  callRestApi
+Defects                        -  Common_Functions      -  callRestApi
+TestCases                      -  Common_Functions      -  getTestcase_details
+
+Dashboard                      -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint
+Testable UserStories Count     -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint
+Testable UserStories           -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint
+Automatable TestCases          -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint
+TestCase Details               -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint  
+Defect Details Based on Reopen -  Get_Iteration_data    -  get_Iteration_Status_details_for_team_and_sprint
+
+
+*/
+
+
+
+/* reports write method calling location 
  
    Report                         -  Class                 -  Method
    --------------------------------------------------------------------------------------------------

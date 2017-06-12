@@ -73,6 +73,8 @@ public class Get_Iteration_data
 		//team_status.getUserstories_application().displayAll();
 		//team_status.getDefects_application().displayAll();
 		
+		
+		
 		write.write_ApplicationWise_userstories_and_defect(team_status, Application_list, "iteration");
 		write.write_ApplicationWise_defect_details(team_status, Application_list, "iteration");
 		write.write_ApplicationWise_testCase_details(team_status, Application_list, "iteration");					

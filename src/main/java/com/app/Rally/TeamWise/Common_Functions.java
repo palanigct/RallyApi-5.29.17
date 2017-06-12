@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 //import com.app.drawchart.DrawChart;
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
+import com.app.excelwrite.Excel_Write_Way2;
 import com.app.pojos.Defects;
 import com.app.pojos.Defects_CR;
 import com.app.pojos.TeamStatus;
@@ -29,6 +30,7 @@ public class Common_Functions
 {
 
 	public static Excel_Write write=new Excel_Write();
+	public static Excel_Write_Way2 write2=new Excel_Write_Way2();
 	public static Other_Functions other_functions=new Other_Functions();
 	public static Common_Functions common_fun_obj=new Common_Functions();
 	public static RallyRestApi restApi = null;
@@ -204,8 +206,8 @@ public class Common_Functions
                  story.setCRNumber(CRNumber);
                  write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);           
                  
-                 TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
-                 //TestCases TC=new TestCases();
+                 //TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
+                 TestCases TC=new TestCases();
                  
                  pass_tc  		+= TC.getPass();
                  fail_tc  		+= TC.getFail();
@@ -230,7 +232,7 @@ public class Common_Functions
                  if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	 closed++;
                 	 
                  if(StringUtils.containsIgnoreCase(severity, "Average")) 	  average++;
-                 if(StringUtils.containsIgnoreCase(severity, "Critical"))   critical++;
+                 if(StringUtils.containsIgnoreCase(severity, "Critical"))   critical++; 
                  if(StringUtils.containsIgnoreCase(severity, "Major"))  major++;
                  if(StringUtils.containsIgnoreCase(severity, "Minor")) minor++;
                 	 
