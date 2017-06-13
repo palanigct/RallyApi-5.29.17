@@ -331,6 +331,8 @@ public class Excel_Write
         //int currentRow=sheet.getLastRowNum()+1;       
         //row=sheet.createRow(currentRow);currentRow_ite
         row=sheet.createRow(currentRow);
+        System.out.println("current row : "+currentRow+" currentRow_ite : "+currentRow_ite);
+        
         
         for(int i=0;i<10;i++)
         {

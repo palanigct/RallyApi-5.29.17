@@ -112,7 +112,8 @@ public class Get_Iteration_data
 		testcase=common_fun_obj.addTwoTestCases(testcase1, testcase2);		
 		testcase=common_fun_obj.calculate_percent_testcase(testcase);	
 		write2.write_DE_Details_Severity(defect, team_name, "iteration", type_story_or_defect);
-		write2.write_TC_Details(testcase, team_name, "iteration");
+		
+		//write2.write_TC_Details(testcase, team_name, "iteration");
 		//write.write_Defect_Details_with_state_and_severity(defect, team_name, "Iteration",type_story_or_defect);
 		//write.write_testcase_details(testcase, team_name,  "Iteration");
 		
@@ -124,10 +125,15 @@ public class Get_Iteration_data
 		
 		//write to excel	
 		
-		write2.write_Iteration_Status_Dashboard(team_status, team_name);
-		write2.write_TC_Details_Automatable(testcase, team_name, "iteration");		
+		
+				
 		//write.write_Iteration_Status(team_status,team_name);	
-		//write.write_automated_testcase_count(testcase, team_name, "iteration");			
+		//write.write_automated_testcase_count(testcase, team_name, "iteration");
+		write2.write_TC_Details_Automatable2(testcase, team_name, "iteration");
+		//write2.write_TC_Details_Automatable(testcase, team_name, "iteration");		
+		write2.write_Iteration_Status_Dashboard(team_status, team_name);
+		
+		
 		common_fun_obj.add_total(team_status,teams_status_total);		
 		return team_status;		
 	}
