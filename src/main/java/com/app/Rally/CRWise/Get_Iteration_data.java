@@ -70,10 +70,13 @@ public class Get_Iteration_data
 		} 		
 		
 
-		write2.write_Iteration_Status_Dashboard_CR(team_status, CR_list,"iteration");
+		write2.write_US_Details_Testable_CT_CR(team_status, CR_list, "iteration");
+		write2.write_US_Details_Testable_CR(team_status, CR_list, "iteration");
 		write2.write_DE_Details_Severity_CR(team_status, CR_list, "iteration");
-		write2.write_TC_Details_CR(team_status,CR_list , "iteration");
-		
+		write2.write_DE_Details_Date_CR(team_status, CR_list, "iteration");
+		write2.write_TC_Details_Automatable_CR(team_status, CR_list, "iteration");
+		write2.write_TC_Details_CR(team_status,CR_list , "iteration");		
+		write2.write_Iteration_Status_Dashboard_CR(team_status, CR_list,"iteration");
 		
 		//write.write_CRwise_userstories_and_defect(team_status, CR_list, "iteration");
 		//write.write_CRwise_defect_details(team_status, CR_list, "iteration");

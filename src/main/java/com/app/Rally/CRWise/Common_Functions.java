@@ -149,7 +149,7 @@ public class Common_Functions
 		TeamStatus team_status=new TeamStatus();
 		
 		
-		int backlogs=0;
+		/*int backlogs=0;
 		int defined=0;
 		int in_progress=0;
 		int completed=0;
@@ -185,7 +185,7 @@ public class Common_Functions
 		int method_count_tc=0;
 		int automated_count_tc=0;
 		int exe_tc=0;
-		
+		*/
 		
 		int[] backlogs_cr = new int [10];
 		int[] defined_cr  = new int [10];
@@ -193,6 +193,14 @@ public class Common_Functions
 		int[] completed_cr = new int [10];
 		int[] accepted_cr = new int [10];
 		int[] total_cr = new int [10];
+		
+		int[] testable_field_count=new int [10];		
+		int[] backlogs_testable = new int [10];
+		int[] defined_testable  = new int [10];
+		int[] in_progress_testable = new int [10];
+		int[] completed_testable = new int [10];
+		int[] accepted_testable = new int [10];
+		int[] total_testable = new int [10];
 		
 		int[] submitted_cr= new int [10];
 		int[] open_cr= new int [10];
@@ -205,7 +213,9 @@ public class Common_Functions
 		int[] major_cr=new int [10];
 		int[] average_cr=new int [10];
 		int[] minor_cr=new int [10];
-		int[] total_state_cr=new int [10];		
+		int[] total_state_cr=new int [10];	
+		
+		
 		
 		int[] pass_tc_cr		= new int[10];
 		int[] fail_tc_cr  		=new int[10];
@@ -222,7 +232,7 @@ public class Common_Functions
         String name="";
         String formId="";
        
-        //String creationDate="";
+        // String creationDate="";
         // String lastUpdateDate="";
         // String acceptedDate="";
         // String closedDate="";
@@ -239,8 +249,7 @@ public class Common_Functions
         String CRNumber="Null";
 		
         UserStories story=new UserStories();
-        String team_name="Null";
-		int testable_field_count=0;			
+        String team_name="Null";					
   	    String iterationName	= name_release_or_sprint;
   	    String reqKey="";
         String testable="";     
@@ -269,8 +278,7 @@ public class Common_Functions
              }
                     
              QueryResponse storyQueryResponse = restApi.query(storyRequest);
-             total_count=storyQueryResponse.getTotalResultCount();
-           
+                       
              //result looping is start here
              for (int j=0; j<storyQueryResponse.getTotalResultCount();j++)
              {
@@ -340,7 +348,7 @@ public class Common_Functions
                                   	 if(!(storyJsonObject.get("Severity").toString().equals("null"))) 	
                                        {
                                   		 severity=storyJsonObject.get("Severity").getAsString();
-                                  		 total_severity++;
+                                  		 //total_severity++;
                                        }                                    	  
                                    }catch(Exception e)
                                    {
@@ -352,12 +360,25 @@ public class Common_Functions
                                   	 if(!(storyJsonObject.get("State").toString().equals("null"))) 	
                                        {
                                   		 defectState=storyJsonObject.get("State").getAsString();
-                                  		 total_state++;
+                                  		 //total_state++;
                                        }                                    	  
                                    }catch(Exception e)
                                    {
                                   	 defectState="Field Does not Exist";
                                    }
+                                   
+                                   try
+                                   {
+                                  	 if(storyJsonObject.get("c_Testable").toString().equals("null"))
+                                  		 testable="Null";
+                                  	 else                	 
+                                  		 { testable=storyJsonObject.get("c_Testable").getAsString(); testable_field_count[i]++;	}
+                                   }
+                                   catch(Exception e)
+                                   {
+                                  	 	testable="Field Does not Exist";
+                                   }
+                                   
                                    
                                    //====================== set values and write to excel======
                                    story.setFormattedID(formId);
@@ -388,7 +409,18 @@ public class Common_Functions
                                    if(StringUtils.containsIgnoreCase(severity, "Critical"))     { critical_cr[i]++; total_severity_cr[i]++; }
                                    if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_cr[i]++;    total_severity_cr[i]++; }
                                    if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_cr[i]++;    total_severity_cr[i]++; }
-                                              
+                                   
+                                   if(StringUtils.containsIgnoreCase(testable, "yes"))
+                                   {
+                                  	   if(state_temp.contains("Backlog")) 	backlogs_testable[i]++;
+                                       if(state_temp.contains("Defined")) 	defined_testable[i]++;
+                                       if(state_temp.contains("In-Progress")) in_progress_testable[i]++;
+                                       if(state_temp.contains("Completed")) 	completed_testable[i]++;
+                                       if(state_temp.contains("Accepted")) 	accepted_testable[i]++;  
+                                       
+                                       total_testable[i]++;
+                                   }
+                                   
                                    total_cr[i]++;
                         	}    
                         }
@@ -426,6 +458,7 @@ public class Common_Functions
     	 TestCases_CR testcase_details_cr= new TestCases_CR();
     	
     	 userstory_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
+    	 userstory_details_cr.setAllTestable(backlogs_testable, defined_testable, in_progress_testable, completed_testable, accepted_testable, total_testable, testable_field_count);
     	 defect_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
     	 defect_details_cr.setAllSeverity(critical_cr, major_cr, average_cr, minor_cr, total_severity_cr);
     	 defect_details_cr.setAllState(submitted_cr, open_cr, fixed_cr, closed_cr, reopen_cr, ready_for_test_cr, total_state_cr);

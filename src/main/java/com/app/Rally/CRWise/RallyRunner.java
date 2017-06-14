@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.app.drawchart.DrawChart_Excel;
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
+import com.app.excelwrite.Excel_Write_Way2;
+import com.app.pojos.TeamStatus;
 
 public class RallyRunner 
 {
@@ -24,12 +26,15 @@ public class RallyRunner
 	public static ArrayList<String> team_list=new ArrayList<String>();
 	public static ArrayList<String> CR_list=new ArrayList<String>();
 	
+	public static Excel_Write_Way2 write2=new Excel_Write_Way2();
+	
 	public static void main(String arg[]) throws Throwable
 	{
 				
 		System.out.println(" \n Started");
 		
-		
+		TeamStatus team_status = new TeamStatus();
+				
 		other_fun_obj.copy_output_folder();          //copy the output folder to system
 				
 		other_fun_obj.copy_template_folder();	     //copy template folder to output folder	
@@ -37,16 +42,24 @@ public class RallyRunner
 		
 		CR_list=other_fun_obj.get_CR_List();         //get the CR list
 		
-		ite_obj.Exe_Iteration_CR(CR_list);  	     //execute iteration function for get the iterations data's with CR wise details
+		//ite_obj.Exe_Iteration_CR(CR_list);  	     //execute iteration function for get the iterations data's with CR wise details
 	
+		//write2.write_US_Details_Testable_CT_CR(team_status, CR_list, "iteration");
+		write2.write_US_Details_Testable_CR(team_status, CR_list, "iteration");
+		write2.write_US_Details_Testable( team_status.getUserStories(), "empty", "iteration", "userstory");
+		//write2.write_DE_Details_Severity_CR(team_status, CR_list, "iteration");
+		//write2.write_DE_Details_Date_CR(team_status, CR_list, "iteration");
+		//write2.write_TC_Details_Automatable_CR(team_status, CR_list, "iteration");
+		//write2.write_TC_Details_CR(team_status,CR_list , "iteration");		
+		//write2.write_Iteration_Status_Dashboard_CR(team_status, CR_list,"iteration");
+		
 		
 		//drawchart.draw_chart_in_excel();                   //draw the chart in inside the excel sheet 
 		
 		other_fun_obj.copy_output_folder();           //copy the output folder to system 
 				
 		System.out.println("\n completed");		
-	}	
-	
+	}		
 }
 
 

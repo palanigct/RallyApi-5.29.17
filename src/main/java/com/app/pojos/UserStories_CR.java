@@ -10,6 +10,7 @@ public class UserStories_CR
 	private  int[] completed = new int [10];
 	private  int[] accepted = new int [10];
 	private  int[] total = new int [10];
+	
 	private  int[] testableFieldCount = new int [10];
 	
 	private  int[] backlogs_testable = new int [10];
@@ -179,10 +180,27 @@ public class UserStories_CR
     	this.total=total;
     }
 	
+    public void setAllTestable( int[] backlogs_testable , int[] defined_testable ,  int[] in_progress_testable ,  int[] completed_testable , int[] accepted_testable , int[] total_testable,int[] testableFieldCount )
+    {
+    	this.backlogs_testable=backlogs_testable;
+    	this.defined_testable=backlogs_testable;
+    	this.in_progress_testable=in_progress_testable;
+    	this.completed_testable=completed_testable;
+    	this.accepted=accepted_testable;
+    	this.total_testable=total_testable;
+    	this.testableFieldCount=testableFieldCount;    	
+    }
+	
     
     public void displayAll()
     {
     	for(int i=0;i<backlogs.length;i++,System.out.println(" "))
     	   System.out.print( "CR"+i+":-  back : "+this.backlogs[i]+" defin : "+this.defined[i]+" in_prog : "+this.in_progress[i]+" comp : "+this.completed[i]+" accp : "+this.accepted[i]+ " total : "+this.total[i]);
+    }
+    
+    public void displayAllTestable()
+    {
+    	for(int i=0;i<backlogs.length;i++,System.out.println(" "))
+    	   System.out.print( "CR"+i+":-  back : "+this.backlogs_testable[i]+" defin : "+this.defined_testable[i]+" in_prog : "+this.in_progress_testable[i]+" comp : "+this.completed_testable[i]+" accp : "+this.accepted_testable[i]+ " total : "+this.total_testable[i]+" field count : "+this.testableFieldCount[i]);
     }
 }
