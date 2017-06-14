@@ -98,8 +98,7 @@ public class Excel_Write_Way2
         
         	
         
-        row=sheet.createRow(currentRow_ite);
-        System.out.println(" dashboard : currentRow_ite : "+currentRow_ite);
+        row=sheet.createRow(currentRow_ite);        
         
         UserStories userstory= team_status.getUserStories();
 		Defects defects=team_status.getDefects();
@@ -394,8 +393,7 @@ public class Excel_Write_Way2
         //int currentRow=sheet.getLastRowNum()+1;       
         //row=sheet.createRow(currentRow);currentRow_ite
         row=sheet.createRow(currentRow);
-        System.out.println("severity : currentRow_ite "+currentRow_ite);
-        
+               
         for(int i=0;i<25;i++)
         {
         	cell=row.createCell(i);
@@ -489,9 +487,12 @@ public class Excel_Write_Way2
         outFile.close();
 		
 	}	
-	
+
 	public static void write_TC_Details(TestCases testcase,String teamName,String type_iteration_or_release) throws IOException
 	{
+		
+		
+		
 		String 	filename="";
 		int currentRow=0;
 		if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
@@ -521,8 +522,7 @@ public class Excel_Write_Way2
         //int currentRow=sheet.getLastRowNum()+1;       
         //row=sheet.createRow(currentRow);currentRow_ite
         row=sheet.createRow(currentRow);
-        
-        System.out.println(" TC : currentRow_ite :  "+currentRow_ite);
+               
         for(int i=0;i<25;i++)
         {
         	cell=row.createCell(i);
@@ -548,14 +548,11 @@ public class Excel_Write_Way2
         FileOutputStream outFile =new FileOutputStream(new File(filename));
         workbook.write(outFile);
         outFile.close();
-        	
         
-		
 	}
 	
-	public static void write_TC_Details_Automatable2(TestCases testcase,String teamName,String type_iteration_or_release) throws IOException, Exception
-	{		
-       
+	public static void write_TC_Details_Automatable(TestCases testcase,String teamName,String type_iteration_or_release) throws IOException, Exception
+	{
 		String 	filename="";
 		int currentRow=0;
 		if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
@@ -576,7 +573,9 @@ public class Excel_Write_Way2
         HSSFRow row=null;        
                
         
-        sheet = workbook.getSheet("TMWise-TC-Details-Auto");
+        //sheet = workbook.getSheet("TMWise-TC-Details-Auto");
+        sheet = workbook.getSheet("TMWise-TC-Details-Automatable");
+       
         HSSFCellStyle style1=sheet.getRow(2).getCell(4).getCellStyle();
         HSSFCellStyle style2=sheet.getRow(2).getCell(5).getCellStyle();
         HSSFCellStyle style3=sheet.getRow(2).getCell(6).getCellStyle();
@@ -585,161 +584,18 @@ public class Excel_Write_Way2
         //int currentRow=sheet.getLastRowNum()+1;       
         //row=sheet.createRow(currentRow);currentRow_ite
         row=sheet.createRow(currentRow);
-        
-        System.out.println(" TC : currentRow_ite :  "+currentRow_ite);
+               
         for(int i=0;i<25;i++)
         {
         	cell=row.createCell(i);
         	switch(i)
         	{
-        		case 0: cell.setCellValue(teamName);                        cell.setCellStyle(style1); break;
-        		case 1: cell.setCellValue(testcase.getExecuted());    cell.setCellStyle(style2); break;
-        		case 2: cell.setCellValue(testcase.getPass());     cell.setCellStyle(style2);break;
-        		case 3: cell.setCellValue(testcase.getFail()); cell.setCellStyle(style2); break;
-        		case 4: cell.setCellValue(testcase.getIn_progress());   cell.setCellStyle(style2);break;
-        		case 5: cell.setCellValue(testcase.getBlocked());    cell.setCellStyle(style2);break;
-        		case 6: cell.setCellValue(testcase.getNo_run());       cell.setCellStyle(style2);break;
-        		case 7: cell.setCellValue(testcase.getTotal());       cell.setCellStyle(style3);break;
-        		case 8: cell.setCellValue(testcase.getPercentage_execute());       cell.setCellStyle(style2);break;
-        		case 9: cell.setCellValue(testcase.getPercentage_pass());       cell.setCellStyle(style2);break;
-        		case 10: cell.setCellValue(testcase.getPercentage_fail());       cell.setCellStyle(style2);break;
-        		default : break;
-        	}
-        	
-        }
-        
-        file.close();        
-        FileOutputStream outFile =new FileOutputStream(new File(filename));
-        workbook.write(outFile);
-        outFile.close();
-        	
-        
-      
-	}	
-	
-	
-	
-	public static void write_TC_Details_Automatable(TestCases testcase,String teamName,String type_iteration_or_release) throws IOException, Exception
-	{
-		/*String 	filename="";
-		int currentRow=0;
-		if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
-		{
-			filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
-			currentRow=currentRow_ite;
-		}
-			else if(StringUtils.containsIgnoreCase(type_iteration_or_release, "release"))
-		{
-			filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Release Status.xls";
-			currentRow=currentRow_rele;
-		}
-			
-		FileInputStream file = new FileInputStream(new File(filename));
-        HSSFWorkbook workbook = new HSSFWorkbook(file);
-        HSSFSheet sheet=null;
-        HSSFCell cell = null;
-        HSSFRow row=null; 
-                     
-        sheet = workbook.getSheet("TMWise-TC-Details-Automatable");
-        HSSFCellStyle style1=sheet.getRow(2).getCell(4).getCellStyle();
-        HSSFCellStyle style2=sheet.getRow(2).getCell(5).getCellStyle();
-        HSSFCellStyle style3=sheet.getRow(2).getCell(6).getCellStyle();
-        
-        //int currentRow=sheet.getLastRowNum()+1;       
-        //row=sheet.createRow(currentRow);currentRow_ite
-        //row=sheet.createRow(currentRow);     
-        
-        row=sheet.createRow(currentRow_ite);
-        System.out.println(" auto : currentRow_ite : "+currentRow_ite);
-        for(int i=0;i<10;i++)
-        {
-        	cell=row.createCell(i);
-        	switch(i)
-        	{
-        	case 0: cell.setCellValue(1); 					    cell.setCellStyle(style1); break;
-    		case 1: cell.setCellValue(1); 			cell.setCellStyle(style2); break;
-    		case 2: cell.setCellValue(1);	cell.setCellStyle(style2); break;
-    		case 3: cell.setCellValue(1);		cell.setCellStyle(style2); break; 
-    		default : break;
         		case 0: cell.setCellValue(teamName); 					    cell.setCellStyle(style1); break;
         		case 1: cell.setCellValue(testcase.getTotal()); 			cell.setCellStyle(style2); break;
         		case 2: cell.setCellValue(testcase.getAutomated_count());	cell.setCellStyle(style2); break;
         		case 3: cell.setCellValue(testcase.getMethod_count());		cell.setCellStyle(style2); break; 
-        		default : break;
+        		default : break;        	
         	}
-        	
-        }
-        
-        file.close();        
-        FileOutputStream outFile =new FileOutputStream(new File(filename));
-        workbook.write(outFile);
-        outFile.close();*/
-		
-		String 	filename="";
-		int currentRow=0;
-		if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
-		{
-			filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
-			currentRow=currentRow_ite;
-		}
-		else if(StringUtils.containsIgnoreCase(type_iteration_or_release, "release"))
-		{
-			filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Release Status.xls";
-			currentRow=currentRow_rele;
-		}
-			
-		FileInputStream file = new FileInputStream(new File(filename));
-        HSSFWorkbook workbook = new HSSFWorkbook(file);
-        HSSFSheet sheet=null;
-        HSSFCell cell = null;
-        HSSFRow row=null;        
-               
-        
-        sheet = workbook.getSheet("TMWise-TC-Details-Automatable");
-       HSSFCellStyle style1=sheet.getRow(2).getCell(4).getCellStyle();
-       HSSFCellStyle style2=sheet.getRow(2).getCell(5).getCellStyle();
-       HSSFCellStyle style3=sheet.getRow(2).getCell(6).getCellStyle();
-        
-                
-        //int currentRow=sheet.getLastRowNum()+1;       
-        //row=sheet.createRow(currentRow);currentRow_ite
-        
-        
-        
-        	row=sheet.getRow(2);
-        	System.out.println(row.getCell(0).getStringCellValue()+" ");
-        	System.out.println(row.getCell(1).getStringCellValue()+" ");
-        	System.out.println(row.getCell(2).getStringCellValue()+" ");
-        	
-        	
-        
-        	row=sheet.createRow(currentRow);
-        
-        System.out.println(" TC : currentRow_ite :  "+currentRow_ite);
-        for(int i=0;i<25;i++)
-        {
-        	cell=row.createCell(i);
-        	switch(i)
-        	{
-        	case 0: cell.setCellValue(teamName); 					    cell.setCellStyle(style1); break;
-    		case 1: cell.setCellValue(testcase.getTotal()); 			cell.setCellStyle(style2); break;
-    		case 2: cell.setCellValue(testcase.getAutomated_count());	cell.setCellStyle(style2); break;
-    		case 3: cell.setCellValue(testcase.getMethod_count());		cell.setCellStyle(style2); break; 
-    		default : break;        	
-        	}
-        		/*case 0: cell.setCellValue(teamName);                        cell.setCellStyle(style1); break;
-        		case 1: cell.setCellValue(testcase.getExecuted());    cell.setCellStyle(style2); break;
-        		case 2: cell.setCellValue(testcase.getPass());     cell.setCellStyle(style2);break;
-        		case 3: cell.setCellValue(testcase.getFail()); cell.setCellStyle(style2); break;
-        		case 4: cell.setCellValue(testcase.getIn_progress());   cell.setCellStyle(style2);break;
-        		case 5: cell.setCellValue(testcase.getBlocked());    cell.setCellStyle(style2);break;
-        		case 6: cell.setCellValue(testcase.getNo_run());       cell.setCellStyle(style2);break;
-        		case 7: cell.setCellValue(testcase.getTotal());       cell.setCellStyle(style3);break;
-        		case 8: cell.setCellValue(testcase.getPercentage_execute());       cell.setCellStyle(style2);break;
-        		case 9: cell.setCellValue(testcase.getPercentage_pass());       cell.setCellStyle(style2);break;
-        		case 10: cell.setCellValue(testcase.getPercentage_fail());       cell.setCellStyle(style2);break;
-        		default : break;
-        	*/
         	
         }
         
@@ -747,13 +603,7 @@ public class Excel_Write_Way2
         FileOutputStream outFile =new FileOutputStream(new File(filename));
         workbook.write(outFile);
         outFile.close();
-        
-        
-         file = new FileInputStream(new File(filename));
-         workbook = new HSSFWorkbook(file);
-         sheet=workbook.getSheet("TMWise-TC-Details-Automatable");
-         row=sheet.getRow(currentRow);
-         
+        	
          
       
 	}	
