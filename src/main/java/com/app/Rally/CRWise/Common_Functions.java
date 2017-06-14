@@ -229,7 +229,7 @@ public class Common_Functions
 		int[] exe_tc_cr=new int[10];
 				
 		String state_temp="";
-        String name="";
+        String workproduct_name="";
         String formId="";
        
         // String creationDate="";
@@ -313,7 +313,7 @@ public class Common_Functions
                         		 int i=index;
                         		
                         		 state_temp=storyJsonObject.get("ScheduleState").getAsString();
-                      	         name=storyJsonObject.get("Name").getAsString();
+                        		 workproduct_name=storyJsonObject.get("Name").getAsString();
                       	         formId=storyJsonObject.get("FormattedID").getAsString(); 
                       	       
                       	         // creationDate=storyJsonObject.get("CreationDate").getAsString();
@@ -382,7 +382,7 @@ public class Common_Functions
                                    
                                    //====================== set values and write to excel======
                                    story.setFormattedID(formId);
-                                   story.setName(name);
+                                   story.setName(workproduct_name);
                                    story.setStatus(state_temp);
                                    story.setSprintname(sprintName);
                                    story.setReleaseName(releaseName);
@@ -440,16 +440,97 @@ public class Common_Functions
         	{
         			
         	}
-        finally 
-            {   
-        		
-            }
-		
+      
         
         if((type_story_or_defect.contains("testcase")))
         {
-        	System.out.println("test case");
-        }
+        	  System.out.println("test case");
+        	  String reqKey2="Defects";
+        	
+        	
+        	  try {
+                  QueryRequest storyRequest = new QueryRequest(reqKey2);          
+                  storyRequest.setPageSize(Integer.MAX_VALUE);
+                  storyRequest.setLimit(Integer.MAX_VALUE);
+                  storyRequest.setScopedDown(false);
+                  storyRequest.setScopedUp(false);
+                  if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Release"))
+                  {
+                 	 storyRequest.setQueryFilter(new QueryFilter("Release.Name", "=",name_release_or_sprint));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
+                  }
+                  else if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Iteration"))
+                  {
+                 	 storyRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",name_release_or_sprint));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
+                  }
+                         
+                  QueryResponse storyQueryResponse = restApi.query(storyRequest);
+                            
+                  //result looping is start here
+                  for (int j=0; j<storyQueryResponse.getTotalResultCount();j++)
+                  {
+                      JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
+                      int index_cr=100;
+                      boolean check=false;
+                      //================================ getting CR  =======================================
+                      
+                      try{
+                   	   		JsonObject CR_number = (JsonObject) storyJsonObject.get("c_CR");              	               
+                   	   		JsonArray list =new JsonArray();
+                             if(CR_number.get("_tagsNameArray").getAsJsonArray().size()!=0)
+                             {                            	                  	   
+                             	list=CR_number.get("_tagsNameArray").getAsJsonArray();                         	              	   
+                             	JsonObject crobj=(JsonObject) list.get(0) ;                        	
+                             	CRNumber=crobj.get("Name").getAsString();
+                             	check=true;
+                              }
+                             else
+                             {
+                             	//CRNumber=call getcr method //System.out.println(" CR name list is an empty array");
+                             }  
+                      	  }catch(Exception e) //for getting cr 
+                      	  {              
+                      		  	//CRNumber=call getcr method //System.out.println("CR field is not available");
+                      	  }
+                  
+                    if(check!=false) 
+                    {	
+                    	System.out.println("inside check");
+                        for(int i=0;i<CR_list.size();i++)          //check the CR number in list
+                        { 
+                   		   if(StringUtils.containsIgnoreCase(CRNumber, CR_list.get(i)))
+                      	 	{                      			 
+                   			  index_cr=i;  
+                   			  workproduct_name=storyJsonObject.get("Name").getAsString();
+                     	      formId=storyJsonObject.get("FormattedID").getAsString(); 
+                     	      
+                     	      System.out.println("workproduct_name : "+workproduct_name);
+                     	      TestCases testcase_details=common_fun_obj.getTestcase_details(workproduct_name, "iteration");
+                     	     //TestCases testcase_details=new TestCases();
+                     	     
+                     	      pass_tc_cr[index_cr]+=testcase_details.getPass();
+                     	      fail_tc_cr[index_cr]+=testcase_details.getFail();
+                     	      in_progress_tc_cr[index_cr]+=testcase_details.getIn_progress();
+                     	      blocked_tc_cr[index_cr]+=testcase_details.getBlocked();
+                     	      no_run_tc_cr[index_cr]+=testcase_details.getNo_run();
+                     	      total_tc_cr	[index_cr]+=testcase_details.getTotal();            			
+                     	      automated_count_tc_cr[index_cr]+=testcase_details.getAutomated_count(); 
+                     	      method_count_tc_cr [index_cr]+=testcase_details.getMethod_count();
+                     	      exe_tc_cr  [index_cr]+=testcase_details.getExecuted();
+                   			  break;                                   
+                   		    }                        	                  
+                        }                   	                      
+                     }
+                  
+                  }//end of for loop (result loop)   
+                 
+                  // =======================================  END CR TC ==========================================            
+                
+             }catch(Exception e)
+             	{
+             		System.out.println("not able to query the REST API service");	
+             	}
+                    	
+        }// testcase end if 
         
         
      
@@ -473,9 +554,106 @@ public class Common_Functions
     	 return team_status; 
 	}
 
+	public static TestCases getTestcase_details(String workProduct_name,String type_sprint_or_release ) throws IOException
+	{
+		int pass		= 0;
+		int fail  		= 0;
+		int in_progress = 0;
+		int blocked		= 0;
+		int no_run		= 0;
+		int total	    = 0;		
+		int extra		= 0;
+		int automated_count =0;
+		int method_count =0;
+		
+		String status      = "Null";
+		String formattedId = "Null";		
+		String team_Name   = "Null";
+		String method      = "Null";
+		String automated   = "Null";
+		
+		
+		QueryRequest testcaseRequest = new QueryRequest("TestCases"); 
+		testcaseRequest.setPageSize(Integer.MAX_VALUE);
+		testcaseRequest.setLimit(Integer.MAX_VALUE);
+		testcaseRequest.setScopedDown(false);
+		testcaseRequest.setScopedUp(false);
+        testcaseRequest.setQueryFilter(new QueryFilter("WorkProduct.Name", "=",workProduct_name  ));  //new QueryFilter("Iteration.Name", "=", iterationName).and
+        QueryResponse testcaseResponse = restApi.query(testcaseRequest);
+        total=testcaseResponse.getResults().size();
+        
+        System.out.println(" tc total : "+total);
+        for (int i=0; i<testcaseResponse.getResults().size();i++)
+        {
+            JsonObject testcaseJsonObject = testcaseResponse.getResults().get(i).getAsJsonObject();
+            formattedId = testcaseJsonObject.get("FormattedID").getAsString();
+            
+            if(!(testcaseJsonObject.get("LastVerdict").toString().equals("null"))) 	
+            {
+            	 status  = testcaseJsonObject.get("LastVerdict").getAsString();
+            }            
+                      
+            if(!(testcaseJsonObject.get("Project").toString().equals("null"))) 	
+            {
+            	JsonObject projectJson = (JsonObject) testcaseJsonObject.get("Project");                	
+           	    team_Name = projectJson.get("_refObjectName").getAsString();
+            }            
+           
+            if(!(testcaseJsonObject.get("Method").toString().equals("null"))) 	
+            {
+            	method = testcaseJsonObject.get("Method").getAsString();
+            	method_count++;
+            }  
+            
+            try
+            {
+            	 if(!(testcaseJsonObject.get("c_CanbeAutomated").toString().equals("null"))) 	
+                 {
+            		 automated = testcaseJsonObject.get("c_CanbeAutomated").getAsString();
+            		 if(StringUtils.containsIgnoreCase(automated, "yes"))
+            			 automated_count++;
+                 }
+            }
+            catch(Exception e)
+            {
+            	automated="CanbeAutomated Field Not Exist";
+            }
+            
+            
+            TestCases TC = new TestCases();
+            TC.setFormattedId(formattedId);
+            TC.setStatus(status);
+            TC.setWorkProduct_name(workProduct_name);
+            TC.setTeam_name(team_Name);
+            TC.setMethod(method);
+            TC.setAutomated(automated);
+            
+            //System.out.println("     TC : "+formattedId+" : "+status);
+            write.write_testcase(TC, type_sprint_or_release);
+            
+            if(StringUtils.containsIgnoreCase(status, "Pass")) 	{	  pass++; }
+            else if(StringUtils.containsIgnoreCase(status, "Fail")) 	{	  fail++; }	
+            else if(StringUtils.containsIgnoreCase(status, "In Progress")){ in_progress++; }
+            else  if(StringUtils.containsIgnoreCase(status, "Blocked")) {		  blocked++;  }
+            else if(StringUtils.containsIgnoreCase(status, "No Run"))  {	  no_run++;     }            
+            else if(StringUtils.containsIgnoreCase(status, "Null")) { extra++; }
+            else { extra++; }
+            
+         }
+        
+        TestCases testcases = new TestCases();
+        testcases.setAll(pass, fail, in_progress, blocked, no_run, total, 0 , 0 , 0); 
+        testcases.setAutomated_count(automated_count);
+        testcases.setMethod_count(method_count);
+        
+        testcases.displayAll();        
+        return testcases;
+	}
+	
+	
 	public static void getTestCases_CR(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> CR_list)
 	{
-TeamStatus team_status=new TeamStatus();
+		TeamStatus team_status=new TeamStatus();
 		
 		
 		int backlogs=0;
@@ -768,6 +946,7 @@ TeamStatus team_status=new TeamStatus();
     	   	 
     	 //return team_status;   
 	}
+	
 	public static RallyRestApi getRestApi() {
 		return restApi;
 	}

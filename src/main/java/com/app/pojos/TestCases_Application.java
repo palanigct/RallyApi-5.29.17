@@ -3,7 +3,7 @@ package com.app.pojos;
 public class TestCases_Application 
 {
 
-	private int[] pass = new int[10];
+	  private int[] pass = new int[10];
 	  private int[] fail  = new int[10];
 	  private int[] in_progress  = new int[10];
 	  private int[] blocked  = new int[10];
