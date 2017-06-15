@@ -42,6 +42,8 @@ public class RallyRunner
 		
 		//rele_obj.Exe_Release(team_list);		     //execute releases function for get the releases data's 		
 		
+		
+		
 		drawchart.draw_chart_in_excel();             //draw the chart in inside the excel sheet 
 		
 		

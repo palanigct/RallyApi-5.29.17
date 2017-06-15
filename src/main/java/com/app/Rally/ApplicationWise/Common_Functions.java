@@ -275,10 +275,12 @@ public class Common_Functions
              {
                  JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
                  
+                 
                  //================================  CR  =======================================
                  
                  try{
-              	   		JsonObject c_Application = (JsonObject) storyJsonObject.get("c_Application");              	               
+              	   		JsonObject c_Application = (JsonObject) storyJsonObject.get("c_Application"); 
+              	   		
               	   		JsonArray list =new JsonArray();
                         if(c_Application.get("_tagsNameArray").getAsJsonArray().size()!=0)
                         {                            	                  	   
@@ -413,7 +415,7 @@ public class Common_Functions
         
         if((type_story_or_defect.contains("testcase")))
         {
-        	  System.out.println("test case");
+        	  System.out.println(" inside test case");
         	  String reqKey2="HierarchicalRequirement";
         	
         	
@@ -435,9 +437,14 @@ public class Common_Functions
                   QueryResponse storyQueryResponse = restApi.query(storyRequest);
                             
                   //result looping is start here
+                  System.out.println(" total testcase response count : "+storyQueryResponse.getTotalResultCount());
+                  
                   for (int j=0; j<storyQueryResponse.getTotalResultCount();j++)
                   {
+                	  System.out.println(j+" inside loop : ");
+                	  
                       JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
+                      
                       int index_cr=100;
                       boolean check=false;
                       //================================ getting app  =======================================
@@ -463,7 +470,7 @@ public class Common_Functions
                   
                     if(check!=false) 
                     {	
-                    	System.out.println("inside check");
+                    	System.out.println(j+" inside app check true");
                         for(int i=0;i<Application_list.size();i++)          //check the CR number in list
                         { 
                    		   if(StringUtils.containsIgnoreCase(application_name, Application_list.get(i)))
@@ -552,7 +559,16 @@ public class Common_Functions
 		testcaseRequest.setScopedDown(false);
 		testcaseRequest.setScopedUp(false);
         testcaseRequest.setQueryFilter(new QueryFilter("WorkProduct.Name", "=",workProduct_name  ));  //new QueryFilter("Iteration.Name", "=", iterationName).and
-        QueryResponse testcaseResponse = restApi.query(testcaseRequest);
+        QueryResponse testcaseResponse=null;
+        
+        try
+        {
+              testcaseResponse = restApi.query(testcaseRequest);
+        }catch(Exception e)
+        {
+        	   System.out.println(" not able to query --inside the get testcase");
+        }
+        
         total=testcaseResponse.getResults().size();
         
         System.out.println(" tc total : "+total);

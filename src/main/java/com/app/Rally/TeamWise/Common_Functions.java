@@ -124,7 +124,7 @@ public class Common_Functions
                  String formId=storyJsonObject.get("FormattedID").getAsString();                 
                  
                 
-                 //String creationDate=storyJsonObject.get("CreationDate").getAsString();
+                //String creationDate=storyJsonObject.get("CreationDate").getAsString();
                 // String lastUpdateDate=storyJsonObject.get("LastUpdateDate").getAsString();
                 // String acceptedDate=storyJsonObject.get("AcceptedDate").getAsString();
                 // String closedDate=storyJsonObject.get("ClosedDate").getAsString();
@@ -206,8 +206,8 @@ public class Common_Functions
                  story.setCRNumber(CRNumber);
                  write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);           
                  
-                 //TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
-                 TestCases TC=new TestCases();
+                 TestCases TC=common_fun_obj.getTestcase_details(name,type_sprint_or_release);
+                 //TestCases TC=new TestCases();
                  
                  pass_tc  		+= TC.getPass();
                  fail_tc  		+= TC.getFail();

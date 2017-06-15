@@ -74,11 +74,17 @@ public class Get_Iteration_data
 		
 		//team_status.getUserstories_application().displayAll();
 		//team_status.getDefects_application().displayAll();
-		
-		
-		write2.write_Iteration_Status_Dashboard_APP(team_status, Application_list,"iteration");
+				
+				
+		write2.write_US_Details_Testable_CT_APP(team_status, Application_list, "iteration");
+		write2.write_US_Details_Testable_APP(team_status, Application_list, "iteration");	
 		write2.write_DE_Details_Severity_APP(team_status, Application_list, "iteration");
-		write2.write_TC_Details_APP(team_status,Application_list , "iteration");
+		write2.write_DE_Details_Date_APP(team_status, Application_list, "iteration");
+		write2.write_TC_Details_Automatable_APP(team_status, Application_list, "iteration");
+		write2.write_TC_Details_APP(team_status,Application_list , "iteration");		
+		write2.write_Iteration_Status_Dashboard_APP(team_status, Application_list,"iteration");
+
+		
 		
 		//write.write_ApplicationWise_userstories_and_defect(team_status, Application_list, "iteration");
 		//write.write_ApplicationWise_defect_details(team_status, Application_list, "iteration");
@@ -94,7 +100,7 @@ public class Get_Iteration_data
 		TestCases_Application testcase_details_app=new TestCases_Application();
 		
 		
-		/*// get userstory values
+		// get userstory values
 		
 		type_story_or_defect="userstory";	    
 	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);
@@ -105,11 +111,11 @@ public class Get_Iteration_data
 	    type_story_or_defect="defects";		
 	    temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
 		defect_details_app=temp.getDefects_application();		
-		*/
+		
 		//get testcase values
 		
 		type_story_or_defect="testcase";
-		TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
+		temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
 		testcase_details_app=temp.getTestcases_application();
 		
 		
