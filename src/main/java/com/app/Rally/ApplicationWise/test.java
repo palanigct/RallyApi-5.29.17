@@ -44,9 +44,9 @@ public class test {
 			
 			System.out.println("delete this ");
 			
-			test.onlyQuery();
+			//test.onlyQuery();
 			//test.delete_fun();
-			//test.maxgetvalues();
+			test.maxgetvalues();
 			/*System.out.println("*************************user story*******************************");
 			//test.userstoryreq();
 			System.out.println("*************************test case*******************************");
@@ -87,6 +87,12 @@ public class test {
            storyRequest.setPageSize(Integer.MAX_VALUE);
            storyRequest.setLimit(Integer.MAX_VALUE);
           
+           
+           storyRequest.setQueryFilter((new QueryFilter("Application.Count", "=", "2")));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")           
+	       QueryResponse storyQueryResponse = restApi.query(storyRequest);      
+           System.out.println(" total response count c_testable yes : "+storyQueryResponse.getTotalResultCount());
+           
+           
           /* storyRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName).and(new QueryFilter("Project.Name", "=", team_name)).and(new QueryFilter("ScheduleState", "=", "Accepted")));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")           
 	       QueryResponse storyQueryResponse = restApi.query(storyRequest);      
            System.out.println(" total response count accepted : "+storyQueryResponse.getTotalResultCount());
@@ -108,7 +114,7 @@ public class test {
            System.out.println(" total response count defined : "+storyQueryResponse.getTotalResultCount());
            */
            
-           storyRequest.setQueryFilter(new QueryFilter("Release.Name", "=",releaseName).and(new QueryFilter("Project.Name", "=", team_name)).and(new QueryFilter("ScheduleState", "=", "Accepted")));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")           
+           /*storyRequest.setQueryFilter(new QueryFilter("Release.Name", "=",releaseName).and(new QueryFilter("Project.Name", "=", team_name)).and(new QueryFilter("ScheduleState", "=", "Accepted")));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")           
 	       QueryResponse storyQueryResponse = restApi.query(storyRequest);      
            System.out.println(" total response count accepted : "+storyQueryResponse.getTotalResultCount());
            
@@ -128,7 +134,7 @@ public class test {
 	       storyQueryResponse = restApi.query(storyRequest);      
            System.out.println(" total response count defined : "+storyQueryResponse.getTotalResultCount());
            
-           
+           */
 	       /*
 	        
 	        delete this 
@@ -238,8 +244,9 @@ str : _type="HierarchicalRequirement"
 	{
 		
 
-	  		System.out.println(" inside test case");
-	  		String reqKey2="HierarchicalRequirement";
+	  		System.out.println(" inside maxgetvalues case");
+	  		
+	  		String reqKey2			="HierarchicalRequirement";
 	  		String iterationName	= "Sprint 238";
 			String releaseName      = "PI10 2017.04";
 			String team_name        = "NerdHerd";
@@ -248,60 +255,94 @@ str : _type="HierarchicalRequirement"
 			String username 		= "palanisamy.subramani@centurylink.com";
 			String password 		= "Lalith@93";        
 			String applicationName  = "Find Defects by Iterations and Team";
-			RallyRestApi restApi = null;
+			RallyRestApi restApi 	= null;
 
-	       try
-	       {
+			try
+			{
 	    	   restApi = new RallyRestApi(new URI(host),username,password);
-	       }catch(Exception e)
-	       {
+			}catch(Exception e)
+			{
 	    	   System.out.println(e);
-	       }
-	      
+			}      
 		
 		// NOTE : no pagination needed for defect or iteration, but required for hierarchicalrequirement or user
+		
 		QueryRequest queryRequest = new QueryRequest("hierarchicalrequirement");
-
-		queryRequest.setQueryFilter((new QueryFilter("Iteration.Name", "=",iterationName)));
+		//queryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName).and(new QueryFilter("Project.Name", "=", team_name)));
+		queryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName));		
 		queryRequest.setLimit(Integer.MAX_VALUE);
-
-		int responseTotalResultsCount = Integer.MAX_VALUE;// So we enter while loop first time
+		//queryRequest.setPageSize(2000);
+		
+		int responseTotalResultsCount = Integer.MAX_VALUE;
 		int actualResultsProcessedSoFar = 0;
-
-		int temp=0;
-		// Handle both cases
-		while ((queryRequest.getStart()) < responseTotalResultsCount && actualResultsProcessedSoFar < responseTotalResultsCount) 
+		
+		QueryResponse queryResponse = restApi.query(queryRequest);
+	    responseTotalResultsCount = queryResponse.getTotalResultCount();
+	    System.out.println("total response actualResultsProcessedSoFar : "+responseTotalResultsCount);
+	    int count=responseTotalResultsCount/2000;
+	    int temp=0;
+	    int i=0;
+	    
+	    while(i++<=count&&actualResultsProcessedSoFar<responseTotalResultsCount)
 		{
-			temp++;
-		    QueryResponse queryResponse = restApi.query(queryRequest);
-
+	    	JsonArray results = queryResponse.getResults();
+	    	System.out.println("while count " +i);
+	    	
+	    	for (JsonElement jsonElement : queryResponse.getResults())
+	        {
+	    		actualResultsProcessedSoFar++;	
+	    		if(actualResultsProcessedSoFar>responseTotalResultsCount)
+	    		{	System.out.println(" inside break "); break;}
+	        }
+	    	
+	    	if(actualResultsProcessedSoFar<responseTotalResultsCount)
+	    	{
+	    		queryRequest.setStart(queryRequest.getStart()+2000);
+	    		queryResponse = restApi.query(queryRequest);
+	    		temp = queryResponse.getTotalResultCount();
+	    		System.out.println("total response temp : "+temp);  
+	    	}
+		}
+			
+	    System.out.println("total response  actualResultsProcessedSoFar : "+actualResultsProcessedSoFar);
+	    
+	    
+	    
+		/*QueryResponse queryResponse = restApi.query(queryRequest);
+				
+		System.out.println(" response result : "+queryResponse.getTotalResultCount());
+		System.out.println(" page size : "+queryRequest.getPageSize());
+		System.out.println(" start : "+queryRequest.getStart());*/
+			
+		
+		/*while ((queryRequest.getStart()) < responseTotalResultsCount && actualResultsProcessedSoFar < responseTotalResultsCount) 
+		{		
+			
+			
+			QueryResponse queryResponse = restApi.query(queryRequest);
 		    responseTotalResultsCount = queryResponse.getTotalResultCount();// Set to correct value here
-
 		    JsonArray results = queryResponse.getResults();
 
-		    if (results.size() == 0) {
+		    System.out.println(" inside while : "+ i++ +" responseTotalResultsCount : "+responseTotalResultsCount);
+		    
+		    if (results.size() == 0) 
+		    {
+		    	System.out.println(" inside if : i="+i);
 		        return;
-		    } else {
-
-		        for (JsonElement jsonElement : queryResponse.getResults()) {
-
-		            // Process this particular JsonElement here
-
-		            // If no pagination required, this counter lets us exit while loop
-		            actualResultsProcessedSoFar++;
-		            System.out.println(jsonElement);
+		    } 
+		    else 
+		    {
+		    	for (JsonElement jsonElement : queryResponse.getResults())
+		        {
+		    		actualResultsProcessedSoFar++;		           
 		            System.out.println("actualResultsProcessedSoFar ="+actualResultsProcessedSoFar);
-		            System.out.println("temp "+temp);
-
-		        }// end for loop
-
-		    }// end if (results.size() == 0)
-
-		    // Setting this to handle pagination, if required
+		        }
+		    	
+		    	System.out.println("out side for ===============================================================");
+		    }   		         
 		    queryRequest.setStart(queryRequest.getStart() + queryRequest.getPageSize());
-
-		} // end while loop
-		
+		} 
+		*/
 		
 		
 		
