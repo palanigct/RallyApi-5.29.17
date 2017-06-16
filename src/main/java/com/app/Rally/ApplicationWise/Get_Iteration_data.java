@@ -72,9 +72,7 @@ public class Get_Iteration_data
 			if (restApi != null) { 	   restApi.close();   } 			
 		} 		
 		
-		//team_status.getUserstories_application().displayAll();
-		//team_status.getDefects_application().displayAll();
-				
+		
 				
 		write2.write_US_Details_Testable_CT_APP(team_status, Application_list, "iteration");
 		write2.write_US_Details_Testable_APP(team_status, Application_list, "iteration");	
@@ -84,7 +82,9 @@ public class Get_Iteration_data
 		write2.write_TC_Details_APP(team_status,Application_list , "iteration");		
 		write2.write_Iteration_Status_Dashboard_APP(team_status, Application_list,"iteration");
 
-		
+		//team_status.getUserstories_application().displayAll();
+		//team_status.getDefects_application().displayAll();
+		//team_status.getTestcases_application().displayAll();
 		
 		//write.write_ApplicationWise_userstories_and_defect(team_status, Application_list, "iteration");
 		//write.write_ApplicationWise_defect_details(team_status, Application_list, "iteration");
@@ -119,8 +119,7 @@ public class Get_Iteration_data
 		testcase_details_app=temp.getTestcases_application();
 		
 		
-		TeamStatus team_status=new TeamStatus();		
-		 
+		TeamStatus team_status=new TeamStatus();		 
 		team_status.setAllApplication(userstory_details_app, defect_details_app, testcase_details_app);	
 			
 		return team_status;		

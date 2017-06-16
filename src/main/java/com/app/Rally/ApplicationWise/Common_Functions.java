@@ -194,6 +194,14 @@ public class Common_Functions
 		int[] accepted_app = new int [10];
 		int[] total_app = new int [10];
 		
+		int[] testable_field_count=new int [10];		
+		int[] backlogs_testable = new int [10];
+		int[] defined_testable  = new int [10];
+		int[] in_progress_testable = new int [10];
+		int[] completed_testable = new int [10];
+		int[] accepted_testable = new int [10];
+		int[] total_testable = new int [10];
+		
 		int[] submitted_app= new int [10];
 		int[] open_app= new int [10];
 		int[] fixed_app=new int [10];
@@ -239,8 +247,7 @@ public class Common_Functions
         String application_name="Null";
 		
         UserStories story=new UserStories();
-        String team_name="Null";
-		int testable_field_count=0;			
+        String team_name="Null";					
   	    String iterationName	= name_release_or_sprint;
   	    String reqKey="";
         String testable="";     
@@ -269,14 +276,18 @@ public class Common_Functions
              }
                     
              QueryResponse storyQueryResponse = restApi.query(storyRequest);            
-           
+             System.out.println(" total story or defect  response count : "+storyQueryResponse.getTotalResultCount());
+                          
              //result looping is start here
-             for (int j=0; j<storyQueryResponse.getTotalResultCount();j++)
+             int j=0;
+             
+             for ( JsonElement jsonElement : storyQueryResponse.getResults())
              {
-                 JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
+           	     j++;
+                 JsonObject storyJsonObject = jsonElement.getAsJsonObject();
                  
                  
-                 //================================  CR  =======================================
+                 //================================  APP  =======================================
                  
                  try{
               	   		JsonObject c_Application = (JsonObject) storyJsonObject.get("c_Application"); 
@@ -336,6 +347,20 @@ public class Common_Functions
                                   	 sprintName=sprintJson.get("_refObjectName").getAsString();
                                    }
                       	         
+                                   try //get testable field
+                                   {
+                                  	 if(storyJsonObject.get("c_Testable").toString().equals("null"))
+                                  		 testable="Null";
+                                  	 else                	 
+                                  		 { testable=storyJsonObject.get("c_Testable").getAsString(); testable_field_count[i]++;	}
+                                   }
+                                   catch(Exception e)
+                                   {
+                                  	 	testable="Field Does not Exist";
+                                   }
+                                   
+                                   
+                                   
                       	           try //get severity field
                                    {
                                   	 if(!(storyJsonObject.get("Severity").toString().equals("null"))) 	
@@ -391,17 +416,29 @@ public class Common_Functions
                                    if(StringUtils.containsIgnoreCase(severity, "Critical"))     { critical_app[i]++; total_severity_app[i]++; }
                                    if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_app[i]++;    total_severity_app[i]++; }
                                    if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_app[i]++;    total_severity_app[i]++; }
-                                              
+                                          
+                                   if(StringUtils.containsIgnoreCase(testable, "yes"))
+                                   {
+                                  	   if(state_temp.contains("Backlog")) 	backlogs_testable[i]++;
+                                       if(state_temp.contains("Defined")) 	defined_testable[i]++;
+                                       if(state_temp.contains("In-Progress")) in_progress_testable[i]++;
+                                       if(state_temp.contains("Completed")) 	completed_testable[i]++;
+                                       if(state_temp.contains("Accepted")) 	accepted_testable[i]++;  
+                                       
+                                       total_testable[i]++;
+                                   }
+                                   
+                                   
                                    total_app[i]++;
                         	}    
                         }
                         else
                         {
-                        	 //System.out.println(" CR name list is an empty array");
+                        	 //System.out.println(" CR name list is an empty array ");
                         }  
                  	}catch(Exception e)
                  		{              
-                 			//System.out.println("CR field is not available");
+                 			//System.out.println("CR field is not available "+e);
                  		}
              }//end of for loop (result loop)   
             
@@ -409,105 +446,30 @@ public class Common_Functions
            
         }catch(Exception e)
         	{
-        			
+        			//System.out.println(e);
         	}
         
         
         if((type_story_or_defect.contains("testcase")))
-        {
-        	  System.out.println(" inside test case");
-        	  String reqKey2="HierarchicalRequirement";
+        {        	
+        	String type_us_or_def="userstory";       	
+        	TestCases_Application tc_app_us=common_fun_obj.get_TC_details_US_or_DE(name_release_or_sprint, type_us_or_def, type_sprint_or_release, Application_list);
+        	type_us_or_def="Defect";
+        	TestCases_Application tc_app_def=common_fun_obj.get_TC_details_US_or_DE(name_release_or_sprint, type_us_or_def, type_sprint_or_release, Application_list);
         	
-        	
-        	  try {
-                  QueryRequest storyRequest = new QueryRequest(reqKey2);          
-                  storyRequest.setPageSize(Integer.MAX_VALUE);
-                  storyRequest.setLimit(Integer.MAX_VALUE);
-                  storyRequest.setScopedDown(false);
-                  storyRequest.setScopedUp(false);
-                  if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Release"))
-                  {
-                 	 storyRequest.setQueryFilter(new QueryFilter("Release.Name", "=",name_release_or_sprint));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
-                  }
-                  else if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Iteration"))
-                  {
-                 	 storyRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",name_release_or_sprint));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
-                  }
-                         
-                  QueryResponse storyQueryResponse = restApi.query(storyRequest);
-                            
-                  //result looping is start here
-                  System.out.println(" total testcase response count : "+storyQueryResponse.getTotalResultCount());
-                  
-                  for (int j=0; j<storyQueryResponse.getTotalResultCount();j++)
-                  {
-                	  System.out.println(j+" inside loop : ");
-                	  
-                      JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
-                      
-                      int index_cr=100;
-                      boolean check=false;
-                      //================================ getting app  =======================================
-                      
-                      try{
-                   	   		JsonObject CR_number = (JsonObject) storyJsonObject.get("c_Application");              	               
-                   	   		JsonArray list =new JsonArray();
-                             if(CR_number.get("_tagsNameArray").getAsJsonArray().size()!=0)
-                             {                            	                  	   
-                             	list=CR_number.get("_tagsNameArray").getAsJsonArray();                         	              	   
-                             	JsonObject appobj=(JsonObject) list.get(0) ;                        	
-                             	application_name=appobj.get("Name").getAsString();  
-                             	check=true;
-                              }
-                             else
-                             {
-                             	//application_name=call getapplication_name method //System.out.println(" CR name list is an empty array");
-                             }  
-                      	  }catch(Exception e) //for getting cr 
-                      	  {              
-                      		  	//application_name=call getapplication_name method //System.out.println("CR field is not available");
-                      	  }
-                  
-                    if(check!=false) 
-                    {	
-                    	System.out.println(j+" inside app check true");
-                        for(int i=0;i<Application_list.size();i++)          //check the CR number in list
-                        { 
-                   		   if(StringUtils.containsIgnoreCase(application_name, Application_list.get(i)))
-                      	 	{                      			 
-                   			  index_cr=i;  
-                   			  workproduct_name=storyJsonObject.get("Name").getAsString();
-                     	      formId=storyJsonObject.get("FormattedID").getAsString(); 
-                     	      
-                     	      System.out.println("workproduct_name : "+workproduct_name);
-                     	      TestCases testcase_details=common_fun_obj.getTestcase_details(workproduct_name, "iteration");
-                     	     //TestCases testcase_details=new TestCases();
-                     	     
-                     	      pass_tc_app[index_cr]+=testcase_details.getPass();
-                     	      fail_tc_app[index_cr]+=testcase_details.getFail();
-                     	      in_progress_tc_app[index_cr]+=testcase_details.getIn_progress();
-                     	      blocked_tc_app[index_cr]+=testcase_details.getBlocked();
-                     	      no_run_tc_app[index_cr]+=testcase_details.getNo_run();
-                     	      total_tc_app	[index_cr]+=testcase_details.getTotal();            			
-                     	      automated_count_tc_app[index_cr]+=testcase_details.getAutomated_count(); 
-                     	      method_count_tc_app [index_cr]+=testcase_details.getMethod_count();
-                     	      exe_tc_app  [index_cr]+=testcase_details.getExecuted();
-                   			  break;                                   
-                   		    }                        	                  
-                        }                   	                      
-                     }
-                  
-                  }//end of for loop (result loop)   
-                 
-                  // =======================================  END CR TC ==========================================            
-                
-             }catch(Exception e)
-             	{
-             		System.out.println("not able to query the REST API service");	
-             	}
-                    	
-        }// testcase end if 
-        
+        	for(int i=0;i<pass_tc_app.length;i++)
+        	{
+        	  pass_tc_app [i]=tc_app_us.getPass()[i]+tc_app_def.getPass()[i];
+			  fail_tc_app [i] =tc_app_us.getFail()[i]+tc_app_def.getFail()[i];
+			  in_progress_tc_app[i]=tc_app_us.getIn_progress()[i]+tc_app_def.getIn_progress()[i];
+			  blocked_tc_app[i]=tc_app_us.getBlocked()[i]+tc_app_def.getBlocked()[i];
+			  no_run_tc_app[i]=tc_app_us.getNo_run()[i]+tc_app_def.getNo_run()[i];
+			  total_tc_app	[i]=tc_app_us.getTotal()[i]+tc_app_def.getTotal()[i];            			
+			  automated_count_tc_app[i]=tc_app_us.getAutomated_count()[i]+tc_app_def.getAutomated_count()[i]; 
+			  method_count_tc_app[i] =tc_app_us.getMethod_count()[i]+tc_app_def.getMethod_count()[i];
+			  exe_tc_app [i]=tc_app_us.getExecuted()[i]+tc_app_def.getExecuted()[i];
+        	}
+        }        
         
        
     	 UserStories_Application userstory_details_app=new UserStories_Application();
@@ -515,7 +477,7 @@ public class Common_Functions
     	 TestCases_Application testcase_details_app= new TestCases_Application();
     	
     	 userstory_details_app.setAll(backlogs_app, defined_app, in_progress_app, completed_app, accepted_app, total_app);
-    	 //userstory_details_app.setalltestable
+    	 userstory_details_app.setAllTestable(backlogs_testable, defined_testable, in_progress_testable, completed_testable, accepted_testable, total_testable, testable_field_count);
     	 defect_details_app.setAll(backlogs_app, defined_app, in_progress_app, completed_app, accepted_app, total_app);
     	 defect_details_app.setAllSeverity(critical_app, major_app, average_app, minor_app, total_severity_app);
     	 defect_details_app.setAllState(submitted_app, open_app, fixed_app, closed_app, reopen_app, ready_for_test_app, total_state_app);
@@ -523,17 +485,141 @@ public class Common_Functions
     	 testcase_details_app.setAutomated_count(automated_count_tc_app);
     	 testcase_details_app.setMethod_count(method_count_tc_app);
     	 
+    	 team_status.setAllApplication(userstory_details_app, defect_details_app, testcase_details_app);  
+    	 
+    	 //testcase_details_app.displayAll();
+    	 //System.out.println(testcase_details_app.getAutomated_count());
     	 
     	 //defect_details_app.displayAll();
     	 //defect_details_app.displayAllSeverity();
     	 //defect_details_app.displayAllState();
-    	 team_status.setAllApplication(userstory_details_app, defect_details_app, testcase_details_app);   	 
+    	  	 
     	   	 
     	 ///team_status.getUserstories_application().displayAll();
  		 //team_status.getDefects_application().displayAll();
     	 return team_status; 
 	}
 		
+	
+	public static TestCases_Application get_TC_details_US_or_DE(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> Application_list)
+	{
+		TestCases_Application tc_app=new TestCases_Application();
+		String application_name="";
+		String workproduct_name=" ";
+		String formId="";
+		String reqKey="";
+		 	
+		int[] pass_tc		= new int[10];
+		int[] fail_tc  		=new int[10];
+		int[] in_progress_tc = new int[10];
+		int[] blocked_tc		= new int[10];
+		int[] no_run_tc		= new int[10];
+		int[] total_tc	    = new int[10];		
+		int[] extra		= new int[10];
+		int[] automated_count_tc =new int[10];
+		int[] method_count_tc =new int[10];
+		int[] exe_tc=new int[10];
+		
+		
+		if(type_story_or_defect.contains("userstory")) reqKey="HierarchicalRequirement";
+        else  if(type_story_or_defect.contains("defect"))   reqKey="Defects";
+        else reqKey="Defects";
+		
+  	
+  	    try {
+            QueryRequest storyRequest = new QueryRequest(reqKey);          
+            //storyRequest.setPageSize(Integer.MAX_VALUE);
+            storyRequest.setLimit(Integer.MAX_VALUE);                  
+            if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Release"))
+            {
+           	 storyRequest.setQueryFilter(new QueryFilter("Release.Name", "=",name_release_or_sprint));//.and(new QueryFilter("ScheduleState", "=", "In-Progress")
+            }
+            else if(StringUtils.containsIgnoreCase(type_sprint_or_release, "Iteration"))
+            {
+           	 storyRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",name_release_or_sprint));//.and(new QueryFilter("ScheduleState", "=", "In-Progress") .and(new QueryFilter("Project.Name", "=", "NerdHerd"))
+            }
+                   
+            QueryResponse storyQueryResponse = restApi.query(storyRequest);
+                      
+            //result looping is start here
+            System.out.println(" TC: total story or defect  response count : "+storyQueryResponse.getTotalResultCount());
+            
+            int j=0;
+            
+            for ( JsonElement jsonElement : storyQueryResponse.getResults())
+            {
+          	  j++;
+          	  //System.out.println(j+" userstory response loop inside  : ");
+          	  
+                JsonObject storyJsonObject = jsonElement.getAsJsonObject();
+                
+                int index_app=100;
+                boolean check=false;
+                //================================ getting app  =======================================
+                
+                try{
+             	   		JsonObject CR_number = (JsonObject) storyJsonObject.get("c_Application");              	               
+             	   		JsonArray list =new JsonArray();
+                       if(CR_number.get("_tagsNameArray").getAsJsonArray().size()!=0)
+                       {                            	                  	   
+                       	list=CR_number.get("_tagsNameArray").getAsJsonArray();                         	              	   
+                       	JsonObject appobj=(JsonObject) list.get(0) ;                        	
+                       	application_name=appobj.get("Name").getAsString();  
+                       	check=true;
+                        }
+                       else
+                       {
+                       	//application_name=call getapplication_name method //System.out.println(" CR name list is an empty array");
+                       }  
+                	  }catch(Exception e) //for getting cr 
+                	  {              
+                		  	//application_name=call getapplication_name method //System.out.println("CR field is not available");
+                	  }
+            
+              if(check!=false) 
+              {	
+              	//System.out.println(j+" inside app  check=true (app was matched)");
+                  for(int i=0;i<Application_list.size();i++)          //check the CR number in list
+                  { 
+             		   if(StringUtils.containsIgnoreCase(application_name, Application_list.get(i)))
+                	 	{                      			 
+             			  index_app=i;  
+             			  workproduct_name=storyJsonObject.get("Name").getAsString();
+             			  formId=storyJsonObject.get("FormattedID").getAsString(); 
+               	      
+             			  //System.out.println(" workproduct_name : "+workproduct_name);
+             			  //TestCases testcase_details=new TestCases();
+             			  TestCases testcase_details=common_fun_obj.getTestcase_details(workproduct_name, "iteration");
+             			 
+               	     
+             			  pass_tc[index_app]+=testcase_details.getPass();
+             			  fail_tc[index_app]+=testcase_details.getFail();
+             			  in_progress_tc[index_app]+=testcase_details.getIn_progress();
+             			  blocked_tc[index_app]+=testcase_details.getBlocked();
+             			  no_run_tc[index_app]+=testcase_details.getNo_run();
+             			  total_tc	[index_app]+=testcase_details.getTotal();            			
+             			  automated_count_tc[index_app]+=testcase_details.getAutomated_count(); 
+             			  method_count_tc [index_app]+=testcase_details.getMethod_count();
+             			  exe_tc  [index_app]+=testcase_details.getExecuted();
+             			  break;                                   
+             		    }                        	                  
+                  }                   	                      
+               }
+            
+            }//end of for loop (result loop)      // =======================================  END APP TC ==========================================            
+          
+       }catch(Exception e)
+       	{
+       		System.out.println("not able to query the REST API service");	
+       	}
+		
+  	  tc_app.setAll(pass_tc, fail_tc, in_progress_tc, blocked_tc, no_run_tc, exe_tc, total_tc);
+  	  tc_app.setAutomated_count(automated_count_tc);
+  	  tc_app.setMethod_count(method_count_tc);
+	  return tc_app;
+	}
+	
+	
 	public static TestCases getTestcase_details(String workProduct_name,String type_sprint_or_release ) throws IOException
 	{
 		int pass		= 0;
@@ -571,7 +657,8 @@ public class Common_Functions
         
         total=testcaseResponse.getResults().size();
         
-        System.out.println(" tc total : "+total);
+        //System.out.println("   TC total : "+total);
+        
         for (int i=0; i<testcaseResponse.getResults().size();i++)
         {
             JsonObject testcaseJsonObject = testcaseResponse.getResults().get(i).getAsJsonObject();
@@ -635,7 +722,7 @@ public class Common_Functions
         testcases.setAutomated_count(automated_count);
         testcases.setMethod_count(method_count);
         
-        testcases.displayAll();        
+        //testcases.displayAll();        
         return testcases;
 	}
 	
@@ -662,7 +749,7 @@ public class Common_Functions
    	 write.write_userstoryAndDefect(story, team_name, "Release", type);
    	 TestCases TC=rele_obj.getTestcase_details(name);
    	 
-   	 pass_tc  		+= TC.getPass();
+   	    pass_tc  		+= TC.getPass();
         fail_tc  		+= TC.getFail();
         in_progress_tc += TC.getIn_progress();
         blocked_tc  	+= TC.getBlocked();

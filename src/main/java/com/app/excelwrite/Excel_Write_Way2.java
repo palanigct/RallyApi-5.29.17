@@ -1597,16 +1597,19 @@ public class Excel_Write_Way2
 	        HSSFCellStyle style3=sheet.getRow(2).getCell(13).getCellStyle();        
 	        
 			
-	        TestCases_CR testcase_details_cr=team_status.getTestcases_cr();
+	        TestCases_Application testcase_details_app=team_status.getTestcases_application();
 	        
-	        int[] pass = testcase_details_cr.getPass();
-		    int[] fail  = testcase_details_cr.getFail();
-		    int[] in_progress =testcase_details_cr.getIn_progress();
-		    int[] blocked  = testcase_details_cr.getBlocked();
-		    int[] no_run = testcase_details_cr.getNo_run();
-		    int[] total= testcase_details_cr.getTotal();		  
-		    int[] executed  = testcase_details_cr.getExecuted();
+	        int[] pass = testcase_details_app.getPass();
+		    int[] fail  = testcase_details_app.getFail();
+		    int[] in_progress =testcase_details_app.getIn_progress();
+		    int[] blocked  = testcase_details_app.getBlocked();
+		    int[] no_run = testcase_details_app.getNo_run();
+		    int[] total= testcase_details_app.getTotal();		  
+		    int[] executed  = testcase_details_app.getExecuted();
 		    
+		    int[] percentage_execute  = testcase_details_app.getPercentage_execute();
+			int[] percentage_pass  = testcase_details_app.getPercentage_pass();
+			int[] percentage_fail  = testcase_details_app.getPercentage_fail();
 	        
 	        //int currentRow=sheet.getLastRowNum()+1;       
 	        //row=sheet.createRow(currentRow);currentRow_ite
@@ -1628,9 +1631,9 @@ public class Excel_Write_Way2
 	            	 		case 5:   cell.setCellValue(blocked[i]);   		 cell.setCellStyle(style2);break;
 	            	 		case 6:   cell.setCellValue(no_run[i]);   			 cell.setCellStyle(style2);break;        		
 	            	 		case 7:   cell.setCellValue(total[i]);       		 cell.setCellStyle(style3);break;
-	            	 		case 8:    cell.setCellValue(1);      cell.setCellStyle(style2);break;
-	            	 		case 9:    cell.setCellValue(1);        cell.setCellStyle(style2);break;
-	            	 		case 10:  cell.setCellValue(1); 	   cell.setCellStyle(style2);break;        	
+	            	 		case 8:    cell.setCellValue(percentage_execute[i]);      cell.setCellStyle(style2);break;
+	            	 		case 9:    cell.setCellValue(percentage_pass[i]);        cell.setCellStyle(style2);break;
+	            	 		case 10:  cell.setCellValue(percentage_fail[i]); 	   cell.setCellStyle(style2);break;        	
 	            	 			default:  break;        			
 	            	}            	
 	            }
@@ -1674,11 +1677,11 @@ public class Excel_Write_Way2
 	        HSSFCellStyle style3=sheet.getRow(2).getCell(6).getCellStyle();        
 	        
 			
-	        TestCases_CR testcase_details_cr=team_status.getTestcases_cr();
+	        TestCases_Application testcase_details_app=team_status.getTestcases_application();
 	        	        
-		    int[] total= testcase_details_cr.getTotal();		 
-		    int[] automated_count  = testcase_details_cr.getAutomated_count();
-		    int[] method_count  =testcase_details_cr.getMethod_count();
+		    int[] total= testcase_details_app.getTotal();		 
+		    int[] automated_count  = testcase_details_app.getAutomated_count();
+		    int[] method_count  =testcase_details_app.getMethod_count();
 		  
 		   	        
 	        //int currentRow=sheet.getLastRowNum()+1;       

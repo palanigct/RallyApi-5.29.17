@@ -268,8 +268,8 @@ str : _type="HierarchicalRequirement"
 		// NOTE : no pagination needed for defect or iteration, but required for hierarchicalrequirement or user
 		
 		QueryRequest queryRequest = new QueryRequest("hierarchicalrequirement");
-		//queryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName).and(new QueryFilter("Project.Name", "=", team_name)));
-		queryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName));		
+		queryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName).and(new QueryFilter("Project.Name", "=", team_name)));
+		//queryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName));		
 		queryRequest.setLimit(Integer.MAX_VALUE);
 		//queryRequest.setPageSize(2000);
 		
@@ -278,7 +278,7 @@ str : _type="HierarchicalRequirement"
 		
 		QueryResponse queryResponse = restApi.query(queryRequest);
 	    responseTotalResultsCount = queryResponse.getTotalResultCount();
-	    System.out.println("total response actualResultsProcessedSoFar : "+responseTotalResultsCount);
+	    System.out.println("total response responseTotalResultsCount : "+responseTotalResultsCount);
 	    int count=responseTotalResultsCount/2000;
 	    int temp=0;
 	    int i=0;
@@ -291,6 +291,8 @@ str : _type="HierarchicalRequirement"
 	    	for (JsonElement jsonElement : queryResponse.getResults())
 	        {
 	    		actualResultsProcessedSoFar++;	
+	    		//System.out.println(jsonElement);
+	    		System.out.println(jsonElement.getAsJsonObject());
 	    		if(actualResultsProcessedSoFar>responseTotalResultsCount)
 	    		{	System.out.println(" inside break "); break;}
 	        }
