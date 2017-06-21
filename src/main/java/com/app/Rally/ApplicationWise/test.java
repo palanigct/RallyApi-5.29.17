@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import com.rallydev.rest.request.QueryRequest;
 import com.rallydev.rest.response.QueryResponse;
 import com.rallydev.rest.util.Fetch;
 import com.rallydev.rest.util.QueryFilter;
+import com.sun.org.apache.bcel.internal.generic.DADD;
 
 
 /*
@@ -694,18 +696,41 @@ str : _type="HierarchicalRequirement"
     	
     	for (JsonElement jsonElement : queryResponse.getResults())
         {    		
+    		Date openedDate=new Date();
+    		Date systemdate=new Date();
+    		
     		JsonObject testcaseJsonObject=jsonElement.getAsJsonObject();
     		String opendt=testcaseJsonObject.get("OpenedDate").getAsString();    		
     		String datearray1[]=opendt.split("T");
-    		String datearray2[]=datearray1[0].split("-");		
-    		int year=Integer.parseInt(datearray2[0]);
-    		int month=Integer.parseInt(datearray2[1]);
-    		int day=Integer.parseInt(datearray2[2]);
+    		//System.out.println(datearray1[0]+" "+opendt+" "+systemdate); 		    		
     		
-    		System.out.println(opendt+" "+datearray1[0]+" after split "+datearray2[0]+" "+datearray2[1]+" "+datearray2[2]);
-    		/*SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+    		String startDateString = datearray1[0];
+    		DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+    		   		    		
+    		try {
+    			openedDate = df.parse(startDateString);
+    				String newDateString = df.format(openedDate);
+    				System.out.println(newDateString+" "+openedDate);
+    			} catch (ParseException e) 
+    			{
+    				e.printStackTrace();
+    			}
+    		
+    		
+    		
+
+            long diff = systemdate.getTime() - openedDate.getTime();
+            System.out.println(" opened date : "+openedDate);
+            System.out.println(" system date : "+systemdate);
+            System.out.println (" Days: " + diff / 1000 / 60 / 60 / 24);
+    		
+    		/*
+    		
+    		//LocalDate ld = LocalDate.of( year , month , day );   
+    		//System.out.println(year+" "+month+" "+day+" "+ld+" "+date);
+    		//System.out.println(opendt+" "+datearray1[0]+" after split "+datearray2[0]+" "+datearray2[1]+" "+datearray2[2]);
+    		SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     		Date dateinit = fmt.parse("2013-05-06");
-    		
     		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     		Date date = new Date();
     		//System.out.println(dateFormat.format(date));
@@ -713,7 +738,6 @@ str : _type="HierarchicalRequirement"
     		System.out.println("opendt : "+opendt+ "  "+date+" datearray : "+datearray+"  dateinit : "+dateinit);
     		
     		*/
-    		
     		
     		
     		
@@ -728,7 +752,7 @@ str : _type="HierarchicalRequirement"
             	String str=itr.next().toString();	                
             	System.out.println("str : "+str);  
             }
-    		    		
+    		   		
     		break;
             
         }
