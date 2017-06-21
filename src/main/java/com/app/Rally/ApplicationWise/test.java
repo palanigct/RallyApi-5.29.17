@@ -3,7 +3,11 @@ package com.app.Rally.ApplicationWise;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +42,7 @@ public class test {
 	
 
 	
-	public static void main(String[] args) throws IOException, URISyntaxException 
+	public static void main(String[] args) throws IOException, URISyntaxException, ParseException 
 	{
 			test tst=new test();
 			
@@ -46,7 +50,8 @@ public class test {
 			
 			//test.onlyQuery();
 			//test.delete_fun();
-			test.maxgetvalues();
+			test.defectDate();
+			
 			/*System.out.println("*************************user story*******************************");
 			//test.userstoryreq();
 			System.out.println("*************************test case*******************************");
@@ -647,6 +652,88 @@ str : _type="HierarchicalRequirement"
         }
 	}
 	
+	
+	public static void defectDate() throws IOException, ParseException
+	{
+		System.out.println(" inside defect date case");
+  		
+  		String reqKey2			="HierarchicalRequirement";
+  		String iterationName	= "Sprint 238";
+		String releaseName      = "PI10 2017.04";
+		String team_name        = "NerdHerd";
+	
+		String host 			= "https://rally1.rallydev.com";
+		String username 		= "palanisamy.subramani@centurylink.com";
+		String password 		= "Lalith@93";        
+		String applicationName  = "Find Defects by Iterations and Team";
+		RallyRestApi restApi 	= null;
+
+		try
+		{
+    	   restApi = new RallyRestApi(new URI(host),username,password);
+		}catch(Exception e)
+		{
+    	   System.out.println(e);
+		}      
+	
+	// NOTE : no pagination needed for defect or iteration, but required for hierarchicalrequirement or user
+	
+	QueryRequest queryRequest = new QueryRequest("Defects");
+	queryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName).and(new QueryFilter("State", "=", "Open")));
+	queryRequest.setLimit(Integer.MAX_VALUE);
+	//queryRequest.setQueryFilter(new QueryFilter("Iteration.Name", "=",iterationName));		
+	//queryRequest.setPageSize(2000);
+	
+	int responseTotalResultsCount = Integer.MAX_VALUE;
+	int actualResultsProcessedSoFar = 0;
+	
+	QueryResponse queryResponse = restApi.query(queryRequest);
+    responseTotalResultsCount = queryResponse.getTotalResultCount();
+    System.out.println("total response responseTotalResultsCount : "+responseTotalResultsCount);
+    
+    	
+    	for (JsonElement jsonElement : queryResponse.getResults())
+        {    		
+    		JsonObject testcaseJsonObject=jsonElement.getAsJsonObject();
+    		String opendt=testcaseJsonObject.get("OpenedDate").getAsString();    		
+    		String datearray1[]=opendt.split("T");
+    		String datearray2[]=datearray1[0].split("-");		
+    		int year=Integer.parseInt(datearray2[0]);
+    		int month=Integer.parseInt(datearray2[1]);
+    		int day=Integer.parseInt(datearray2[2]);
+    		
+    		System.out.println(opendt+" "+datearray1[0]+" after split "+datearray2[0]+" "+datearray2[1]+" "+datearray2[2]);
+    		/*SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+    		Date dateinit = fmt.parse("2013-05-06");
+    		
+    		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    		Date date = new Date();
+    		//System.out.println(dateFormat.format(date));
+    		
+    		System.out.println("opendt : "+opendt+ "  "+date+" datearray : "+datearray+"  dateinit : "+dateinit);
+    		
+    		*/
+    		
+    		
+    		
+    		
+    		//int days = Days.daysBetween(date1, date2).getDays();
+    		
+    		System.out.println("==============================================================");
+    		
+    		Set<?> key=testcaseJsonObject.entrySet();
+            Iterator itr=key.iterator();
+            while(itr.hasNext())
+            {
+            	String str=itr.next().toString();	                
+            	System.out.println("str : "+str);  
+            }
+    		    		
+    		break;
+            
+        }
+    	
+   }
 	
 	public static void delete_fun() throws IOException, URISyntaxException
 	{
