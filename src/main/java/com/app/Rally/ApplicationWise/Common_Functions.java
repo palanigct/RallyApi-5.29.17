@@ -2,7 +2,11 @@ package com.app.Rally.ApplicationWise;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 //import com.app.drawchart.DrawChart;
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
+import com.app.pojos.Defect_Age;
 import com.app.pojos.Defects;
 import com.app.pojos.Defects_Application;
 import com.app.pojos.TeamStatus;
@@ -143,10 +148,10 @@ public class Common_Functions
 		return testcase;
 	}
 	
-	
 	public static TeamStatus callRestApi_Application(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> Application_list) throws IOException, URISyntaxException
 	{
 		TeamStatus team_status=new TeamStatus();
+		Defect_Age defect_age=new Defect_Age();
 		
 		/*
 		int backlogs=0;
@@ -226,16 +231,16 @@ public class Common_Functions
 		int[] method_count_tc_app =new int[10];
 		int[] exe_tc_app=new int[10];
 				
-		String state_temp="";
-        String workproduct_name="";
-        String formId="";
+		String state_temp="Null";
+        String workproduct_name="Null";
+        String formId="Null";
+        String openedDate="Null";
        
         //String creationDate="";
         // String lastUpdateDate="";
         // String acceptedDate="";
         // String closedDate="";
-        // String inProgressDate="";
-        // String openedDate="";
+        // String inProgressDate="";        // 
         // String targetDate="";
         
         JsonObject releaseJson=null;
@@ -385,6 +390,22 @@ public class Common_Functions
                                   	 defectState="Field Does not Exist";
                                    }
                                    
+                                   if(StringUtils.equalsIgnoreCase(defectState, "Open"))
+                                   {
+                                	   try //get opened date field
+                                       {
+                                      	 if(!(storyJsonObject.get("OpenedDate").toString().equals("null"))) 	
+                                           {
+                                      		openedDate=storyJsonObject.get("OpenedDate").getAsString();                                      		
+                                      		defect_age=common_fun_obj.getDefectAge(openedDate,i);
+                                           }                                    	  
+                                       }catch(Exception e)
+                                       {
+                                    	   openedDate="Field Does not Exist";
+                                       }
+                                   }
+                                   
+                                   
                                    //====================== set values and write to excel======
                                    story.setFormattedID(formId);
                                    story.setName(workproduct_name);
@@ -499,7 +520,85 @@ public class Common_Functions
  		 //team_status.getDefects_application().displayAll();
     	 return team_status; 
 	}
+
+	
+	public static Defect_Age getDefectAge(String openedDateString,int index)
+	{
 		
+		//=========================================defect agging======================
+		
+			 int[] critical_day1 = new int [10];
+			 int[] major_day1 = new int [10];
+			 int[] average_day1 = new int [10];
+			 int[] minor_day1 = new int [10];
+			 int[] total_severity_day1 = new int [10];
+			
+			 int[] critical_day2 = new int [10];
+			 int[] major_day2 = new int [10];
+			 int[] average_day2 = new int [10];
+			 int[] minor_day2 = new int [10];
+			 int[] total_severity_day2 = new int [10];
+			
+			 int[] critical_day3 = new int [10];
+			 int[] major_day3 = new int [10];
+			 int[] average_day3 = new int [10];
+			 int[] minor_day3 = new int [10];
+			 int[] total_severity_day3 = new int [10];
+			
+			 int[] critical_day3_5 = new int [10];
+			 int[] major_day3_5 = new int [10];
+			 int[] average_day3_5 = new int [10];
+			 int[] minor_day3_5 = new int [10];
+			 int[] total_severity_day3_5 = new int [10];
+			
+			 int[] critical_day5 = new int [10];
+			 int[] major_day5 = new int [10];
+			 int[] average_day5 = new int [10];
+			 int[] minor_day5 = new int [10];
+			 int[] total_severity_day5 = new int [10];
+				
+			//===================================================================================
+			
+			
+		
+		
+		
+		Defect_Age defect_age=new Defect_Age();
+		Date systemDate=new Date();
+		Date openedDate=new Date();
+		int days=0;
+		
+		String datearray[]=openedDateString.split("T");				
+		String dateString = datearray[0];
+		DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+		   		    		
+		try {
+				openedDate = df.parse(dateString);
+				String newDateString = df.format(openedDate);
+				System.out.println(newDateString+" "+openedDate);
+			} catch (ParseException e) 
+			{
+				e.printStackTrace();
+			}
+			
+
+        long diff = systemDate.getTime() - openedDate.getTime();
+        System.out.println(" opened date : "+openedDate);
+        System.out.println(" system date : "+systemDate);
+        System.out.println (" Days: " + diff / 1000 / 60 / 60 / 24);
+		days= (int) (diff / 1000 / 60 / 60 / 24);
+        
+        if(days!=0)
+        {
+        	System.out.println(index+" "+days);
+        }
+        
+        
+		return 	defect_age;	
+		
+		
+		
+	}
 	
 	public static TestCases_Application get_TC_details_US_or_DE(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> Application_list)
 	{

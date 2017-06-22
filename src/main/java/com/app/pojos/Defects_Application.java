@@ -81,9 +81,19 @@ public class Defects_Application
 	private Date opendate;
 	private Date closeddate;
 	
+	private Defect_Age defect_age=new Defect_Age();
+	
 	//=====================================================================================================
 	
 	
+	public Defect_Age getDefect_age() {
+		return defect_age;
+	}
+
+	public void setDefect_age(Defect_Age defect_age) {
+		this.defect_age = defect_age;
+	}
+
 	public void setAllSeverityday1( int[] critical_day1,int[] major_day1 , int[] average_day1 , int[] minor_day1 , int[] total_severity_day1 )
 	{
 		this.critical_day1=critical_day1;
