@@ -14,6 +14,7 @@ public class Defects
 	private String sprintOrRelease;
 	private String sprintname;
 	private String releaseName;
+	private String openedDate;
 	
 	private int submitted;
 	private int open;
@@ -28,6 +29,16 @@ public class Defects
 	private int minor;
 	private int total_state;
 	
+	
+	
+	public String getOpenedDate() {
+		return openedDate;
+	}
+
+	public void setOpenedDate(String openedDate) {
+		this.openedDate = openedDate;
+	}
+
 	public void setAllState(int submitted,int open,int fixed,int closed,int reopen,int ready_for_test,int total_state)
 	{
 		this.submitted=submitted;

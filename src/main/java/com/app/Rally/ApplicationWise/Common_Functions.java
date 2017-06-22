@@ -397,7 +397,7 @@ public class Common_Functions
                                       	 if(!(storyJsonObject.get("OpenedDate").toString().equals("null"))) 	
                                            {
                                       		openedDate=storyJsonObject.get("OpenedDate").getAsString();                                      		
-                                      		defect_age=common_fun_obj.getDefectAge(openedDate,i);
+                                      		defect_age=common_fun_obj.getDefectAge(openedDate,i,defect_age);
                                            }                                    	  
                                        }catch(Exception e)
                                        {
@@ -416,6 +416,7 @@ public class Common_Functions
                                    story.setSeverity(severity);
                                    story.setState(defectState);
                                    story.setApplication(application_name);
+                                   story.setOpenedDate(openedDate);
                                    //story.setCRNumber(CRNumber);
                                    
                                    write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);
@@ -502,6 +503,7 @@ public class Common_Functions
     	 defect_details_app.setAll(backlogs_app, defined_app, in_progress_app, completed_app, accepted_app, total_app);
     	 defect_details_app.setAllSeverity(critical_app, major_app, average_app, minor_app, total_severity_app);
     	 defect_details_app.setAllState(submitted_app, open_app, fixed_app, closed_app, reopen_app, ready_for_test_app, total_state_app);
+    	 defect_details_app.setDefect_age(defect_age);
     	 testcase_details_app.setAll(pass_tc_app, fail_tc_app, in_progress_tc_app, blocked_tc_app, no_run_tc_app, exe_tc_app, total_tc_app);
     	 testcase_details_app.setAutomated_count(automated_count_tc_app);
     	 testcase_details_app.setMethod_count(method_count_tc_app);
@@ -522,48 +524,44 @@ public class Common_Functions
 	}
 
 	
-	public static Defect_Age getDefectAge(String openedDateString,int index)
+	public static Defect_Age getDefectAge(String openedDateString,int index,Defect_Age defect_age)
 	{
 		
 		//=========================================defect agging======================
 		
-			 int[] critical_day1 = new int [10];
-			 int[] major_day1 = new int [10];
-			 int[] average_day1 = new int [10];
-			 int[] minor_day1 = new int [10];
-			 int[] total_severity_day1 = new int [10];
+			 int[] critical_day1 = defect_age.getCritical_day1();
+			 int[] major_day1 = defect_age.getMajor_day1();
+			 int[] average_day1 = defect_age.getAverage_day1();
+			 int[] minor_day1 = defect_age.getMinor_day1();
+			 int[] total_severity_day1 = defect_age.getTotal_severity_day1();
 			
-			 int[] critical_day2 = new int [10];
-			 int[] major_day2 = new int [10];
-			 int[] average_day2 = new int [10];
-			 int[] minor_day2 = new int [10];
-			 int[] total_severity_day2 = new int [10];
+			 int[] critical_day2 = defect_age.getCritical_day2();
+			 int[] major_day2 = defect_age.getMajor_day2();
+			 int[] average_day2 = defect_age.getAverage_day2();
+			 int[] minor_day2 = defect_age.getMinor_day2();
+			 int[] total_severity_day2 = defect_age.getTotal_severity_day2();
 			
-			 int[] critical_day3 = new int [10];
-			 int[] major_day3 = new int [10];
-			 int[] average_day3 = new int [10];
-			 int[] minor_day3 = new int [10];
-			 int[] total_severity_day3 = new int [10];
+			 int[] critical_day3 = defect_age.getCritical_day3();
+			 int[] major_day3 = defect_age.getMajor_day3();
+			 int[] average_day3 = defect_age.getAverage_day3();
+			 int[] minor_day3 = defect_age.getMinor_day3();
+			 int[] total_severity_day3 = defect_age.getTotal_severity_day3();
 			
-			 int[] critical_day3_5 = new int [10];
-			 int[] major_day3_5 = new int [10];
-			 int[] average_day3_5 = new int [10];
-			 int[] minor_day3_5 = new int [10];
-			 int[] total_severity_day3_5 = new int [10];
+			 int[] critical_day3_5 = defect_age.getCritical_day3_5();
+			 int[] major_day3_5 = defect_age.getMajor_day3_5();
+			 int[] average_day3_5 = defect_age.getAverage_day3_5();
+			 int[] minor_day3_5 = defect_age.getMinor_day3_5();
+			 int[] total_severity_day3_5 = defect_age.getTotal_severity_day3_5();
 			
-			 int[] critical_day5 = new int [10];
-			 int[] major_day5 = new int [10];
-			 int[] average_day5 = new int [10];
-			 int[] minor_day5 = new int [10];
-			 int[] total_severity_day5 = new int [10];
+			 int[] critical_day5 = defect_age.getCritical_day5();
+			 int[] major_day5 = defect_age.getMajor_day5();
+			 int[] average_day5 = defect_age.getAverage_day5();
+			 int[] minor_day5 = defect_age.getMinor_day5();
+			 int[] total_severity_day5 = defect_age.getTotal_severity_day5();
 				
 			//===================================================================================
-			
-			
 		
 		
-		
-		Defect_Age defect_age=new Defect_Age();
 		Date systemDate=new Date();
 		Date openedDate=new Date();
 		int days=0;
@@ -575,7 +573,7 @@ public class Common_Functions
 		try {
 				openedDate = df.parse(dateString);
 				String newDateString = df.format(openedDate);
-				System.out.println(newDateString+" "+openedDate);
+				//System.out.println(newDateString+" "+openedDate);
 			} catch (ParseException e) 
 			{
 				e.printStackTrace();
@@ -583,21 +581,73 @@ public class Common_Functions
 			
 
         long diff = systemDate.getTime() - openedDate.getTime();
-        System.out.println(" opened date : "+openedDate);
-        System.out.println(" system date : "+systemDate);
-        System.out.println (" Days: " + diff / 1000 / 60 / 60 / 24);
-		days= (int) (diff / 1000 / 60 / 60 / 24);
         
-        if(days!=0)
+        
+       /* System.out.println(" opened date : "+openedDate);
+        System.out.println(" system date : "+systemDate);
+        System.out.println (" Days: " + diff / 1000 / 60 / 60 / 24);*/
+		
+        days= (int) (diff / 1000 / 60 / 60 / 24);
+        
+        System.out.println(" param : "+openedDateString+" splitted: "+dateString+" afterconvert : "+openedDate+" after convert dt: "+df.format(openedDate));
+        System.out.println(" systemDate : "+systemDate+" format : "+df.format(systemDate)+" days : "+days);
+        
+        
+        
+        if(days==1)
         {
-        	System.out.println(index+" "+days);
+        	critical_day1[index]=critical_day1[index]+1;
+        	major_day1[index]=major_day1[index]+1;
+        	average_day1[index]=average_day1[index]+1;
+        	minor_day1[index]=minor_day1[index]+1;
+        	total_severity_day1[index]=total_severity_day1[index]+1;        			
         }
         
+        if(days==2)
+        {
+        	critical_day1[index]=critical_day1[index]+1;
+        	major_day1[index]=major_day1[index]+1;
+        	average_day1[index]=average_day1[index]+1;
+        	minor_day1[index]=minor_day1[index]+1;
+        	total_severity_day1[index]=total_severity_day1[index]+1;        			
+        }
         
-		return 	defect_age;	
+        if(days==3)
+        {
+        	critical_day1[index]=critical_day1[index]+1;
+        	major_day1[index]=major_day1[index]+1;
+        	average_day1[index]=average_day1[index]+1;
+        	minor_day1[index]=minor_day1[index]+1;
+        	total_severity_day1[index]=total_severity_day1[index]+1;        			
+        }
+        
+        if(days==4||days==5)
+        {
+        	critical_day1[index]=critical_day1[index]+1;
+        	major_day1[index]=major_day1[index]+1;
+        	average_day1[index]=average_day1[index]+1;
+        	minor_day1[index]=minor_day1[index]+1;
+        	total_severity_day1[index]=total_severity_day1[index]+1;        			
+        }
+        
+        if(days>5)
+        {
+        	critical_day5[index]=critical_day5[index]+1;
+        	major_day5[index]=major_day5[index]+1;
+        	average_day5[index]=average_day5[index]+1;
+        	minor_day5[index]=minor_day5[index]+1;
+        	total_severity_day5[index]=total_severity_day5[index]+1;        			
+        }
 		
+        defect_age.setAllSeverityday1(critical_day1, major_day1, average_day1, minor_day1, total_severity_day1);
+        defect_age.setAllSeverityday2(critical_day2, major_day2, average_day2, minor_day2, total_severity_day2);
+        defect_age.setAllSeverityday3(critical_day3, major_day3, average_day3, minor_day3, total_severity_day3);
+        defect_age.setAllSeverityday3_5(critical_day3_5, major_day3_5, average_day3_5, minor_day3_5, total_severity_day3_5);
+        defect_age.setAllSeverityday5(critical_day5, major_day5, average_day5, minor_day5, total_severity_day5);
+        
+        return 	defect_age;	
 		
-		
+				
 	}
 	
 	public static TestCases_Application get_TC_details_US_or_DE(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> Application_list)

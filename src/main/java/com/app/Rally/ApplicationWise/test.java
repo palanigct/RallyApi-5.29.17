@@ -704,7 +704,9 @@ str : _type="HierarchicalRequirement"
     		String datearray1[]=opendt.split("T");
     		//System.out.println(datearray1[0]+" "+opendt+" "+systemdate); 		    		
     		
-    		String startDateString = datearray1[0];
+    		//String startDateString = datearray1[0];
+    		String startDateString = "2017-6-22";
+    		
     		DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
     		   		    		
     		try {
@@ -720,6 +722,7 @@ str : _type="HierarchicalRequirement"
     		
 
             long diff = systemdate.getTime() - openedDate.getTime();
+            System.out.println(" opened date string  : "+opendt);
             System.out.println(" opened date : "+openedDate);
             System.out.println(" system date : "+systemdate);
             System.out.println (" Days: " + diff / 1000 / 60 / 60 / 24);
@@ -744,7 +747,7 @@ str : _type="HierarchicalRequirement"
     		//int days = Days.daysBetween(date1, date2).getDays();
     		
     		System.out.println("==============================================================");
-    		
+    		/*
     		Set<?> key=testcaseJsonObject.entrySet();
             Iterator itr=key.iterator();
             while(itr.hasNext())
@@ -752,7 +755,7 @@ str : _type="HierarchicalRequirement"
             	String str=itr.next().toString();	                
             	System.out.println("str : "+str);  
             }
-    		   		
+    		 */  		
     		break;
             
         }

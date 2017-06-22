@@ -290,6 +290,7 @@ public class Excel_Write
         		case 7: cell.setCellValue(story.getSeverity());break;
         		case 8: cell.setCellValue(story.getState());break;
         		case 9: cell.setCellValue(story.getCRNumber());break;
+        		case 10: cell.setCellValue(story.getOpenedDate());break;
         		default : break;
         	}
         	

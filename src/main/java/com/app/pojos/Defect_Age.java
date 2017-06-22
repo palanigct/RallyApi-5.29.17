@@ -291,6 +291,12 @@ public class Defect_Age
 	  
 		}
 
+		public void displayAllSeverityday5()
+		{
+	    	for(int i=0;i<this.critical_day5.length;i++,System.out.println(" "))
+	     	   System.out.print( "APP"+i+":-  critical : "+this.critical_day5[i]+" major : "+this.major_day5[i]+" avera : "+this.average_day5[i]+" minor : "+this.minor_day5[i]+" tot sev: "+this.total_severity_day5[i]);
+	  
+		}
 
 
 

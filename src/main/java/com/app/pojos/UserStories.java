@@ -24,6 +24,7 @@ public class UserStories
 	private String sprintname;
 	private String releaseName;
 	private String testable; 
+	private String openedDate;
 	
 	private String severity; 
 	private String state; 
@@ -32,6 +33,16 @@ public class UserStories
 	
 	
 	
+	
+	
+	public String getOpenedDate() {
+		return openedDate;
+	}
+
+	public void setOpenedDate(String openedDate) {
+		this.openedDate = openedDate;
+	}
+
 	public String getApplication() {
 		return application;
 	}

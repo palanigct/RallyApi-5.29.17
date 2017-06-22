@@ -110,7 +110,9 @@ public class Get_Iteration_data
 		
 	    type_story_or_defect="defects";		
 	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
-		defect_details_app=temp.getDefects_application();		
+		defect_details_app=temp.getDefects_application();	
+		
+		defect_details_app.getDefect_age().displayAllSeverityday5();
 		
 		/*//get testcase values
 		
