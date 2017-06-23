@@ -34,10 +34,20 @@ public class Defect_Age
 		private int[] average_day5 = new int [10];
 		private int[] minor_day5 = new int [10];
 		private int[] total_severity_day5 = new int [10];
+		
+		private int open_days;
 			
 		//===================================================================================
 		
 		
+		public int getOpen_days() {
+			return open_days;
+		}
+
+		public void setOpen_days(int open_days) {
+			this.open_days = open_days;
+		}
+
 		public int[] getCritical_day1() {
 			return critical_day1;
 		}
@@ -290,7 +300,25 @@ public class Defect_Age
 	     	   System.out.print( "APP"+i+":-  critical : "+this.critical_day1[i]+" major : "+this.major_day1[i]+" avera : "+this.average_day1[i]+" minor : "+this.minor_day1[i]+" tot sev: "+this.total_severity_day1[i]);
 	  
 		}
-
+		public void displayAllSeverityday2()
+		{
+	    	for(int i=0;i<this.critical_day2.length;i++,System.out.println(" "))
+	     	   System.out.print( "APP"+i+":-  critical : "+this.critical_day2[i]+" major : "+this.major_day2[i]+" avera : "+this.average_day2[i]+" minor : "+this.minor_day2[i]+" tot sev: "+this.total_severity_day2[i]);
+	  
+		}
+		
+		public void displayAllSeverityday3()
+		{
+	    	for(int i=0;i<this.critical_day3.length;i++,System.out.println(" "))
+	     	   System.out.print( "APP"+i+":-  critical : "+this.critical_day3[i]+" major : "+this.major_day3[i]+" avera : "+this.average_day3[i]+" minor : "+this.minor_day3[i]+" tot sev: "+this.total_severity_day3[i]);
+	  
+		}
+		public void displayAllSeverityday3_5()
+		{
+	    	for(int i=0;i<this.critical_day3_5.length;i++,System.out.println(" "))
+	     	   System.out.print( "APP"+i+":-  critical : "+this.critical_day3_5[i]+" major : "+this.major_day3_5[i]+" avera : "+this.average_day3_5[i]+" minor : "+this.minor_day3_5[i]+" tot sev: "+this.total_severity_day3_5[i]);
+	  
+		}
 		public void displayAllSeverityday5()
 		{
 	    	for(int i=0;i<this.critical_day5.length;i++,System.out.println(" "))

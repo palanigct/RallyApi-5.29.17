@@ -2,7 +2,11 @@ package com.app.Rally.CRWise;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 //import com.app.drawchart.DrawChart;
 import com.app.excelread.Readfile;
 import com.app.excelwrite.Excel_Write;
+import com.app.pojos.Defect_Age;
 import com.app.pojos.Defects;
 import com.app.pojos.Defects_CR;
 import com.app.pojos.TeamStatus;
@@ -147,7 +152,7 @@ public class Common_Functions
 	public static TeamStatus callRestApi_CR(String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release,ArrayList<String> CR_list) throws IOException, URISyntaxException
 	{
 		TeamStatus team_status=new TeamStatus();
-		
+		Defect_Age defect_age=new Defect_Age();
 		
 		/*int backlogs=0;
 		int defined=0;
@@ -231,7 +236,8 @@ public class Common_Functions
 		String state_temp="";
         String workproduct_name="";
         String formId="";
-       
+        String openedDate="Null";
+        
         // String creationDate="";
         // String lastUpdateDate="";
         // String acceptedDate="";
@@ -278,12 +284,18 @@ public class Common_Functions
              }
                     
              QueryResponse storyQueryResponse = restApi.query(storyRequest);
-                       
+             System.out.println(" total story or defect  response count : "+storyQueryResponse.getTotalResultCount());          
              //result looping is start here
-             for (int j=0; j<storyQueryResponse.getTotalResultCount();j++)
+             
+             
+             
+             int j=0;
+             
+             for ( JsonElement jsonElement : storyQueryResponse.getResults())
              {
-                 JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
-                 
+           	     j++;
+                 JsonObject storyJsonObject = jsonElement.getAsJsonObject();
+                   
                  //================================  CR  =======================================
                  
                  try{
@@ -311,7 +323,8 @@ public class Common_Functions
                         	if(check==true)
                         	{
                         		 int i=index;
-                        		
+                        		 int open_days=0;
+                        		 
                         		 state_temp=storyJsonObject.get("ScheduleState").getAsString();
                         		 workproduct_name=storyJsonObject.get("Name").getAsString();
                       	         formId=storyJsonObject.get("FormattedID").getAsString(); 
@@ -379,6 +392,24 @@ public class Common_Functions
                                   	 	testable="Field Does not Exist";
                                    }
                                    
+                                   if(StringUtils.equalsIgnoreCase(defectState, "Open"))
+                                   {
+                                	   try //get opened date field
+                                       {
+                                      	 if(!(storyJsonObject.get("OpenedDate").toString().equals("null"))) 	
+                                           {
+                                      		openedDate=storyJsonObject.get("OpenedDate").getAsString();                                      		
+                                      		defect_age=common_fun_obj.getDefectAge(openedDate,i,defect_age,severity);
+                                      		open_days=defect_age.getOpen_days();
+                                           }                                    	  
+                                       }catch(Exception e)
+                                       {
+                                    	   openedDate="Field Does not Exist";
+                                       }
+                                    }
+                                   
+                                   
+                                   
                                    
                                    //====================== set values and write to excel======
                                    story.setFormattedID(formId);
@@ -389,7 +420,12 @@ public class Common_Functions
                                    story.setTestable(testable);
                                    story.setSeverity(severity);
                                    story.setState(defectState);
-                                   story.setCRNumber(CRNumber);
+                                   story.setCRNumber(CRNumber);                                   
+                                   story.setOpenedDate(openedDate);
+                                   story.setOpen_days(open_days);
+                                   //story.setApplication(application_name);
+                                   
+                                   
                                    write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);
                                	
                                    if(state_temp.contains("Backlog")) 	  backlogs_cr[i]++;
@@ -444,8 +480,7 @@ public class Common_Functions
         
         if((type_story_or_defect.contains("testcase")))
         {
-        	  System.out.println("test case");
-        	  String reqKey2="Defects";
+        	   String reqKey2="HierarchicalRequirement";
         	
         	
         	  try {
@@ -466,9 +501,16 @@ public class Common_Functions
                   QueryResponse storyQueryResponse = restApi.query(storyRequest);
                             
                   //result looping is start here
-                  for (int j=0; j<storyQueryResponse.getTotalResultCount();j++)
+                  //result looping is start here
+                  System.out.println(" TC: total story or defect  response count : "+storyQueryResponse.getTotalResultCount());
+                  
+                  int j=0;
+                  
+                  for ( JsonElement jsonElement : storyQueryResponse.getResults())
                   {
-                      JsonObject storyJsonObject = storyQueryResponse.getResults().get(j).getAsJsonObject();
+                	     j++;
+                      JsonObject storyJsonObject = jsonElement.getAsJsonObject();
+                          
                       int index_cr=100;
                       boolean check=false;
                       //================================ getting CR  =======================================
@@ -543,6 +585,7 @@ public class Common_Functions
     	 defect_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
     	 defect_details_cr.setAllSeverity(critical_cr, major_cr, average_cr, minor_cr, total_severity_cr);
     	 defect_details_cr.setAllState(submitted_cr, open_cr, fixed_cr, closed_cr, reopen_cr, ready_for_test_cr, total_state_cr);
+    	 defect_details_cr.setDefect_age(defect_age);
     	 testcase_details_cr.setAll(pass_tc_cr, fail_tc_cr, in_progress_tc_cr, blocked_tc_cr, no_run_tc_cr, exe_tc_cr, total_tc_cr);
     	 testcase_details_cr.setAutomated_count(automated_count_tc_cr);
     	 testcase_details_cr.setMethod_count(method_count_tc_cr);
@@ -554,6 +597,139 @@ public class Common_Functions
     	 return team_status; 
 	}
 
+
+	public static Defect_Age getDefectAge(String openedDateString,int index,Defect_Age defect_age,String severity)
+	{
+		
+		//=========================================defect agging======================
+		
+			 int[] critical_day1 = defect_age.getCritical_day1();
+			 int[] major_day1 = defect_age.getMajor_day1();
+			 int[] average_day1 = defect_age.getAverage_day1();
+			 int[] minor_day1 = defect_age.getMinor_day1();
+			 int[] total_severity_day1 = defect_age.getTotal_severity_day1();
+			
+			 int[] critical_day2 = defect_age.getCritical_day2();
+			 int[] major_day2 = defect_age.getMajor_day2();
+			 int[] average_day2 = defect_age.getAverage_day2();
+			 int[] minor_day2 = defect_age.getMinor_day2();
+			 int[] total_severity_day2 = defect_age.getTotal_severity_day2();
+			
+			 int[] critical_day3 = defect_age.getCritical_day3();
+			 int[] major_day3 = defect_age.getMajor_day3();
+			 int[] average_day3 = defect_age.getAverage_day3();
+			 int[] minor_day3 = defect_age.getMinor_day3();
+			 int[] total_severity_day3 = defect_age.getTotal_severity_day3();
+			
+			 int[] critical_day3_5 = defect_age.getCritical_day3_5();
+			 int[] major_day3_5 = defect_age.getMajor_day3_5();
+			 int[] average_day3_5 = defect_age.getAverage_day3_5();
+			 int[] minor_day3_5 = defect_age.getMinor_day3_5();
+			 int[] total_severity_day3_5 = defect_age.getTotal_severity_day3_5();
+			
+			 int[] critical_day5 = defect_age.getCritical_day5();
+			 int[] major_day5 = defect_age.getMajor_day5();
+			 int[] average_day5 = defect_age.getAverage_day5();
+			 int[] minor_day5 = defect_age.getMinor_day5();
+			 int[] total_severity_day5 = defect_age.getTotal_severity_day5();
+				
+			//===================================================================================
+		
+		
+		Date systemDate=new Date();
+		Date openedDate=new Date();
+		int days=0;
+		
+		String datearray[]=openedDateString.split("T");				
+		String dateString = datearray[0];
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
+		   		    		
+		try {
+				openedDate = df.parse(dateString);
+				String newDateString = df.format(openedDate);
+				//System.out.println(newDateString+" "+openedDate);
+			} catch (ParseException e) 
+			{
+				e.printStackTrace();
+			}
+			
+
+        long diff = systemDate.getTime() - openedDate.getTime();
+        days= (int) (diff / 1000 / 60 / 60 / 24);
+        
+       /* System.out.println(" opened date : "+openedDate+" || "+dateString);
+        System.out.println(" system date : "+systemDate);
+        System.out.println (" Days: " + days+"\n================================\n");
+		*/
+      
+        
+        if(days==1)
+        {        	
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {  critical_day1[index]=critical_day1[index]+1;   }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {  major_day1[index]=major_day1[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {  average_day1[index]=average_day1[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {  minor_day1[index]=minor_day1[index]+1;  }
+            
+        	total_severity_day1[index]=total_severity_day1[index]+1;        			
+        }
+        
+        if(days==2)
+        {
+        	
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {  critical_day2[index]=critical_day2[index]+1;    }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {  major_day2[index]=major_day2[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {  average_day2[index]=average_day2[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {  minor_day2[index]=minor_day2[index]+1;  }
+                    	
+        	total_severity_day1[index]=total_severity_day1[index]+1;        			
+        }
+        
+        if(days==3)
+        {        	
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {  critical_day3[index]=critical_day3[index]+1;   }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {  major_day3[index]=major_day3[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {  average_day3[index]=average_day3[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {  minor_day3[index]=minor_day3[index]+1;  }
+            
+        	total_severity_day1[index]=total_severity_day1[index]+1;        			
+        }
+        
+        if(days==4||days==5)
+        {
+        	
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {   critical_day3_5[index]=critical_day3_5[index]+1;   }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {   major_day3_5[index]=major_day3_5[index]+1; }
+            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {   average_day3_5[index]=average_day3_5[index]+1; }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {   minor_day3_5[index]=minor_day3_5[index]+1; }
+        	        	
+        	total_severity_day1[index]=total_severity_day1[index]+1;        			
+        }
+        
+        if(days>5)
+        {        
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {   critical_day5[index]=critical_day5[index]+1;   }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {   major_day5[index]=major_day5[index]+1; }
+        	if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {   average_day5[index]=average_day5[index]+1; }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {   minor_day5[index]=minor_day5[index]+1; }
+        	
+        	total_severity_day5[index]=total_severity_day5[index]+1;        			
+        }
+		
+		
+		
+        defect_age.setOpen_days(days);
+        defect_age.setAllSeverityday1(critical_day1, major_day1, average_day1, minor_day1, total_severity_day1);
+        defect_age.setAllSeverityday2(critical_day2, major_day2, average_day2, minor_day2, total_severity_day2);
+        defect_age.setAllSeverityday3(critical_day3, major_day3, average_day3, minor_day3, total_severity_day3);
+        defect_age.setAllSeverityday3_5(critical_day3_5, major_day3_5, average_day3_5, minor_day3_5, total_severity_day3_5);
+        defect_age.setAllSeverityday5(critical_day5, major_day5, average_day5, minor_day5, total_severity_day5);
+        
+        return 	defect_age;	
+		
+				
+	}
+	
+	
 	public static TestCases getTestcase_details(String workProduct_name,String type_sprint_or_release ) throws IOException
 	{
 		int pass		= 0;

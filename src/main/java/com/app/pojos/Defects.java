@@ -29,7 +29,15 @@ public class Defects
 	private int minor;
 	private int total_state;
 	
+	private int open_days;
 	
+	public int getOpen_days() {
+		return open_days;
+	}
+
+	public void setOpen_days(int open_days) {
+		this.open_days = open_days;
+	}
 	
 	public String getOpenedDate() {
 		return openedDate;

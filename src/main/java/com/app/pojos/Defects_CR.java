@@ -1,5 +1,7 @@
 package com.app.pojos;
 
+import java.util.Date;
+
 public class Defects_CR
 {
 	private  int[] backlogs = new int [10];
@@ -43,10 +45,35 @@ public class Defects_CR
 	private String state; 
 	private String CRNumber;
 	
+	private Date opendate;
+	private Date closeddate;
+
+	private Defect_Age defect_age=new Defect_Age();
 	
 	
 	
 	
+	
+	
+	public Date getOpendate() {
+		return opendate;
+	}
+	public void setOpendate(Date opendate) {
+		this.opendate = opendate;
+	}
+	public Date getCloseddate() {
+		return closeddate;
+	}
+	public void setCloseddate(Date closeddate) {
+		this.closeddate = closeddate;
+	}
+	public Defect_Age getDefect_age() {
+		return defect_age;
+	}
+	public void setDefect_age(Defect_Age defect_age) {
+		this.defect_age = defect_age;
+	}
+
 	public int[] getSubmitted() {
 		return submitted;
 	}

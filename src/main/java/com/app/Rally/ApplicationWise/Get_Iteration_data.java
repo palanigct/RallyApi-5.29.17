@@ -99,27 +99,26 @@ public class Get_Iteration_data
 		Defects_Application defect_details_app=new Defects_Application();
 		TestCases_Application testcase_details_app=new TestCases_Application();
 		
-		/*
+		
 		// get userstory values
 		
 		type_story_or_defect="userstory";	    
 	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);
 	    userstory_details_app=temp.getUserstories_application();   
-	   	    */	    	    
+	   	       	    
 	    // get defect values
 		
 	    type_story_or_defect="defects";		
-	    TeamStatus temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
+	    temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
 		defect_details_app=temp.getDefects_application();	
 		
-		defect_details_app.getDefect_age().displayAllSeverityday5();
-		
-		/*//get testcase values
+				
+		//get testcase values
 		
 		type_story_or_defect="testcase";
 		temp=common_fun_obj.callRestApi_Application(sprint_name, type_story_or_defect, "iteration", Application_list);			
 		testcase_details_app=temp.getTestcases_application();
-		*/
+		
 		
 		TeamStatus team_status=new TeamStatus();		 
 		team_status.setAllApplication(userstory_details_app, defect_details_app, testcase_details_app);	

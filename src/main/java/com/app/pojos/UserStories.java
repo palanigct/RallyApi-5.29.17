@@ -24,17 +24,27 @@ public class UserStories
 	private String sprintname;
 	private String releaseName;
 	private String testable; 
-	private String openedDate;
+	
 	
 	private String severity; 
 	private String state; 
 	private String CRNumber;
 	private String application;
 	
+	private String openedDate;
+	private int open_days;
 	
 	
 	
 	
+	public int getOpen_days() {
+		return open_days;
+	}
+
+	public void setOpen_days(int open_days) {
+		this.open_days = open_days;
+	}
+
 	public String getOpenedDate() {
 		return openedDate;
 	}

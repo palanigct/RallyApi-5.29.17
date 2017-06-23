@@ -705,9 +705,9 @@ str : _type="HierarchicalRequirement"
     		//System.out.println(datearray1[0]+" "+opendt+" "+systemdate); 		    		
     		
     		//String startDateString = datearray1[0];
-    		String startDateString = "2017-6-22";
+    		String startDateString = "2017-06-22";
     		
-    		DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
     		   		    		
     		try {
     			openedDate = df.parse(startDateString);
@@ -717,14 +717,12 @@ str : _type="HierarchicalRequirement"
     			{
     				e.printStackTrace();
     			}
-    		
-    		
-    		
+    				
 
             long diff = systemdate.getTime() - openedDate.getTime();
             System.out.println(" opened date string  : "+opendt);
             System.out.println(" opened date : "+openedDate);
-            System.out.println(" system date : "+systemdate);
+            System.out.println(" system date : "+systemdate+" "+df.format(systemdate));
             System.out.println (" Days: " + diff / 1000 / 60 / 60 / 24);
     		
     		/*

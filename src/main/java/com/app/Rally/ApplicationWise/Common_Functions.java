@@ -320,7 +320,8 @@ public class Common_Functions
                         	if(check==true)
                         	{
                         		 int i=index;
-                        		
+                        		 int open_days=0;
+                        		 
                         		 state_temp=storyJsonObject.get("ScheduleState").getAsString();
                         		 workproduct_name=storyJsonObject.get("Name").getAsString();
                       	         formId=storyJsonObject.get("FormattedID").getAsString(); 
@@ -397,13 +398,14 @@ public class Common_Functions
                                       	 if(!(storyJsonObject.get("OpenedDate").toString().equals("null"))) 	
                                            {
                                       		openedDate=storyJsonObject.get("OpenedDate").getAsString();                                      		
-                                      		defect_age=common_fun_obj.getDefectAge(openedDate,i,defect_age);
+                                      		defect_age=common_fun_obj.getDefectAge(openedDate,i,defect_age,severity);
+                                      		open_days=defect_age.getOpen_days();
                                            }                                    	  
                                        }catch(Exception e)
                                        {
                                     	   openedDate="Field Does not Exist";
                                        }
-                                   }
+                                    }
                                    
                                    
                                    //====================== set values and write to excel======
@@ -417,6 +419,7 @@ public class Common_Functions
                                    story.setState(defectState);
                                    story.setApplication(application_name);
                                    story.setOpenedDate(openedDate);
+                                   story.setOpen_days(open_days);
                                    //story.setCRNumber(CRNumber);
                                    
                                    write.write_userstoryAndDefect(story, team_name, type_sprint_or_release, type_story_or_defect);
@@ -524,7 +527,7 @@ public class Common_Functions
 	}
 
 	
-	public static Defect_Age getDefectAge(String openedDateString,int index,Defect_Age defect_age)
+	public static Defect_Age getDefectAge(String openedDateString,int index,Defect_Age defect_age,String severity)
 	{
 		
 		//=========================================defect agging======================
@@ -568,7 +571,7 @@ public class Common_Functions
 		
 		String datearray[]=openedDateString.split("T");				
 		String dateString = datearray[0];
-		DateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd"); 
 		   		    		
 		try {
 				openedDate = df.parse(dateString);
@@ -581,64 +584,70 @@ public class Common_Functions
 			
 
         long diff = systemDate.getTime() - openedDate.getTime();
-        
-        
-       /* System.out.println(" opened date : "+openedDate);
-        System.out.println(" system date : "+systemDate);
-        System.out.println (" Days: " + diff / 1000 / 60 / 60 / 24);*/
-		
         days= (int) (diff / 1000 / 60 / 60 / 24);
+       /* 
+        System.out.println(" opened date : "+openedDate+" || "+dateString);
+        System.out.println(" system date : "+systemDate);
+        System.out.println (" Days: " + days+"\n================================\n");
+		
+      */
         
-        System.out.println(" param : "+openedDateString+" splitted: "+dateString+" afterconvert : "+openedDate+" after convert dt: "+df.format(openedDate));
-        System.out.println(" systemDate : "+systemDate+" format : "+df.format(systemDate)+" days : "+days);
-        
-        
+                
         
         if(days==1)
-        {
-        	critical_day1[index]=critical_day1[index]+1;
-        	major_day1[index]=major_day1[index]+1;
-        	average_day1[index]=average_day1[index]+1;
-        	minor_day1[index]=minor_day1[index]+1;
+        {        	
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {  critical_day1[index]=critical_day1[index]+1;   }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {  major_day1[index]=major_day1[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {  average_day1[index]=average_day1[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {  minor_day1[index]=minor_day1[index]+1;  }
+            
         	total_severity_day1[index]=total_severity_day1[index]+1;        			
         }
         
         if(days==2)
         {
-        	critical_day1[index]=critical_day1[index]+1;
-        	major_day1[index]=major_day1[index]+1;
-        	average_day1[index]=average_day1[index]+1;
-        	minor_day1[index]=minor_day1[index]+1;
+        	
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {  critical_day2[index]=critical_day2[index]+1;    }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {  major_day2[index]=major_day2[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {  average_day2[index]=average_day2[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {  minor_day2[index]=minor_day2[index]+1;  }
+                    	
         	total_severity_day1[index]=total_severity_day1[index]+1;        			
         }
         
         if(days==3)
-        {
-        	critical_day1[index]=critical_day1[index]+1;
-        	major_day1[index]=major_day1[index]+1;
-        	average_day1[index]=average_day1[index]+1;
-        	minor_day1[index]=minor_day1[index]+1;
+        {        	
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {  critical_day3[index]=critical_day3[index]+1;   }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {  major_day3[index]=major_day3[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {  average_day3[index]=average_day3[index]+1;  }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {  minor_day3[index]=minor_day3[index]+1;  }
+            
         	total_severity_day1[index]=total_severity_day1[index]+1;        			
         }
         
         if(days==4||days==5)
         {
-        	critical_day1[index]=critical_day1[index]+1;
-        	major_day1[index]=major_day1[index]+1;
-        	average_day1[index]=average_day1[index]+1;
-        	minor_day1[index]=minor_day1[index]+1;
+        	
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {   critical_day3_5[index]=critical_day3_5[index]+1;   }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {   major_day3_5[index]=major_day3_5[index]+1; }
+            if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {   average_day3_5[index]=average_day3_5[index]+1; }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {   minor_day3_5[index]=minor_day3_5[index]+1; }
+        	        	
         	total_severity_day1[index]=total_severity_day1[index]+1;        			
         }
         
         if(days>5)
-        {
-        	critical_day5[index]=critical_day5[index]+1;
-        	major_day5[index]=major_day5[index]+1;
-        	average_day5[index]=average_day5[index]+1;
-        	minor_day5[index]=minor_day5[index]+1;
+        {        
+            if(StringUtils.containsIgnoreCase(severity, "Critical"))     {   critical_day5[index]=critical_day5[index]+1;   }
+            if(StringUtils.containsIgnoreCase(severity, "Major"))        {   major_day5[index]=major_day5[index]+1; }
+        	if(StringUtils.containsIgnoreCase(severity, "Average")) 	 {   average_day5[index]=average_day5[index]+1; }
+            if(StringUtils.containsIgnoreCase(severity, "Minor"))        {   minor_day5[index]=minor_day5[index]+1; }
+        	
         	total_severity_day5[index]=total_severity_day5[index]+1;        			
         }
 		
+        defect_age.setOpen_days(days);
+        
         defect_age.setAllSeverityday1(critical_day1, major_day1, average_day1, minor_day1, total_severity_day1);
         defect_age.setAllSeverityday2(critical_day2, major_day2, average_day2, minor_day2, total_severity_day2);
         defect_age.setAllSeverityday3(critical_day3, major_day3, average_day3, minor_day3, total_severity_day3);
