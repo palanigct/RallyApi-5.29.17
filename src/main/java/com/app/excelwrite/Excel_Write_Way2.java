@@ -430,6 +430,7 @@ public class Excel_Write_Way2
 	{
 		String 	filename="";
 		int currentRow=0;
+				
 		if(StringUtils.containsIgnoreCase(type_iteration_or_release, "iteration"))
 		{
 			filename="src\\main\\resources\\Output Folder\\Rally Report\\Excel Sheets\\Iteration Status.xls";
@@ -451,37 +452,86 @@ public class Excel_Write_Way2
         sheet = workbook.getSheet("TMWise-DE-Details-Date");
         HSSFCellStyle style1=sheet.getRow(2).getCell(13).getCellStyle();
         HSSFCellStyle style2=sheet.getRow(2).getCell(14).getCellStyle();
-        HSSFCellStyle style3=sheet.getRow(2).getCell(15).getCellStyle();
+        HSSFCellStyle style3=sheet.getRow(2).getCell(15).getCellStyle(); 
+        HSSFCellStyle style4=sheet.getRow(2).getCell(16).getCellStyle(); 
+        HSSFCellStyle style5=sheet.getRow(2).getCell(17).getCellStyle(); 
+      
         
-        if(StringUtils.containsIgnoreCase(teamName, "total"))
-        	style1=style2=style3;
-        
-        //int currentRow=sheet.getLastRowNum()+1;       
+        int k=sheet.getLastRowNum()+1;       
         //row=sheet.createRow(currentRow);currentRow_ite
-        row=sheet.createRow(currentRow);
+        // row=sheet.createRow(currentRow);       
         
-        for(int i=0;i<25;i++)
-        {
-        	cell=row.createCell(i);
-        	switch(i)
-        	{
-        		case 0: cell.setCellValue(teamName);                        cell.setCellStyle(style1); break;
-        		case 1: cell.setCellValue(defects.getSubmitted());    cell.setCellStyle(style2); break;
-        		case 2: cell.setCellValue(defects.getOpen());     cell.setCellStyle(style2);break;
-        		case 3: cell.setCellValue(defects.getFixed()); cell.setCellStyle(style2); break;
-        		case 4: cell.setCellValue(defects.getClosed());   cell.setCellStyle(style2);break;
-        		case 5: cell.setCellValue(defects.getReopen());    cell.setCellStyle(style2);break;
-        		case 6: cell.setCellValue(defects.getReady_for_test());       cell.setCellStyle(style2);break;
-        		case 7: cell.setCellValue(defects.getTotal_state());       cell.setCellStyle(style3);break;
-        		case 8: cell.setCellValue(defects.getCritical());       cell.setCellStyle(style2);break;
-        		case 9: cell.setCellValue(defects.getAverage());       cell.setCellStyle(style2);break;
-        		case 10: cell.setCellValue(defects.getMajor());       cell.setCellStyle(style2);break;
-        		case 11: cell.setCellValue(defects.getMinor());       cell.setCellStyle(style2);break;
-        		case 12: cell.setCellValue(defects.getTotal_severity());       cell.setCellStyle(style3);break;
-        		default : break;
-        	}
+		   Defect_Age defect_age=defects.getDefect_age();		         
+          
+		
+        	row=sheet.createRow(k++);
+        	cell=row.createCell(0);	cell.setCellValue(teamName); 	cell.setCellStyle(style1); 
+        	cell=row.createCell(1); cell.setCellValue("Day 1"); 	cell.setCellStyle(style5); 
+        	cell=row.createCell(2); cell.setCellValue("Day 2"); 	cell.setCellStyle(style5); 
+        	cell=row.createCell(3); cell.setCellValue("Day 3"); 	cell.setCellStyle(style5); 
+        	cell=row.createCell(4); cell.setCellValue("Day 4,5"); 	cell.setCellStyle(style5); 
+        	cell=row.createCell(5); cell.setCellValue("Day above 5"); 	cell.setCellStyle(style5); 
         	
-        }
+        	
+        	Row row_critical=sheet.createRow(k++);
+        	Row row_major=sheet.createRow(k++);
+        	Row row_average=sheet.createRow(k++);
+        	Row row_minor=sheet.createRow(k++);
+        	Row row_total=sheet.createRow(k++);
+        	
+        	for(int j=0;j<25;j++)
+            {
+            	Cell cell_critical  = row_critical.createCell(j);
+            	Cell cell_major     = row_major.createCell(j);
+            	Cell cell_average   = row_average.createCell(j);
+            	Cell cell_minor     = row_minor.createCell(j);
+            	Cell cell_total     = row_total.createCell(j);
+            	
+            	switch(j)
+            	{
+            	 		case 0:  cell_critical.setCellValue("Critical"); cell_critical.setCellStyle(style4); 
+            	 				 cell_major.setCellValue("Major"); cell_major.setCellStyle(style4);	
+            	 				 cell_average.setCellValue("Average"); cell_average.setCellStyle(style4);
+            	 				 cell_minor.setCellValue("Minor"); cell_minor.setCellStyle(style4);
+            	 				 cell_total.setCellValue("Total"); cell_total.setCellStyle(style3);
+            	 				 break;
+            	 		case 1:  cell_critical.setCellValue(defect_age.getCritic_day1()); cell_critical.setCellStyle(style2); 
+   	 				 			 cell_major.setCellValue(defect_age.getMaj_day1()); cell_major.setCellStyle(style2);	
+   	 				 			 cell_average.setCellValue(defect_age.getAve_day1()); cell_average.setCellStyle(style2);
+   	 				 			 cell_minor.setCellValue(defect_age.getMin_day1()); cell_minor.setCellStyle(style2);
+   	 				 			 cell_total.setCellValue(defect_age.getTot_severity_day1() ); cell_total.setCellStyle(style3);
+   	 				 			 break;
+            	 		case 2:  cell_critical.setCellValue(defect_age.getCritic_day2() ); cell_critical.setCellStyle(style2); 
+ 				 			 	 cell_major.setCellValue(defect_age.getMaj_day2() ); cell_major.setCellStyle(style2);	
+ 				 			 	 cell_average.setCellValue(defect_age.getAve_day2() ); cell_average.setCellStyle(style2);
+ 				 			 	 cell_minor.setCellValue( defect_age.getMin_day2()); cell_minor.setCellStyle(style2);
+ 				 			 	 cell_total.setCellValue( defect_age.getTot_severity_day2()); cell_total.setCellStyle(style3);
+ 				 			 	 break;
+            	 		case 3:  cell_critical.setCellValue(defect_age.getCritic_day3() ); cell_critical.setCellStyle(style2); 
+ 				 			 	 cell_major.setCellValue( defect_age.getMaj_day3()); cell_major.setCellStyle(style2);	
+ 				 			 	 cell_average.setCellValue(defect_age.getAve_day3() ); cell_average.setCellStyle(style2);
+ 				 			 	 cell_minor.setCellValue( defect_age.getMin_day3()  ); cell_minor.setCellStyle(style2);
+ 				 			 	 cell_total.setCellValue( defect_age.getTot_severity_day3()); cell_total.setCellStyle(style3);
+ 				 			 	 break;
+            	 		case 4: cell_critical.setCellValue(defect_age.getCritic_day3_5() ); cell_critical.setCellStyle(style2); 
+ 				 			 	cell_major.setCellValue(defect_age.getMaj_day3_5() ); cell_major.setCellStyle(style2);	
+ 				 			 	cell_average.setCellValue( defect_age.getAve_day3_5()); cell_average.setCellStyle(style2);
+ 				 			 	cell_minor.setCellValue(defect_age.getMin_day3_5() ); cell_minor.setCellStyle(style2);
+ 				 			 	cell_total.setCellValue(defect_age.getTot_severity_day3_5() ); cell_total.setCellStyle(style3);
+ 				 			 	break;
+            	 		case 5: cell_critical.setCellValue( defect_age.getCritic_day5()); cell_critical.setCellStyle(style2); 
+ 				 			 	cell_major.setCellValue( defect_age.getMaj_day5()); cell_major.setCellStyle(style2);	
+ 				 			 	cell_average.setCellValue(defect_age.getAve_day5() ); cell_average.setCellStyle(style2);
+ 				 			 	cell_minor.setCellValue(defect_age.getMin_day5() ); cell_minor.setCellStyle(style2);
+ 				 			 	cell_total.setCellValue( defect_age.getTot_severity_day5()); cell_total.setCellStyle(style3);
+ 				 			 	break;
+
+
+            	 		default:  break;        			
+            	}            	
+            }
+        	row=sheet.createRow(k++);      	
+        	
         
         file.close();        
         FileOutputStream outFile =new FileOutputStream(new File(filename));

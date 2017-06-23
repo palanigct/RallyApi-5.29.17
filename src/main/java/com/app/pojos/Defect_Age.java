@@ -35,13 +35,249 @@ public class Defect_Age
 		private int[] minor_day5 = new int [10];
 		private int[] total_severity_day5 = new int [10];
 		
+		//-----------------------------------------
+		private int critic_day1 ;
+		private int maj_day1;
+		private int ave_day1 ;
+		private int min_day1 ;
+		private int tot_severity_day1  ;
+		
+		private int critic_day2  ;
+		private int maj_day2 ;
+		private int ave_day2  ;
+		private int min_day2  ;
+		private int tot_severity_day2  ;
+		
+		private int critic_day3  ;
+		private int maj_day3  ;
+		private int ave_day3  ;
+		private int min_day3  ;
+		private int tot_severity_day3  ;
+		
+		private int critic_day3_5  ;
+		private int maj_day3_5  ;
+		private int ave_day3_5  ;
+		private int min_day3_5  ;
+		private int tot_severity_day3_5 ;
+		
+		private int critic_day5  ;
+		private int maj_day5  ;
+		private int ave_day5  ;
+		private int min_day5  ;
+		private int tot_severity_day5  ;
+		
+		
 		private int open_days;
 			
 		//===================================================================================
 		
 		
+	
+		
+		
+		
 		public int getOpen_days() {
 			return open_days;
+		}
+
+		public int getCritic_day1() {
+			return critic_day1;
+		}
+
+		public void setCritic_day1(int critic_day1) {
+			this.critic_day1 = critic_day1;
+		}
+
+		public int getMaj_day1() {
+			return maj_day1;
+		}
+
+		public void setMaj_day1(int maj_day1) {
+			this.maj_day1 = maj_day1;
+		}
+
+		public int getAve_day1() {
+			return ave_day1;
+		}
+
+		public void setAve_day1(int ave_day1) {
+			this.ave_day1 = ave_day1;
+		}
+
+		public int getMin_day1() {
+			return min_day1;
+		}
+
+		public void setMin_day1(int min_day1) {
+			this.min_day1 = min_day1;
+		}
+
+		public int getTot_severity_day1() {
+			return tot_severity_day1;
+		}
+
+		public void setTot_severity_day1(int tot_severity_day1) {
+			this.tot_severity_day1 = tot_severity_day1;
+		}
+
+		public int getCritic_day2() {
+			return critic_day2;
+		}
+
+		public void setCritic_day2(int critic_day2) {
+			this.critic_day2 = critic_day2;
+		}
+
+		public int getMaj_day2() {
+			return maj_day2;
+		}
+
+		public void setMaj_day2(int maj_day2) {
+			this.maj_day2 = maj_day2;
+		}
+
+		public int getAve_day2() {
+			return ave_day2;
+		}
+
+		public void setAve_day2(int ave_day2) {
+			this.ave_day2 = ave_day2;
+		}
+
+		public int getMin_day2() {
+			return min_day2;
+		}
+
+		public void setMin_day2(int min_day2) {
+			this.min_day2 = min_day2;
+		}
+
+		public int getTot_severity_day2() {
+			return tot_severity_day2;
+		}
+
+		public void setTot_severity_day2(int tot_severity_day2) {
+			this.tot_severity_day2 = tot_severity_day2;
+		}
+
+		public int getCritic_day3() {
+			return critic_day3;
+		}
+
+		public void setCritic_day3(int critic_day3) {
+			this.critic_day3 = critic_day3;
+		}
+
+		public int getMaj_day3() {
+			return maj_day3;
+		}
+
+		public void setMaj_day3(int maj_day3) {
+			this.maj_day3 = maj_day3;
+		}
+
+		public int getAve_day3() {
+			return ave_day3;
+		}
+
+		public void setAve_day3(int ave_day3) {
+			this.ave_day3 = ave_day3;
+		}
+
+		public int getMin_day3() {
+			return min_day3;
+		}
+
+		public void setMin_day3(int min_day3) {
+			this.min_day3 = min_day3;
+		}
+
+		public int getTot_severity_day3() {
+			return tot_severity_day3;
+		}
+
+		public void setTot_severity_day3(int tot_severity_day3) {
+			this.tot_severity_day3 = tot_severity_day3;
+		}
+
+		public int getCritic_day3_5() {
+			return critic_day3_5;
+		}
+
+		public void setCritic_day3_5(int critic_day3_5) {
+			this.critic_day3_5 = critic_day3_5;
+		}
+
+		public int getMaj_day3_5() {
+			return maj_day3_5;
+		}
+
+		public void setMaj_day3_5(int maj_day3_5) {
+			this.maj_day3_5 = maj_day3_5;
+		}
+
+		public int getAve_day3_5() {
+			return ave_day3_5;
+		}
+
+		public void setAve_day3_5(int ave_day3_5) {
+			this.ave_day3_5 = ave_day3_5;
+		}
+
+		public int getMin_day3_5() {
+			return min_day3_5;
+		}
+
+		public void setMin_day3_5(int min_day3_5) {
+			this.min_day3_5 = min_day3_5;
+		}
+
+		public int getTot_severity_day3_5() {
+			return tot_severity_day3_5;
+		}
+
+		public void setTot_severity_day3_5(int tot_severity_day3_5) {
+			this.tot_severity_day3_5 = tot_severity_day3_5;
+		}
+
+		public int getCritic_day5() {
+			return critic_day5;
+		}
+
+		public void setCritic_day5(int critic_day5) {
+			this.critic_day5 = critic_day5;
+		}
+
+		public int getMaj_day5() {
+			return maj_day5;
+		}
+
+		public void setMaj_day5(int maj_day5) {
+			this.maj_day5 = maj_day5;
+		}
+
+		public int getAve_day5() {
+			return ave_day5;
+		}
+
+		public void setAve_day5(int ave_day5) {
+			this.ave_day5 = ave_day5;
+		}
+
+		public int getMin_day5() {
+			return min_day5;
+		}
+
+		public void setMin_day5(int min_day5) {
+			this.min_day5 = min_day5;
+		}
+
+		public int getTot_severity_day5() {
+			return tot_severity_day5;
+		}
+
+		public void setTot_severity_day5(int tot_severity_day5) {
+			this.tot_severity_day5 = tot_severity_day5;
 		}
 
 		public void setOpen_days(int open_days) {
@@ -248,6 +484,51 @@ public class Defect_Age
 			this.total_severity_day5 = total_severity_day5;
 		}
 		
+		public void setAllSeverday1( int critic_day1,int maj_day1 , int ave_day1 , int min_day1 , int tot_severity_day1 )
+		{
+			this.critic_day1=critic_day1;
+			this.maj_day1=maj_day1;
+			this.ave_day1=ave_day1;
+			this.min_day1=min_day1;
+			this.tot_severity_day1=tot_severity_day1;
+		}
+		
+		public void setAllSeverday2( int critic_day2,int maj_day2 , int ave_day2 , int min_day2 , int tot_severity_day2 )
+		{
+			this.critic_day2=critic_day2;
+			this.maj_day2=maj_day2;
+			this.ave_day2=ave_day2;
+			this.min_day2=min_day2;
+			this.tot_severity_day2=tot_severity_day2;
+		}
+		
+		public void setAllSeverday3( int critic_day3,int maj_day3 , int ave_day3 , int min_day3 , int tot_severity_day3 )
+		{
+			this.critic_day3=critic_day3;
+			this.maj_day3=maj_day3;
+			this.ave_day3=ave_day3;
+			this.min_day3=min_day3;
+			this.tot_severity_day3=tot_severity_day3;
+		}
+		
+		public void setAllSeverday3_5( int critic_day1,int maj_day1 , int ave_day1 , int min_day1 , int tot_severity_day1 )
+		{
+			this.critic_day3_5=critic_day3_5;
+			this.maj_day3_5=maj_day3_5;
+			this.ave_day3_5=ave_day3_5;
+			this.min_day3_5=min_day3_5;
+			this.tot_severity_day3_5=tot_severity_day3_5;
+		}
+		
+		public void setAllSeverday5( int critic_day5,int maj_day5 , int ave_day5 , int min_day5 , int tot_severity_day5 )
+		{
+			this.critic_day5=critic_day5;
+			this.maj_day5=maj_day5;
+			this.ave_day5=ave_day5;
+			this.min_day5=min_day5;
+			this.tot_severity_day5=tot_severity_day5;
+		}
+		
 		
 		public void setAllSeverityday1( int[] critical_day1,int[] major_day1 , int[] average_day1 , int[] minor_day1 , int[] total_severity_day1 )
 		{
@@ -293,6 +574,28 @@ public class Defect_Age
 			this.minor_day5=minor_day5;
 			this.total_severity_day5=total_severity_day5;
 		}
+		
+		public void displayAllSeverday1()
+		{
+	    	   System.out.print( ":-  critical : "+this.critic_day1+" major : "+this.maj_day1+" avera : "+this.ave_day1+" minor : "+this.min_day1+" tot sev: "+this.tot_severity_day1);
+	    }
+		
+		public void displayAllSeverday2()
+		{
+	    	   System.out.print( ":-  critical : "+this.critic_day2+" major : "+this.maj_day2+" avera : "+this.ave_day2+" minor : "+this.min_day2+" tot sev: "+this.tot_severity_day2);
+	    }
+		public void displayAllSeverday3()
+		{
+	    	   System.out.print( ":-  critical : "+this.critic_day3+" major : "+this.maj_day3+" avera : "+this.ave_day3+" minor : "+this.min_day3+" tot sev: "+this.tot_severity_day3);
+	    }
+		public void displayAllSeverday3_5()
+		{
+	    	   System.out.print( ":-  critical : "+this.critic_day3_5+" major : "+this.maj_day3_5+" avera : "+this.ave_day3_5+" minor : "+this.min_day3_5+" tot sev: "+this.tot_severity_day3_5);
+	    }
+		public void displayAllSeverday5()
+		{
+	    	   System.out.print( ":-  critical : "+this.critic_day5+" major : "+this.maj_day5+" avera : "+this.ave_day5+" minor : "+this.min_day5+" tot sev: "+this.tot_severity_day5);
+	    }
 		
 		public void displayAllSeverityday1()
 		{

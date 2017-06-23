@@ -265,7 +265,7 @@ public class Common_Functions
     	 userstory_details.setAllTestable(backlogs_testable, defined_testable, in_progress_testable, completed_testable, accepted_testable, total_count_testable);
     	 userstory_details.setAll(backlogs, defined, in_progress, completed, accepted, total_count);
     	 defect_details.setAll(backlogs, defined, in_progress, completed, accepted, total_count);
-    	 defect_details.setAllSeverity(major, average, minor, total_severity);
+    	 defect_details.setAllSeverity(critical,major, average, minor, total_severity);
     	 defect_details.setAllState(submitted, open, fixed, closed, reopen, ready_for_test, total_state);
     	 testcase_details.setAll(pass_tc, fail_tc, in_progress_tc, blocked_tc, no_run_tc, total_tc,0,0,0);    	 
     	 testcase_details.setAutomated_count(automated_count_tc);

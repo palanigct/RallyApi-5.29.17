@@ -29,6 +29,18 @@ public class Defects
 	private int minor;
 	private int total_state;
 	
+	private Defect_Age defect_age;
+	
+	
+	
+	public Defect_Age getDefect_age() {
+		return defect_age;
+	}
+
+	public void setDefect_age(Defect_Age defect_age) {
+		this.defect_age = defect_age;
+	}
+
 	private int open_days;
 	
 	public int getOpen_days() {
@@ -58,8 +70,9 @@ public class Defects
 		this.total_state=total_state;
 	}
 	
-	public void setAllSeverity(int major,int average,int minor,int total_severity)
+	public void setAllSeverity(int critical,int major,int average,int minor,int total_severity)
 	{
+		this.critical=critical;
 		this.major=major;
 		this.average=average;
 		this.minor=minor;	

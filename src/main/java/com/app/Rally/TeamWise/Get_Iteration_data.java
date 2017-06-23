@@ -114,6 +114,7 @@ public class Get_Iteration_data
 		write2.write_DE_Details_Severity(defect, team_name, "iteration", type_story_or_defect);		
 		write2.write_TC_Details(testcase, team_name, "iteration");
 		write2.write_TC_Details_Automatable(testcase, team_name, "iteration");
+		write2.write_DE_Details_Date(defect, team_name, "iteration", type_story_or_defect);
 		//write.write_Defect_Details_with_state_and_severity(defect, team_name, "Iteration",type_story_or_defect);
 		//write.write_testcase_details(testcase, team_name,  "Iteration");
 		
