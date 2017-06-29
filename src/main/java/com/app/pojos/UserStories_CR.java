@@ -31,6 +31,15 @@ public class UserStories_CR
 	private String severity; 
 	private String state; 
 	private String CRNumber;
+	private String CRList;
+	
+	
+	public String getCRList() {
+		return CRList;
+	}
+	public void setCRList(String cRList) {
+		CRList = cRList;
+	}
 	public int[] getBacklogs() {
 		return backlogs;
 	}
@@ -178,6 +187,7 @@ public class UserStories_CR
     	this.completed=completed;
     	this.accepted=accepted;
     	this.total=total;
+    	    
     }
 	
     public void setAllTestable( int[] backlogs_testable , int[] defined_testable ,  int[] in_progress_testable ,  int[] completed_testable , int[] accepted_testable , int[] total_testable,int[] testableFieldCount )
@@ -186,7 +196,7 @@ public class UserStories_CR
     	this.defined_testable=backlogs_testable;
     	this.in_progress_testable=in_progress_testable;
     	this.completed_testable=completed_testable;
-    	this.accepted=accepted_testable;
+    	this.accepted_testable=accepted_testable;
     	this.total_testable=total_testable;
     	this.testableFieldCount=testableFieldCount;    	
     }
@@ -194,13 +204,17 @@ public class UserStories_CR
     
     public void displayAll()
     {
+    	System.out.println("===================================================");
     	for(int i=0;i<backlogs.length;i++,System.out.println(" "))
     	   System.out.print( "CR"+i+":-  back : "+this.backlogs[i]+" defin : "+this.defined[i]+" in_prog : "+this.in_progress[i]+" comp : "+this.completed[i]+" accp : "+this.accepted[i]+ " total : "+this.total[i]);
+    	System.out.println("===================================================");
     }
     
     public void displayAllTestable()
     {
+    	System.out.println("===================================================");
     	for(int i=0;i<backlogs.length;i++,System.out.println(" "))
     	   System.out.print( "CR"+i+":-  back : "+this.backlogs_testable[i]+" defin : "+this.defined_testable[i]+" in_prog : "+this.in_progress_testable[i]+" comp : "+this.completed_testable[i]+" accp : "+this.accepted_testable[i]+ " total : "+this.total_testable[i]+" field count : "+this.testableFieldCount[i]);
+    	System.out.println("===================================================");
     }
 }

@@ -14,7 +14,16 @@ public class TeamStatus
 	Defects_Application defects_application=new Defects_Application();
 	TestCases_Application testcases_application=new TestCases_Application();
 	
+	private int[] available_CRindex= new int [100];
 	
+	public int[] getAvailable_CRindex() {
+		return available_CRindex;
+	}
+
+	public void setAvailable_CRindex(int[] available_CRindex) {
+		this.available_CRindex = available_CRindex;
+	}
+
 	public void setAll(UserStories userstories,Defects defects,TestCases testcases)
 	{
 		this.userstories=userstories;

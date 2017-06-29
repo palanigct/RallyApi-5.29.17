@@ -1,4 +1,4 @@
-package com.app.Rally.TeamWise;
+package com.app.Rally.TeamWise.CRWise;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,13 +40,14 @@ public class Common_Functions
 	public static Other_Functions other_functions=new Other_Functions();
 	public static Common_Functions common_fun_obj=new Common_Functions();
 	public static RallyRestApi restApi = null;
-	public static String program_name="CR5981";
+	public static final ArrayList<String> CR_list=other_functions.get_CR_List();	
 	
 		
 	public static TeamStatus callRestApi(String team_name,String name_release_or_sprint,String type_story_or_defect,String type_sprint_or_release) throws IOException, URISyntaxException
 	{
 		TeamStatus team_status=new TeamStatus();
 		Defect_Age defect_age=new Defect_Age();
+		
 		
 		int total_count=0;		
 		int backlogs=0;
@@ -88,16 +90,53 @@ public class Common_Functions
 		
 		int testable_field_count=0;		
 		
-				
+		int[] available_CRindex =new int [100];		
+		Arrays.fill(available_CRindex, 101);
+		
+		int[] backlogs_cr = new int [10];
+		int[] defined_cr  = new int [10];
+		int[] in_progress_cr = new int [10];
+		int[] completed_cr = new int [10];
+		int[] accepted_cr = new int [10];
+		int[] total_cr = new int [10];
+		
+		int[] submitted_cr= new int [10];
+		int[] open_cr= new int [10];
+		int[] fixed_cr=new int [10];
+		int[] closed_cr=new int [10];
+		int[] reopen_cr=new int [10];
+		int[] ready_for_test_cr=new int [10];
+		int[] total_severity_cr=new int [10];
+		int[] critical_cr=new int [10];
+		int[] major_cr=new int [10];
+		int[] average_cr=new int [10];
+		int[] minor_cr=new int [10];
+		int[] total_state_cr=new int [10];	
+						
+		int[] pass_tc_cr		= new int[10];
+		int[] fail_tc_cr  		=new int[10];
+		int[] in_progress_tc_cr = new int[10];
+		int[] blocked_tc_cr		= new int[10];
+		int[] no_run_tc_cr		= new int[10];
+		int[] total_tc_cr	    = new int[10];		
+		int[] extra_cr		= new int[10];
+		int[] automated_count_tc_cr =new int[10];
+		int[] method_count_tc_cr =new int[10];
+		int[] exe_tc_cr=new int[10];
+		
+		int[] testable_field_count_cr=new int [10];		
+		int[] backlogs_testable_cr = new int [10];
+		int[] defined_testable_cr  = new int [10];
+		int[] in_progress_testable_cr = new int [10];
+		int[] completed_testable_cr = new int [10];
+		int[] accepted_testable_cr = new int [10];
+		int[] total_testable_cr = new int [10];
+		
 		
   	    String iterationName	= name_release_or_sprint;
   	    String reqKey="";
         String testable="";  
         String openedDate="Null";
-        
-        
-        ArrayList<String> CR_list=new ArrayList<String>();
-       // CR_list=other_functions.get_CR_List();
         
         if(type_story_or_defect.contains("userstory")) reqKey="HierarchicalRequirement";
         else reqKey="Defects";
@@ -286,11 +325,79 @@ public class Common_Functions
                      total_count_testable++;
                  }
                  
+                 int index =0;
+                 boolean check=false;               
+                 
+                 for(int i=0;i<CR_list.size();i++)          //check the CR number in list
+                 { 
+             		if(StringUtils.containsIgnoreCase(CRNumber, CR_list.get(i)))
+                	 	{                      			 
+             			 index=i;  
+             			 check=true;             			
+                          break;                                   
+             		    }                        	                  
+                 }
+                 
+                 if(check==true)
+             	{
+             		 int i=index;
+             		 available_CRindex[i]=1;
+             		  
+             		 	if(state_temp.contains("Backlog")) 	  backlogs_cr[i]++;
+                        if(state_temp.contains("Defined")) 	  defined_cr[i]++;
+                        if(state_temp.contains("In-Progress")) in_progress_cr[i]++;
+                        if(state_temp.contains("Completed"))   completed_cr[i]++;
+                        if(state_temp.contains("Accepted")) 	  accepted_cr[i]++; 
+                                   
+                        if(StringUtils.containsIgnoreCase(defectState, "Submitted"))      { submitted_cr[i]++;      total_state_cr[i]++; }
+                        if(StringUtils.equalsIgnoreCase(defectState, "Open")) 	         { open_cr[i]++;           total_state_cr[i]++;    }
+                        if(StringUtils.containsIgnoreCase(defectState, "Fixed"))          { fixed_cr[i]++;          total_state_cr[i]++; }
+                        if(StringUtils.containsIgnoreCase(defectState, "Ready for Test")) { ready_for_test_cr[i]++; total_state_cr[i]++; }
+                        if(StringUtils.equalsIgnoreCase(defectState, "Reopen"))         { reopen_cr[i]++;         total_state_cr[i]++; }
+                        if(StringUtils.containsIgnoreCase(defectState, "Closed")) 	     { closed_cr[i]++;         total_state_cr[i]++;}
+                                  	 
+                        if(StringUtils.containsIgnoreCase(severity, "Average")) 	    { average_cr[i]++;  total_severity_cr[i]++; }
+                        if(StringUtils.containsIgnoreCase(severity, "Critical"))     { critical_cr[i]++; total_severity_cr[i]++; }
+                        if(StringUtils.containsIgnoreCase(severity, "Major"))        { major_cr[i]++;    total_severity_cr[i]++; }
+                        if(StringUtils.containsIgnoreCase(severity, "Minor"))        { minor_cr[i]++;    total_severity_cr[i]++; }
+                        
+                        if(StringUtils.containsIgnoreCase(testable, "yes"))
+                        {
+                       	   if(state_temp.contains("Backlog")) 	backlogs_testable_cr[i]++;
+                            if(state_temp.contains("Defined")) 	defined_testable_cr[i]++;
+                            if(state_temp.contains("In-Progress")) in_progress_testable_cr[i]++;
+                            if(state_temp.contains("Completed")) 	completed_testable_cr[i]++;
+                            if(state_temp.contains("Accepted")) 	accepted_testable_cr[i]++;  
+                            
+                            total_testable_cr[i]++;
+                        }
+                        
+                      pass_tc_cr[i]+=TC.getPass();
+               	      fail_tc_cr[i]+=TC.getFail();
+               	      in_progress_tc_cr[i]+=TC.getIn_progress();
+               	      blocked_tc_cr[i]+=TC.getBlocked();
+               	      no_run_tc_cr[i]+=TC.getNo_run();
+               	      total_tc_cr	[i]+=TC.getTotal();            			
+               	      automated_count_tc_cr[i]+=TC.getAutomated_count(); 
+               	      method_count_tc_cr [i]+=TC.getMethod_count();
+               	      exe_tc_cr  [i]+=TC.getExecuted();
+                       
+               	      total_cr[i]++;
+             	} 
+                else
+                {
+                	 //System.out.println(" CR name list is an empty array");
+                }  
+            
                  
               }//end of for --loop for all stories	 
      
         }finally {    }
 		
+        
+         String cr_list_string=common_fun_obj.getAvailable_CRlist(available_CRindex);
+         
+         System.out.println(cr_list_string);
         
     	 UserStories userstory_details=new UserStories();
     	 Defects defect_details=new Defects();
@@ -308,7 +415,31 @@ public class Common_Functions
     	 testcase_details.setMethod_count(method_count_tc);    	 
     	 userstory_details.setTestableFieldCount(testable_field_count);
     	 
+    	 //===================CR details==============================
+    	 	
+    	 UserStories_CR userstory_details_cr=new UserStories_CR(); 
+    	 Defects_CR defect_details_cr= new Defects_CR();
+    	 TestCases_CR testcase_details_cr= new TestCases_CR();
+    	
+    	    	 
+    	 userstory_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
+    	 userstory_details_cr.setAllTestable(backlogs_testable_cr, defined_testable_cr, in_progress_testable_cr, completed_testable_cr, accepted_testable_cr, total_testable_cr, testable_field_count_cr);
+    	 defect_details_cr.setAll(backlogs_cr, defined_cr, in_progress_cr, completed_cr, accepted_cr, total_cr);
+    	 defect_details_cr.setAllSeverity(critical_cr, major_cr, average_cr, minor_cr, total_severity_cr);
+    	 defect_details_cr.setAllState(submitted_cr, open_cr, fixed_cr, closed_cr, reopen_cr, ready_for_test_cr, total_state_cr);
+    	 defect_details_cr.setDefect_age(defect_age);
+    	 testcase_details_cr.setAll(pass_tc_cr, fail_tc_cr, in_progress_tc_cr, blocked_tc_cr, no_run_tc_cr, exe_tc_cr, total_tc_cr);
+    	 testcase_details_cr.setAutomated_count(automated_count_tc_cr);
+    	 testcase_details_cr.setMethod_count(method_count_tc_cr);
+    	 
+    	 
+    	 //=============================================================
+    	
+    	 
+    	    	 
     	 team_status.setAll(userstory_details, defect_details, testcase_details);    	 
+    	 team_status.setAll_CR(userstory_details_cr, defect_details_cr, testcase_details_cr);
+    	 team_status.setAvailable_CRindex(available_CRindex);
     	 return team_status;     
 	
 	}
@@ -552,6 +683,21 @@ public class Common_Functions
         return testcases;
 	}
 	
+	
+	public static String getAvailable_CRlist(int [] available_index)
+	{
+		String crlist="";
+		System.out.println(CR_list);
+		for(int i=0;i<CR_list.size();i++)
+		{
+			if(available_index[i]==1)
+			{
+				crlist+=CR_list.get(available_index[i])+",";		
+			}
+		}
+		
+		return crlist;
+	}
 	
 	public static TestCases addTwoTestCases(TestCases testcase1,TestCases testcase2)
 	{

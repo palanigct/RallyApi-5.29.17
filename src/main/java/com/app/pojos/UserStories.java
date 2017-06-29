@@ -34,9 +34,17 @@ public class UserStories
 	private String openedDate;
 	private int open_days;
 	
+	private String CRList;
 	
 	
-	
+	public String getCRList() {
+		return CRList;
+	}
+
+	public void setCRList(String cRList) {
+		CRList = cRList;
+	}
+
 	public int getOpen_days() {
 		return open_days;
 	}

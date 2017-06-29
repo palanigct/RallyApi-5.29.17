@@ -30,10 +30,12 @@ public class TestCases_CR
   
   public void displayAll()
   {
+	  System.out.println("===================================================");
 	  for(int i=0;i<this.pass.length;i++,System.out.println(" "))
 	  {
 		  System.out.print(" CR : "+ i+ "  pass : "+this.pass[i]+" fail : "+this.fail[i]+" in prog : "+this.in_progress[i]+" block : "+this.blocked[i]+" no run : "+this.no_run[i]+ " exe : "+this.executed[i]+" total : "+this.total[i]);
 	  }
+	  System.out.println("===================================================");
   }
   
   

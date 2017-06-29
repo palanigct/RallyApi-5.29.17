@@ -318,19 +318,25 @@ public class Defects_CR
     
     public void displayAllSeverity()
     {
+    	System.out.println("===================================================");
     	for(int i=0;i<this.critical.length;i++,System.out.println(" "))
      	   System.out.print( "CR"+i+":-  critical : "+this.critical[i]+" major : "+this.major[i]+" avera : "+this.average[i]+" minor : "+this.minor[i]+" tot sev: "+this.total_severity[i]);
+    	System.out.println("===================================================");
     }
     
     public void displayAllState()
     {
+    	System.out.println("===================================================");
     	for(int i=0;i<this.submitted.length;i++,System.out.println(" "))
       	   System.out.print( "CR"+i+":-  submit : "+this.submitted[i]+" open : "+this.open[i]+" fixed : "+this.fixed[i]+" closed : "+this.closed[i]+" reopen: "+this.reopen[i]+" ready open : "+ this.ready_for_test[i]+" tot state: "+this.total_state[i]);
+    	System.out.println("===================================================");
     }
     
     public void displayAll()
     {
+    	System.out.println("===================================================");
     	for(int i=0;i<this.backlogs.length;i++,System.out.println(" "))
     	   System.out.print( "CR"+i+":-  back : "+this.backlogs[i]+" defin : "+this.defined[i]+" in_prog : "+this.in_progress[i]+" comp : "+this.completed[i]+" accp : "+this.accepted[i]+ " total : "+this.total[i]);
+    	System.out.println("===================================================");
     }
 }

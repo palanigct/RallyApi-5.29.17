@@ -922,8 +922,7 @@ public class Common_Functions
         String CRNumber="Null";
 		
         UserStories story=new UserStories();
-        String team_name="Null";
-		int testable_field_count=0;			
+        String team_name="Null";				
   	    String iterationName	= name_release_or_sprint;
   	    String reqKey="";
         String testable="";     
